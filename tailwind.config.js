@@ -1,3 +1,5 @@
+import { BsDisplay } from 'react-icons/bs';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -8,5 +10,10 @@ export default {
     extend: {},
   },
   plugins: [],
+  variants:{
+    extends: {
+      display: ["focus-group"]
+    }
+  }
 }
 
