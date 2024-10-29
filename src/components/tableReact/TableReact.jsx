@@ -1,7 +1,24 @@
 
 function TableReact() {
   return (
-    <div>TableReact</div>
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>
+              ID
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              1
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   )
 }
 
