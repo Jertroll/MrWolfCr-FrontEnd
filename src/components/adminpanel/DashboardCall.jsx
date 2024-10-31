@@ -4,6 +4,8 @@ import Sidebar from './Sidebar';
 
 import { useState } from 'react';
 
+
+
 function DashboardCall() {
   const [activeTab, setActiveTab] = useState(''); // Estado para el tab activo
 
@@ -13,12 +15,7 @@ function DashboardCall() {
       
       <div className="flex-1">
         <Navbar />
-        <div className="w-full p-7">
-          {/*          {activeTab === 'usuarios' && <UserCrud />}
-          {activeTab === 'productos' && <ProductsCrud />}
-          {activeTab === 'informes' && <Reports />} */}
 
-        </div>
       </div>
     </div>
   );
