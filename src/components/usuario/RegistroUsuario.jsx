@@ -14,6 +14,8 @@ function UserRegistrationForm() {
     rol: 'usuario',
   });
 
+  const [mensaje, setMensaje] = useState(''); // Estado para mensajes de éxito o error
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === 'imagen') {
@@ -23,17 +25,37 @@ function UserRegistrationForm() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Procesar el formulario aquí
-    console.log(formData);
+
+    // Crear un FormData para enviar al backend
+    const data = new FormData();
+    Object.keys(formData).forEach((key) => {
+      data.append(key, formData[key]);
+    });
+
+    try {
+      const response = await fetch('http://localhost:5000/api/registro-usuario,ejemplo', { // Cambiar la url segun el backend
+        method: 'POST',
+        body: data,
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setMensaje('Usuario registrado con éxito');
+      } else {
+        setMensaje('Error al registrar el usuario');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setMensaje('Error en la conexión con el servidor');
+    }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md h-[90vh] overflow-y-auto">
         <h2 className="text-2xl font-bold text-center mb-6">Formulario de Registro de Usuarios</h2>
-        <img src="" alt="" /> {/**Poner imagen de mr wolf de forma circular aca */}
         
         <form onSubmit={handleSubmit}>
           <label className="block mb-2 font-semibold">Cédula</label>
@@ -132,8 +154,9 @@ function UserRegistrationForm() {
           >
             CREAR CUENTA
           </button>
-
         </form>
+
+        {mensaje && <p className="text-center mt-4">{mensaje}</p>}
       </div>
     </div>
   );

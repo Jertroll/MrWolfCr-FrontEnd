@@ -9,7 +9,7 @@ function RegistroUsuarioCliente() {
     contrasena: '',
     telefono: '',
     direccion: '',
-    email_facturacion: '',
+    email_facturacion: 'noAplica@.com',
     imagen: null,
     rol: 'usuario',
   });
@@ -23,16 +23,37 @@ function RegistroUsuarioCliente() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Procesar el formulario aquí
-    console.log(formData);
+    
+    // Crear un objeto FormData para enviar la imagen junto con los demás datos
+    const formDataToSend = new FormData();
+    Object.keys(formData).forEach(key => {
+      formDataToSend.append(key, formData[key]);
+    });
+
+    try {
+      const response = await fetch('https://tu-backend.com/api/registro', {
+        method: 'POST',
+        body: formDataToSend,
+      });
+      
+      if (response.ok) {
+        console.log("Registro exitoso");
+      
+      } else {
+        console.log("Error al registrar");
+      }
+    } catch (error) {
+      console.error("Error en la solicitud:", error);
+    }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md h-[90vh] overflow-y-auto">
-        <h2 className="text-2xl font-bold text-center mb-6">Crear cuenta</h2>
+        <h2 className="text-2xl font-bold text-center mb-6">Formulario de Registro de Usuarios</h2>
+        <img src="" alt="" className="rounded-full mb-4" /> {/* Imagen circular */}
         
         <form onSubmit={handleSubmit}>
           <label className="block mb-2 font-semibold">Cédula</label>
@@ -105,16 +126,6 @@ function RegistroUsuarioCliente() {
             required
           />
 
-          <label className="block mb-2 font-semibold">Correo electrónico para facturación</label>
-          <input
-            type="email"
-            name="email_facturacion"
-            value={formData.email_facturacion}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
-
           <label className="block mb-2 font-semibold">Imagen de perfil</label>
           <input
             type="file"
@@ -123,6 +134,18 @@ function RegistroUsuarioCliente() {
             className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
           />
 
+          <label className="block mb-2 font-semibold">Rol</label>
+          <select
+            name="rol"
+            value={formData.rol}
+            onChange={handleChange}
+            className="w-full px-4 py-2 mb-6 border rounded-lg focus:outline-none"
+            required
+          >
+            <option value="usuario">Usuario</option>
+            <option value="administrador">Administrador</option>
+          </select>
+
           <button
             type="submit"
             className="w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800"
@@ -130,13 +153,10 @@ function RegistroUsuarioCliente() {
             CREAR CUENTA
           </button>
 
-          <p className="text-center text-gray-600 mt-4">
-            ¿Ya tiene una cuenta? <a href="#" className="text-red-500">Inicie sesión aquí</a>
-          </p>
         </form>
       </div>
     </div>
   );
 }
 
-export default RegistroUsuarioCliente;
+export default RegistroUsuarioCliente
