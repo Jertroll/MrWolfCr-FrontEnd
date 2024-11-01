@@ -9,8 +9,10 @@ import {
 import data from "../../usuariosArreglos.json";
 import { useState } from "react";
 import { FaTrash, FaEdit } from "react-icons/fa";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
 
 function TableReact() {
+  const navigate = useNavigate(); // Crea la función de navegación
   const columns = [
     { header: "Cedula", accessorKey: "cedula" },
     { header: "Nombre de Usuario", accessorKey: "nombre_usuario" },
@@ -70,7 +72,7 @@ function TableReact() {
       />
       <button
         className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 ml-3"
-        onClick={() => alert('Agregar nuevo usuario')}
+        onClick={() => navigate('/agregarUsuario')} // Redirige al formulario
       >
         Agregar Usuarios
       </button>

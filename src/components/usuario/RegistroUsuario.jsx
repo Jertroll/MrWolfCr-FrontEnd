@@ -1,22 +1,28 @@
-import { useState } from 'react';
-
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { navigate } from "wouter/use-hash-location";
 function UserRegistrationForm() {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate("/usuario"); // Navega directamente a la ruta /usuario
+  };
   const [formData, setFormData] = useState({
-    cedula: '',
-    nombre_usuario: '',
-    nombre_completo: '',
-    email: '',
-    contrasena: '',
-    telefono: '',
-    direccion: '',
-    email_facturacion: 'noAplica@.com',
+    cedula: "",
+    nombre_usuario: "",
+    nombre_completo: "",
+    email: "",
+    contrasena: "",
+    telefono: "",
+    direccion: "",
+    email_facturacion: "noAplica@.com",
     imagen: null,
-    rol: 'usuario',
+    rol: "usuario",
   });
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === 'imagen') {
+    if (name === "imagen") {
       setFormData({ ...formData, [name]: files[0] });
     } else {
       setFormData({ ...formData, [name]: value });
@@ -30,11 +36,13 @@ function UserRegistrationForm() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
+    <div className="flex justify-center items-center">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md h-[90vh] overflow-y-auto">
-        <h2 className="text-2xl font-bold text-center mb-6">Formulario de Registro de Usuarios</h2>
-        <img src="" alt="" /> {/**Poner imagen de mr wolf de forma circular aca */}
-        
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Formulario de Registro de Usuarios
+        </h2>
+        <img src="" alt="" />{" "}
+        {/**Poner imagen de mr wolf de forma circular aca */}
         <form onSubmit={handleSubmit}>
           <label className="block mb-2 font-semibold">Cédula</label>
           <input
@@ -126,13 +134,21 @@ function UserRegistrationForm() {
             <option value="administrador">Administrador</option>
           </select>
 
-          <button
-            type="submit"
-            className="w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800"
-          >
-            CREAR CUENTA
-          </button>
-
+          <div className="flex flex-col space-y-4">
+            <button
+              type="submit"
+              className="w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800"
+            >
+              CREAR CUENTA
+            </button>
+            <button
+              type="button"
+              className="w-full bg-red-500 text-white py-2 rounded-lg font-semibold hover:bg-red-600"
+              onClick={handleBack} // Llama a handleBack en lugar de un alert
+            >
+              Regresar
+            </button>
+          </div>
         </form>
       </div>
     </div>
