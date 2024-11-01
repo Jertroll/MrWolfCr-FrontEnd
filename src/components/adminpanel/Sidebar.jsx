@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { FaHome, FaUsers, FaCog, FaChartPie } from "react-icons/fa"; // Usa react-icons para iconos
-
+import { Link } from "react-router-dom";
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const Menus = [
-    { title: "Home", icon: <FaHome /> },
-    { title: "Usuarios", icon: <FaUsers />, gap: true },
-    { title: "Estadísticas", icon: <FaChartPie /> },
-    { title: "Configuración", icon: <FaCog /> },
+    { title: "Home", icon: <FaHome />, path:'/' },
+    { title: "Usuarios", icon: <FaUsers />, gap: true, path:'/usuario' },
+    { title: "Estadísticas", icon: <FaChartPie />, path:'/estadistica' },
+    { title: "Configuración", icon: <FaCog />,path:'/config' },
   ];
 
   return (
@@ -44,7 +44,7 @@ const Sidebar = () => {
             >
               <span className="text-xl">{Menu.icon}</span>
               <span className={`${!open && "hidden"} transition-opacity duration-200`}>
-                {Menu.title}
+               <Link to={Menu.path}> {Menu.title}</Link>
               </span>
             </li>
           ))}

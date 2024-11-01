@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function UserRegistrationForm() {
+function RegistroUsuarioCliente() {
   const [formData, setFormData] = useState({
     cedula: '',
     nombre_usuario: '',
@@ -9,7 +9,7 @@ function UserRegistrationForm() {
     contrasena: '',
     telefono: '',
     direccion: '',
-    email_facturacion: 'noAplica@.com',
+    email_facturacion: '',
     imagen: null,
     rol: 'usuario',
   });
@@ -32,8 +32,7 @@ function UserRegistrationForm() {
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md h-[90vh] overflow-y-auto">
-        <h2 className="text-2xl font-bold text-center mb-6">Formulario de Registro de Usuarios</h2>
-        <img src="" alt="" /> {/**Poner imagen de mr wolf de forma circular aca */}
+        <h2 className="text-2xl font-bold text-center mb-6">Crear cuenta</h2>
         
         <form onSubmit={handleSubmit}>
           <label className="block mb-2 font-semibold">Cédula</label>
@@ -106,6 +105,16 @@ function UserRegistrationForm() {
             required
           />
 
+          <label className="block mb-2 font-semibold">Correo electrónico para facturación</label>
+          <input
+            type="email"
+            name="email_facturacion"
+            value={formData.email_facturacion}
+            onChange={handleChange}
+            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
+            required
+          />
+
           <label className="block mb-2 font-semibold">Imagen de perfil</label>
           <input
             type="file"
@@ -114,18 +123,6 @@ function UserRegistrationForm() {
             className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
           />
 
-          <label className="block mb-2 font-semibold">Rol</label>
-          <select
-            name="rol"
-            value={formData.rol}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-6 border rounded-lg focus:outline-none"
-            required
-          >
-            <option value="usuario">Usuario</option>
-            <option value="administrador">Administrador</option>
-          </select>
-
           <button
             type="submit"
             className="w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800"
@@ -133,10 +130,13 @@ function UserRegistrationForm() {
             CREAR CUENTA
           </button>
 
+          <p className="text-center text-gray-600 mt-4">
+            ¿Ya tiene una cuenta? <a href="#" className="text-red-500">Inicie sesión aquí</a>
+          </p>
         </form>
       </div>
     </div>
   );
 }
 
-export default UserRegistrationForm;
+export default RegistroUsuarioCliente;
