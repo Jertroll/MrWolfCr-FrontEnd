@@ -1,4 +1,5 @@
 import './App.css'
+import ActualizarPerfil from './components/usuario/ActualizarPerfil'
 import DashboardCall from './components/adminpanel/DashboardCall'
 import Login from './components/loginForm/login'
 import TableReact from './components/tableReact/TableReact'
@@ -8,7 +9,7 @@ import RegistroUsuarioCliente from './components/usuario/RegistroUsuarioCliente'
 function App() {
   return (
     <>
-      <TableReact/>
+      <ActualizarPerfil/>
 
     </>
   )
