@@ -8,47 +8,38 @@ function UserRegistrationForm() {
     email: '',
     contrasena: '',
     telefono: '',
-    direccion: '',
-    email_facturacion: 'noAplica@.com',
-    imagen: null,
-    rol: 'usuario',
+    direccion_envio: '',
+    email_facturacion: '',
+    imagen: '',
+    rol: ''
   });
 
   const [mensaje, setMensaje] = useState(''); // Estado para mensajes de éxito o error
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === 'imagen') {
-      setFormData({ ...formData, [name]: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value || ''});
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Crear un FormData para enviar al backend
-    const data = new FormData();
-    Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
-    });
-
+    
     try {
-      const response = await fetch('http://localhost:5000/api/registro-usuario,ejemplo', { // Cambiar la url segun el backend
+      const response = await fetch('http://localhost:3000/api/v1/usuarios', {
         method: 'POST',
-        body: data,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
       });
-
+  
       if (response.ok) {
-        const result = await response.json();
-        setMensaje('Usuario registrado con éxito');
+        setMensaje("Registro exitoso");
       } else {
-        setMensaje('Error al registrar el usuario');
+        const errorData = await response.text();
+        setMensaje(`Error al registrar: ${errorData}`);
       }
     } catch (error) {
-      console.error('Error:', error);
-      setMensaje('Error en la conexión con el servidor');
+      console.error("Error en la solicitud:", error);
+      setMensaje("Error en la solicitud");
     }
   };
 
@@ -121,17 +112,28 @@ function UserRegistrationForm() {
           <label className="block mb-2 font-semibold">Dirección</label>
           <input
             type="text"
-            name="direccion"
-            value={formData.direccion}
+            name="direccion_envio"
+            value={formData.direccion_envio}
+            onChange={handleChange}
+            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
+            required
+          />
+          
+          <label className="block mb-2 font-semibold">Correo electrónico de Facturacion</label>
+          <input
+            type="email"
+            name="email_facturacion"
+            value={formData.email_facturacion}
             onChange={handleChange}
             className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
             required
           />
 
-          <label className="block mb-2 font-semibold">Imagen de perfil</label>
+          <label className="block mb-2 font-semibold">Imagen (URL)</label>
           <input
-            type="file"
+            type="text"
             name="imagen"
+            value={formData.imagen}
             onChange={handleChange}
             className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
           />
@@ -144,8 +146,8 @@ function UserRegistrationForm() {
             className="w-full px-4 py-2 mb-6 border rounded-lg focus:outline-none"
             required
           >
-            <option value="usuario">Usuario</option>
-            <option value="administrador">Administrador</option>
+            <option value="Cliente">Cliente</option>
+            <option value="Administrador">Administrador</option>
           </select>
 
           <button

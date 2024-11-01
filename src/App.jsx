@@ -9,7 +9,7 @@ import RegistroUsuarioCliente from './components/usuario/RegistroUsuarioCliente'
 function App() {
   return (
     <>
-      <ActualizarPerfil/>
+      <RegistroUsuario/>
 
     </>
   )
