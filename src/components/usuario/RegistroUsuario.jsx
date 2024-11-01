@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function UserRegistrationForm() {
+function RegistroUsuario() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -184,4 +184,4 @@ function UserRegistrationForm() {
   );
 }
 
-export default UserRegistrationForm;
+export default RegistroUsuario;
