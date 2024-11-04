@@ -1,77 +1,47 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+mport { useState } from 'react';
 
-function RegistroUsuario() {
-  const navigate = useNavigate();
-
+function UserRegistrationForm() {
   const [formData, setFormData] = useState({
-    cedula: "",
-    nombre_usuario: "",
-    nombre_completo: "",
-    email: "",
-    contrasena: "",
-    telefono: "",
-    direccion_envio: "",
-    email_facturacion: "",
-    imagen: "",
-    rol: "",
+    cedula: '',
+    nombre_usuario: '',
+    nombre_completo: '',
+    email: '',
+    contrasena: '',
+    telefono: '',
+    direccion_envio: '',
+    email_facturacion: '',
+    imagen: '',
+    rol: ''
   });
 
-  const [mensaje, setMensaje] = useState("");
+  const [mensaje, setMensaje] = useState(''); // Estado para mensajes de éxito o error
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value || "" });
+    setFormData({ ...formData, [name]: value || ''});
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     try {
-      const response = await fetch("http://localhost:3000/api/v1/usuarios", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('http://localhost:3000/api/v1/usuarios', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-
+  
       if (response.ok) {
         setMensaje("Registro exitoso");
       } else {
         const errorData = await response.text();
-        setMensaje(`Error al registrar: ${errorData}`);
+        setMensaje(Error al registrar: ${errorData});
       }
     } catch (error) {
       console.error("Error en la solicitud:", error);
       setMensaje("Error en la solicitud");
     }
   };
-
-  /*const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Crear un FormData para enviar al backend
-    const data = new FormData();
-    Object.keys(formData).forEach((key) => {
-      data.append(key, formData[key]);
-    });
-
-    try {
-      const response = await fetch('http://localhost:5000/api/registro-usuario,ejemplo', { // Cambiar la url segun el backend
-        method: 'POST',
-        body: data,
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        setMensaje('Usuario registrado con éxito');
-      } else {
-        setMensaje('Error al registrar el usuario');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      setMensaje('Error en la conexión con el servidor');
-    }
-  };*/
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
@@ -148,10 +118,8 @@ function RegistroUsuario() {
             className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
             required
           />
-
-          <label className="block mb-2 font-semibold">
-            Correo electrónico de Facturación
-          </label>
+          
+          <label className="block mb-2 font-semibold">Correo electrónico de Facturacion</label>
           <input
             type="email"
             name="email_facturacion"
@@ -161,7 +129,7 @@ function RegistroUsuario() {
             required
           />
 
-          <label className="block mb-2 font-semibold">Imagen de Perfil</label>
+          <label className="block mb-2 font-semibold">Imagen (URL)</label>
           <input
             type="text"
             name="imagen"
@@ -196,4 +164,4 @@ function RegistroUsuario() {
   );
 }
 
-export default RegistroUsuario;
+export default UserRegistrationForm;
