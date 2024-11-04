@@ -56,20 +56,21 @@ function RegistroUsuario() {
     });
 
     try {
-      const response = await fetch('http://localhost:5000/api/registro-usuario,ejemplo', { // Cambiar la url segun el backend
+      const response = await fetch('http://localhost:3000/api/v1/usuarios', {
         method: 'POST',
-        body: data,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
       });
-
+  
       if (response.ok) {
-        const result = await response.json();
-        setMensaje('Usuario registrado con éxito');
+        setMensaje("Registro exitoso");
       } else {
-        setMensaje('Error al registrar el usuario');
+        const errorData = await response.text();
+        setMensaje(`Error al registrar: ${errorData}`);
       }
     } catch (error) {
-      console.error('Error:', error);
-      setMensaje('Error en la conexión con el servidor');
+      console.error("Error en la solicitud:", error);
+      setMensaje("Error en la solicitud");
     }
   };*/
 
