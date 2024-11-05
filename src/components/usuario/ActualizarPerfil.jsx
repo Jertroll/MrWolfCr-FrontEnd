@@ -36,7 +36,7 @@ function ActualizarPerfil() {
     });
 
     try {
-      const response = await fetch('url', { // cambiar la url segun el backend
+      const response = await fetch('url', { // cambiar la url según el backend
         method: 'POST',
         body: data,
       });
@@ -145,7 +145,7 @@ function ActualizarPerfil() {
 
           <button
             type="submit"
-            className="w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800"
+            className="w-full bg-[#2A4A10] text-white py-2 rounded-lg font-semibold hover:bg-[#1E3A07] mb-4" o
           >
             ACTUALIZAR PERFIL
           </button>

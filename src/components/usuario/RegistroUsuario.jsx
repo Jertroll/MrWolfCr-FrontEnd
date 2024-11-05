@@ -75,126 +75,148 @@ function RegistroUsuario() {
   };*/
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md h-[90vh] overflow-y-auto">
-        <h2 className="text-2xl font-bold text-center mb-6">Formulario de Registro de Usuarios</h2>
-        
-        <form onSubmit={handleSubmit}>
-          <label className="block mb-2 font-semibold">Cédula</label>
-          <input
-            type="text"
-            name="cedula"
-            value={formData.cedula}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
-
-          <label className="block mb-2 font-semibold">Nombre de usuario</label>
-          <input
-            type="text"
-            name="nombre_usuario"
-            value={formData.nombre_usuario}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
-
-          <label className="block mb-2 font-semibold">Nombre completo</label>
-          <input
-            type="text"
-            name="nombre_completo"
-            value={formData.nombre_completo}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
-
-          <label className="block mb-2 font-semibold">Correo electrónico</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
-
-          <label className="block mb-2 font-semibold">Contraseña</label>
-          <input
-            type="password"
-            name="contrasena"
-            value={formData.contrasena}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
-
-          <label className="block mb-2 font-semibold">Teléfono</label>
-          <input
-            type="tel"
-            name="telefono"
-            value={formData.telefono}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
-
-          <label className="block mb-2 font-semibold">Dirección</label>
-          <input
-            type="text"
-            name="direccion_envio"
-            value={formData.direccion_envio}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
-
-          <label className="block mb-2 font-semibold">
-            Correo electrónico de Facturación
-          </label>
-          <input
-            type="email"
-            name="email_facturacion"
-            value={formData.email_facturacion}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
-
-          <label className="block mb-2 font-semibold">Imagen de Perfil</label>
-          <input
-            type="text"
-            name="imagen"
-            value={formData.imagen}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-          />
-
-          <label className="block mb-2 font-semibold">Rol</label>
-          <select
-            name="rol"
-            value={formData.rol}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-6 border rounded-lg focus:outline-none"
-            required
-          >
-            <option value="Cliente">Cliente</option>
-            <option value="Administrador">Administrador</option>
-          </select>
-
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white p-10 rounded-lg shadow-md w-11/12 h-screen overflow-y-auto">
+        <h2 className="text-3xl font-bold text-center mb-8 text-gray-700">Formulario de Registro de Usuarios</h2>
+  
+        <form onSubmit={handleSubmit} className="space-y-6 px-8">
+          <div>
+            <label className="block text-gray-600 font-medium">Cédula</label>
+            <input
+              type="text"
+              name="cedula"
+              value={formData.cedula}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+              required
+            />
+          </div>
+  
+          <div>
+            <label className="block text-gray-600 font-medium">Nombre de usuario</label>
+            <input
+              type="text"
+              name="nombre_usuario"
+              value={formData.nombre_usuario}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+              required
+            />
+          </div>
+  
+          <div>
+            <label className="block text-gray-600 font-medium">Nombre completo</label>
+            <input
+              type="text"
+              name="nombre_completo"
+              value={formData.nombre_completo}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+              required
+            />
+          </div>
+  
+          {/* Agrupación de Correo y Contraseña */}
+          <div className="flex space-x-4">
+            <div className="w-1/2">
+              <label className="block text-gray-600 font-medium">Correo electrónico</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+                required
+              />
+            </div>
+  
+            <div className="w-1/2">
+              <label className="block text-gray-600 font-medium">Contraseña</label>
+              <input
+                type="password"
+                name="contrasena"
+                value={formData.contrasena}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+                required
+              />
+            </div>
+          </div>
+  
+          <div>
+            <label className="block text-gray-600 font-medium">Teléfono</label>
+            <input
+              type="tel"
+              name="telefono"
+              value={formData.telefono}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+              required
+            />
+          </div>
+  
+          <div>
+            <label className="block text-gray-600 font-medium">Dirección</label>
+            <input
+              type="text"
+              name="direccion_envio"
+              value={formData.direccion_envio}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+              required
+            />
+          </div>
+  
+          <div>
+            <label className="block text-gray-600 font-medium">Correo electrónico de Facturación</label>
+            <input
+              type="email"
+              name="email_facturacion"
+              value={formData.email_facturacion}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+              required
+            />
+          </div>
+  
+          <div>
+            <label className="block text-gray-600 font-medium">Imagen de Perfil</label>
+            <input
+              type="text"
+              name="imagen"
+              value={formData.imagen}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+            />
+          </div>
+  
+          <div>
+            <label className="block text-gray-600 font-medium">Rol</label>
+            <select
+              name="rol"
+              value={formData.rol}
+              onChange={handleChange}
+              className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+              required
+            >
+              <option value="Cliente">Cliente</option>
+              <option value="Administrador">Administrador</option>
+            </select>
+          </div>
+  
           <button
             type="submit"
-            className="w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700"
           >
             CREAR CUENTA
           </button>
         </form>
-
-        {mensaje && <p className="text-center mt-4">{mensaje}</p>}
+  
+        {mensaje && <p className="text-center mt-4 text-gray-600">{mensaje}</p>}
       </div>
     </div>
   );
+  
 }
 
 export default RegistroUsuario;

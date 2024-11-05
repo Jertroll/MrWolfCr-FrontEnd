@@ -1,4 +1,4 @@
-mport { useState } from 'react';
+import { useState } from 'react';
 
 function UserRegistrationForm() {
   const [formData, setFormData] = useState({
@@ -35,7 +35,7 @@ function UserRegistrationForm() {
         setMensaje("Registro exitoso");
       } else {
         const errorData = await response.text();
-        setMensaje(Error al registrar: ${errorData});
+        setMensaje(`Error al registrar: ${errorData}`);
       }
     } catch (error) {
       console.error("Error en la solicitud:", error);
