@@ -158,6 +158,13 @@ function TableReact() {
         Agregar Usuarios
       </button>
 
+      <button
+        className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 ml-3"
+        onClick={() => navigate("/actualizarPerfil")} // Redirige al formulario actualizar perfil
+      >
+        Actualizar perfil
+      </button>
+
       {editingUser && (
         <form
           onSubmit={saveChanges}

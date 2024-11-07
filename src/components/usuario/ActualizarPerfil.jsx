@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate
 
 function ActualizarPerfil() {
+  const navigate = useNavigate(); // Inicializa useNavigate para redireccionar
+
   const [formData, setFormData] = useState({
     cedula: '',
     nombre_usuario: '',
@@ -10,6 +13,7 @@ function ActualizarPerfil() {
     direccion: '',
     email_facturacion: '',
     imagen: null,
+    contrasena: '', // Estado para la contraseña
   });
 
   const [imagenPreview, setImagenPreview] = useState(null);
@@ -29,7 +33,6 @@ function ActualizarPerfil() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Crear un FormData para enviar los datos al backend
     const data = new FormData();
     Object.keys(formData).forEach((key) => {
       data.append(key, formData[key]);
@@ -53,9 +56,14 @@ function ActualizarPerfil() {
     }
   };
 
+  // Función para manejar el botón de "Regresar"
+  const handleBack = () => {
+    navigate(-1); // Redirecciona a la página anterior
+  };
+
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md h-[90vh] overflow-y-auto">
+      <div className="bg-white p-10 rounded-lg shadow-md w-11/12 h-screen overflow-y-auto">
         <h2 className="text-2xl font-bold text-center mb-6">Actualizar Perfil</h2>
         
         <form onSubmit={handleSubmit}>
@@ -89,15 +97,31 @@ function ActualizarPerfil() {
             required
           />
 
-          <label className="block mb-2 font-semibold">Correo electrónico</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block mb-2 font-semibold">Correo electrónico</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block mb-2 font-semibold">Contraseña</label>
+              <input
+                type="password"
+                name="contrasena"
+                value={formData.contrasena}
+                onChange={handleChange}
+                className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
+                required
+              />
+            </div>
+          </div>
 
           <label className="block mb-2 font-semibold">Teléfono</label>
           <input
@@ -145,13 +169,20 @@ function ActualizarPerfil() {
 
           <button
             type="submit"
-            className="w-full bg-[#2A4A10] text-white py-2 rounded-lg font-semibold hover:bg-[#1E3A07] mb-4" o
+            className="w-full bg-[#2A4A10] text-white py-2 rounded-lg font-semibold hover:bg-[#1E3A07] mb-4"
           >
             ACTUALIZAR PERFIL
           </button>
         </form>
         
         {mensaje && <p className="text-center mt-4">{mensaje}</p>}
+
+        <button
+          onClick={handleBack}
+          className="w-full bg-gray-500 text-white py-2 rounded-lg font-semibold hover:bg-gray-700 mt-4"
+        >
+          REGRESAR
+        </button>
       </div>
     </div>
   );

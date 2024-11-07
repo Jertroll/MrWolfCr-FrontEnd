@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import Sidebar from './Sidebar';
 import RegistroUsuario from '../usuario/RegistroUsuario';
 import TableReact from "../tableReact/TableReact";
+import ActualizarPerfil from "../usuario/ActualizarPerfil";
 import { useState } from 'react';
 
 function DashboardCall() {
@@ -38,6 +39,7 @@ function DashboardCall() {
               <Route path="/usuario" element={<TableReact />} />
               <Route path="/estadistica" element={<h1>Hola mundo</h1>} />
               <Route path="/agregarUsuario" element={<RegistroUsuario />} />
+              <Route path="/actualizarPerfil" element={<ActualizarPerfil />} />
             </Routes>
           </div>
         </div>

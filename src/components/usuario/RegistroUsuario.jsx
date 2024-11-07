@@ -210,6 +210,16 @@ function RegistroUsuario() {
           >
             CREAR CUENTA
           </button>
+          
+          {/* Botón de regreso */}
+          <button
+            type="button"
+            onClick={() => navigate(-1)} // Esto llevará al usuario a la página anterior
+            className="w-full mt-4 bg-gray-500 text-white py-3 rounded-lg font-semibold hover:bg-gray-600"
+          >
+            REGRESAR
+          </button>
+          
         </form>
   
         {mensaje && <p className="text-center mt-4 text-gray-600">{mensaje}</p>}
