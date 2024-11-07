@@ -7,14 +7,32 @@ import { useState } from 'react';
 
 function DashboardCall() {
   const [activeTab, setActiveTab] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <BrowserRouter>
-      <div className="flex h-screen">
-        <Sidebar setActiveTab={setActiveTab} />
-        <div className="flex-1">
+      <div className="flex flex-col lg:flex-row h-screen">
+        {/* Sidebar para pantallas grandes y botón de menú para pantallas pequeñas */}
+        <Sidebar
+          setActiveTab={setActiveTab}
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+          className="hidden lg:block"
+        />
+        {/* Botón de menú para abrir el sidebar en pantallas pequeñas */}
+        <button
+          className="lg:hidden p-4 text-gray-600"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          ☰
+        </button>
+
+        <div className="flex-1 flex flex-col">
+          {/* Navbar */}
           <Navbar />
-          <div className="content p-7">
+
+          {/* Contenido principal */}
+          <div className="content p-4 md:p-7 flex-1 overflow-y-auto">
             <Routes>
               <Route path="/" element={<></>} />
               <Route path="/usuario" element={<TableReact />} />
@@ -23,6 +41,13 @@ function DashboardCall() {
             </Routes>
           </div>
         </div>
+
+        {/* Sidebar responsivo */}
+        {isSidebarOpen && (
+          <div className="lg:hidden fixed inset-0 bg-gray-800 bg-opacity-50 z-40" onClick={() => setIsSidebarOpen(false)}>
+            <Sidebar setActiveTab={setActiveTab} className="absolute top-0 left-0 h-full w-64 bg-white shadow-lg z-50" />
+          </div>
+        )}
       </div>
     </BrowserRouter>
   );

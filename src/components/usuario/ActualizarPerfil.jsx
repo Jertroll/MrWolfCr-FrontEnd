@@ -1,23 +1,26 @@
 import { useState } from 'react';
 
-function RegistroUsuarioCliente() {
+function ActualizarPerfil() {
   const [formData, setFormData] = useState({
     cedula: '',
     nombre_usuario: '',
     nombre_completo: '',
     email: '',
-    contrasena: '',
     telefono: '',
     direccion: '',
-    email_facturacion: 'noAplica@.com',
+    email_facturacion: '',
     imagen: null,
-    rol: 'usuario',
   });
+
+  const [imagenPreview, setImagenPreview] = useState(null);
+  const [mensaje, setMensaje] = useState(''); // Estado para mostrar mensaje de éxito o error
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === 'imagen') {
-      setFormData({ ...formData, [name]: files[0] });
+      const file = files[0];
+      setFormData({ ...formData, [name]: file });
+      setImagenPreview(URL.createObjectURL(file));
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -25,35 +28,35 @@ function RegistroUsuarioCliente() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Crear un objeto FormData para enviar la imagen junto con los demás datos
-    const formDataToSend = new FormData();
-    Object.keys(formData).forEach(key => {
-      formDataToSend.append(key, formData[key]);
+
+    // Crear un FormData para enviar los datos al backend
+    const data = new FormData();
+    Object.keys(formData).forEach((key) => {
+      data.append(key, formData[key]);
     });
 
     try {
-      const response = await fetch('https://tu-backend.com/api/registro', {
+      const response = await fetch('url', { // cambiar la url según el backend
         method: 'POST',
-        body: formDataToSend,
+        body: data,
       });
-      
+
       if (response.ok) {
-        console.log("Registro exitoso");
-      
+        const result = await response.json();
+        setMensaje('Perfil actualizado con éxito');
       } else {
-        console.log("Error al registrar");
+        setMensaje('Error al actualizar el perfil');
       }
     } catch (error) {
-      console.error("Error en la solicitud:", error);
+      console.error('Error:', error);
+      setMensaje('Error en la conexión con el servidor');
     }
   };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md h-[90vh] overflow-y-auto">
-        <h2 className="text-2xl font-bold text-center mb-6">Formulario de Registro de Usuarios</h2>
-        <img src="" alt="" className="rounded-full mb-4" /> {/* Imagen circular */}
+        <h2 className="text-2xl font-bold text-center mb-6">Actualizar Perfil</h2>
         
         <form onSubmit={handleSubmit}>
           <label className="block mb-2 font-semibold">Cédula</label>
@@ -96,16 +99,6 @@ function RegistroUsuarioCliente() {
             required
           />
 
-          <label className="block mb-2 font-semibold">Contraseña</label>
-          <input
-            type="password"
-            name="contrasena"
-            value={formData.contrasena}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
-
           <label className="block mb-2 font-semibold">Teléfono</label>
           <input
             type="tel"
@@ -126,6 +119,16 @@ function RegistroUsuarioCliente() {
             required
           />
 
+          <label className="block mb-2 font-semibold">Correo electrónico para facturación</label>
+          <input
+            type="email"
+            name="email_facturacion"
+            value={formData.email_facturacion}
+            onChange={handleChange}
+            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
+            required
+          />
+
           <label className="block mb-2 font-semibold">Imagen de perfil</label>
           <input
             type="file"
@@ -134,29 +137,24 @@ function RegistroUsuarioCliente() {
             className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
           />
 
-          <label className="block mb-2 font-semibold">Rol</label>
-          <select
-            name="rol"
-            value={formData.rol}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-6 border rounded-lg focus:outline-none"
-            required
-          >
-            <option value="usuario">Usuario</option>
-            <option value="administrador">Administrador</option>
-          </select>
+          {imagenPreview && (
+            <div className="mb-4">
+              <img src={imagenPreview} alt="Vista previa" className="w-32 h-32 object-cover rounded-full mx-auto" />
+            </div>
+          )}
 
           <button
             type="submit"
-            className="w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800"
+            className="w-full bg-[#2A4A10] text-white py-2 rounded-lg font-semibold hover:bg-[#1E3A07] mb-4" o
           >
-            CREAR CUENTA
+            ACTUALIZAR PERFIL
           </button>
-
         </form>
+        
+        {mensaje && <p className="text-center mt-4">{mensaje}</p>}
       </div>
     </div>
   );
 }
 
-export default RegistroUsuarioCliente
+export default ActualizarPerfil;
