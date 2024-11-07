@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaHome, FaUsers, FaCog, FaChartPie } from "react-icons/fa"; // Usa react-icons para iconos
 import { Link } from "react-router-dom";
+
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const Menus = [
@@ -15,7 +16,8 @@ const Sidebar = () => {
       <div
         className={`${
           open ? "w-72" : "w-20"
-        } bg-gray-800 h-screen p-5 pt-8 relative transition-all duration-300`}
+        } h-screen p-5 pt-8 relative transition-all duration-300`}
+        style={{ backgroundColor: "#203500" }} // Aplica el color de fondo aquí
       >
         <img
           src="./src/assets/control.png" // Cambia esta línea según tu ruta de imagen
@@ -31,7 +33,7 @@ const Sidebar = () => {
               !open && "scale-0"
             }`}
           >
-            Panel
+            Panel de Administrador
           </h1>
         </div>
         <ul className="pt-6">
@@ -50,7 +52,6 @@ const Sidebar = () => {
           ))}
         </ul>
       </div>
-
     </div>
   );
 };
