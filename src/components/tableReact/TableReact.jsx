@@ -103,9 +103,8 @@ function TableReact() {
     { header: "Email", accessorKey: "email" },
     { header: "Contraseña", accessorKey: "contrasena" },
     { header: "Telefono", accessorKey: "telefono" },
-    { header: "Direccion de Residencia", accessorKey: "direccion" },
+    { header: "Direccion de Residencia", accessorKey: "direccion_envio" },
     { header: "Email de Facturacion", accessorKey: "email_facturacion" },
-    { header: "Fecha de Registro", accessorKey: "fecha_registro" },
     { header: "Tipo de Rol", accessorKey: "rol" },
     {
       header: "Acciones",
