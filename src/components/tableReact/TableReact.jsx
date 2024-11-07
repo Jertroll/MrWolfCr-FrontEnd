@@ -35,9 +35,12 @@ function TableReact() {
   // Función para eliminar un usuario
   const deleteUser = async (cedula) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/v1/usuarios/${cedula}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `http://localhost:3000/api/v1/usuarios/${cedula}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (!response.ok) {
         throw new Error("Error al eliminar el usuario");
       }
@@ -64,19 +67,24 @@ function TableReact() {
   const saveChanges = async (e) => {
     e.preventDefault(); // Previene el comportamiento por defecto del formulario
     try {
-      const response = await fetch(`http://localhost:3000/api/v1/usuarios/${userForm.cedula}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userForm), // Envía los datos actualizados
-      });
+      const response = await fetch(
+        `http://localhost:3000/api/v1/usuarios/${userForm.cedula}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userForm), // Envía los datos actualizados
+        }
+      );
       if (!response.ok) {
         throw new Error("Error al actualizar el usuario");
       }
       // Actualiza el estado con los datos modificados
       setData((prevData) =>
-        prevData.map((user) => (user.cedula === userForm.cedula ? userForm : user))
+        prevData.map((user) =>
+          user.cedula === userForm.cedula ? userForm : user
+        )
       );
       setEditingUser(null); // Cierra el formulario de edición
     } catch (error) {
@@ -138,20 +146,23 @@ function TableReact() {
       <input
         type="text"
         className="mb-4 p-2 border border-gray-300 rounded-md shadow-sm"
-        placeholder="Buscar..."
+        placeholder="Buscar en tabla"
         value={filtering}
         onChange={(e) => setFiltering(e.target.value)}
       />
       <button
         className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 ml-3"
-        onClick={() => navigate('/agregarUsuario')} // Redirige al formulario
+        onClick={() => navigate("/agregarUsuario")} // Redirige al formulario
       >
         Agregar Usuarios
       </button>
 
       {/* Formulario para editar usuario */}
       {editingUser && (
-        <form onSubmit={saveChanges} className="mb-4 p-4 border rounded shadow-md">
+        <form
+          onSubmit={saveChanges}
+          className="mb-4 p-4 border rounded shadow-md"
+        >
           <h2 className="text-lg font-semibold">Editar Usuario</h2>
           {Object.keys(userForm).map((key) => (
             <div key={key} className="mb-2">
@@ -191,7 +202,10 @@ function TableReact() {
                   onClick={header.column.getToggleSortingHandler()}
                   className="p-3 text-left font-semibold cursor-pointer"
                 >
-                  {flexRender(header.column.columnDef.header, header.getContext())}
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
                   {{
                     asc: " ⬆️",
                     desc: " ⬇️",
@@ -203,7 +217,10 @@ function TableReact() {
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row, idx) => (
-            <tr key={row.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+            <tr
+              key={row.id}
+              className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+            >
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="p-3 border-t">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -216,28 +233,28 @@ function TableReact() {
 
       <div className="flex justify-between mt-4">
         <button
-          className="bg-blue-500 text-white py-1 px-4 rounded hover:bg-blue-600"
+          className="bg-[#203500] text-white py-1 px-4 rounded hover:bg-[#162600]"
           onClick={() => table.setPageIndex(0)}
           disabled={!table.getCanPreviousPage()}
         >
           {"<<"}
         </button>
         <button
-          className="bg-blue-500 text-white py-1 px-4 rounded hover:bg-blue-600"
+          className="bg-[#203500] text-white py-1 px-4 rounded hover:bg-[#162600]"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
           {"<"}
         </button>
         <button
-          className="bg-blue-500 text-white py-1 px-4 rounded hover:bg-blue-600"
+          className="bg-[#203500] text-white py-1 px-4 rounded hover:bg-[#162600]"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
           {">"}
         </button>
         <button
-          className="bg-blue-500 text-white py-1 px-4 rounded hover:bg-blue-600"
+          className="bg-[#203500] text-white py-1 px-4 rounded hover:bg-[#162600]"
           onClick={() => table.setPageIndex(table.getPageCount() - 1)}
           disabled={!table.getCanNextPage()}
         >

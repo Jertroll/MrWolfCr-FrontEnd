@@ -2,7 +2,10 @@ import { FaBell, FaSearch, FaUserCircle } from "react-icons/fa";
 
 function Navbar() {
   return (
-    <nav className="bg-gray-800 px-4 py-3 flex justify-between items-center">
+    <nav
+      className="px-4 py-3 flex justify-between items-center"
+      style={{ backgroundColor: "#203500" }} // Aplica el color de fondo aquí
+    >
       <div className="flex items-center gap-x-5">
         {/* Input de búsqueda al inicio */}
         <div className="relative w-64 hidden md:block">
