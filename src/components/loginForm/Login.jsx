@@ -1,4 +1,37 @@
+import { useState } from 'react';
+
 function Login() {
+  const [email, setEmail] = useState('');
+  const [contrasena, setContrasena] = useState('');
+  const [error, setError] = useState(null);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      const response = await fetch('http://localhost:3000/api/v1/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, contrasena }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Almacena el token en sessionStorage
+        sessionStorage.setItem('token', data.token);
+        alert('Inicio de sesión exitoso');
+        // Redirige al usuario o actualiza el estado de la app
+      } else {
+        setError(data.message || 'Error en la autenticación');
+      }
+    } catch (error) {
+      console.error('Error en la autenticación:', error);
+      setError('Error en la autenticación. Intenta de nuevo.');
+    }
+  };
+
   return (
     <div className="flex h-screen">
       {/* Sección Izquierda */}
@@ -9,74 +42,49 @@ function Login() {
             'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("https://source.unsplash.com/featured/?interior")',
         }}
       >
-        {/* Imagen en la Sección Izquierda */}
         <img
-          src="src/assets/mrwolf.jpg" // Asegúrate de que esta ruta sea correcta
+          src="src/assets/mrwolf.jpg"
           alt="Logo Mr Wolf Cr"
-
         />
-
         <div className="text-white text-center">
           <h1 className="text-4xl font-bold mb-4">
             La exclusividad nos representa
           </h1>
-          <p className="text-lg">
-
-          </p>
         </div>
       </div>
 
       {/* Sección Derecha */}
       <div className="w-1/2 flex flex-col items-center justify-center bg-gray-100 p-8">
-        <h2
-          className="text-2xl font-semibold mb-2"
-          style={{ color: "#2A4A10" }}
-        >
-          Mr Wolf Cr
-        </h2>
-        <h3 className="text-xl font-bold mb-6" style={{ color: "#2A4A10" }}>
-          Inicio de Sesión
-        </h3>
-        <p className="mb-4 text-gray-600">
-          Bienvenido, pon tus credenciales aquí
-        </p>
+        <h2 className="text-2xl font-semibold mb-2" style={{ color: "#2A4A10" }}>Mr Wolf Cr</h2>
+        <h3 className="text-xl font-bold mb-6" style={{ color: "#2A4A10" }}>Inicio de Sesión</h3>
+        <p className="mb-4 text-gray-600">Bienvenido, pon tus credenciales aquí</p>
 
-        <form className="w-full max-w-sm">
-          <label
-            className="block mb-2 text-gray-700 font-semibold"
-            style={{ color: "#2A4A10" }}
-          >
-            Email
-          </label>
+        <form onSubmit={handleLogin} className="w-full max-w-sm">
+          <label className="block mb-2 text-gray-700 font-semibold" style={{ color: "#2A4A10" }}>Email</label>
           <input
             type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="mrwolfcr@ejemplo.com"
             className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
             required
           />
 
-          <label
-            className="block mb-2 text-gray-700 font-semibold"
-            style={{ color: "#2A4A10" }}
-          >
-            Contraseña
-          </label>
+          <label className="block mb-2 text-gray-700 font-semibold" style={{ color: "#2A4A10" }}>Contraseña</label>
           <input
             type="password"
+            value={contrasena}
+            onChange={(e) => setContrasena(e.target.value)}
             placeholder="Pon tu contraseña aquí"
             className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:border-black"
             required
           />
 
-          <div className="flex items-center justify-between mb-6">
-            <a href="#" className="text-gray-500 text-sm hover:underline">
-              ¿Olvidaste tu Contraseña?
-            </a>
-          </div>
+          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
           <button
             type="submit"
-            className="w-full bg-[#2A4A10] text-white py-2 rounded-lg font-semibold hover:bg-[#1E3A07] mb-4" // Cambié el color de fondo
+            className="w-full bg-[#2A4A10] text-white py-2 rounded-lg font-semibold hover:bg-[#1E3A07] mb-4"
           >
             Iniciar Sesión
           </button>
