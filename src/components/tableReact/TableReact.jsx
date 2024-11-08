@@ -62,6 +62,18 @@ function TableReact() {
     const { name, value } = e.target;
     setUserForm({ ...userForm, [name]: value });
   };
+  //Campos actualizados de actualizar usuario
+  const fieldNames = {
+    cedula: "Cédula",
+    nombre_usuario: "Nombre de Usuario",
+    nombre_completo: "Nombre Completo",
+    email: "Email",
+    telefono: "Teléfono",
+    direccion_envio: "Dirección de Residencia",
+    email_facturacion: "Email de Facturación",
+    imagen: "Imagen",
+    rol: "Tipo de Rol",
+  };
 
   // Función para guardar los cambios del usuario
   const saveChanges = async (e) => {
@@ -157,24 +169,30 @@ function TableReact() {
       </button>
 
       {/* Formulario para editar usuario */}
+
       {editingUser && (
         <form
           onSubmit={saveChanges}
           className="mb-4 p-4 border rounded shadow-md"
         >
           <h2 className="text-lg font-semibold">Editar Usuario</h2>
-          {Object.keys(userForm).map((key) => (
-            <div key={key} className="mb-2">
-              <label className="block text-sm font-medium">{key}</label>
-              <input
-                type="text"
-                name={key}
-                value={userForm[key]}
-                onChange={handleInputChange}
-                className="p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-          ))}
+          {Object.keys(userForm).map(
+            (key) =>
+              key !== "contrasena" && (
+                <div key={key} className="mb-2">
+                  <label className="block text-sm font-medium">
+                    {fieldNames[key] || key}
+                  </label>
+                  <input
+                    type="text"
+                    name={key}
+                    value={userForm[key]}
+                    onChange={handleInputChange}
+                    className="p-2 border border-gray-300 rounded-md w-full"
+                  />
+                </div>
+              )
+          )}
           <button
             type="submit"
             className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
@@ -183,7 +201,7 @@ function TableReact() {
           </button>
           <button
             type="button"
-            onClick={() => setEditingUser(null)} // Cierra el formulario
+            onClick={() => setEditingUser(null)}
             className="bg-gray-300 text-black py-2 px-4 rounded hover:bg-gray-400 ml-2"
           >
             Cancelar

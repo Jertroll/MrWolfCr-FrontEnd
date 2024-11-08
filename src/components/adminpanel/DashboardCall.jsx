@@ -14,7 +14,7 @@ function DashboardCall() {
         <Sidebar setActiveTab={setActiveTab} />
         <div className="flex-1">
           <Navbar />
-          <div className="content p-7">
+          <div className="">
             <Routes>
               <Route path="/" element={<></>} />
               <Route path="/usuario" element={<TableReact />} />
