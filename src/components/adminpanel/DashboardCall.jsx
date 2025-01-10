@@ -19,6 +19,7 @@ function DashboardCall() {
               <Route path="/" element={<></>} />
               <Route path="/usuario" element={<TableReact />} />
               <Route path="/estadistica" element={<h1>Hola mundo</h1>} />
+              
               <Route path="/agregarUsuario" element={<RegistroUsuario />} />
             </Routes>
           </div>

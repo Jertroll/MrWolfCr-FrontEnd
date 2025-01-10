@@ -168,6 +168,7 @@ function RegistroUsuario() {
                 className="w-full px-4 py-2 mb-6 border rounded-lg focus:outline-none"
                 required
               >
+                <option>No Seleccionado</option>
                 <option value="Cliente">Cliente</option>
                 <option value="Administrador">Administrador</option>
               </select>

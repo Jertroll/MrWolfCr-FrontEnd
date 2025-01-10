@@ -7,7 +7,7 @@ const Sidebar = () => {
   const Menus = [
     { title: "Home", icon: <FaHome />, path:'/' },
     { title: "Usuarios", icon: <FaUsers />, gap: true, path:'/usuario' },
-    { title: "Estadísticas", icon: <FaChartPie />, path:'/estadistica' },
+    { title: "Categoria", icon: <FaChartPie />, path:'/estadistica' },
     { title: "Configuración", icon: <FaCog />,path:'/config' },
   ];
 
