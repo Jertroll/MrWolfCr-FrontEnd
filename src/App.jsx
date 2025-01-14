@@ -7,10 +7,11 @@ import RegistroUsuario from './components/usuario/RegistroUsuario'
 import RegistroUsuarioCliente from './components/usuario/RegistroUsuarioCliente'
 import TableReact from './components/tableReact/TableReact'
 import AgregarCategoria from './components/categoria/AgregarCategoria'
+import CategoriaTable from './components/categoria/CategoriaTable'
 function App() {
   return (
     <>
-      <DashboardCall/>
+      <CategoriaTable/>
 
     </>
   )
