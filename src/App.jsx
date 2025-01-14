@@ -11,7 +11,7 @@ import CategoriaTable from './components/categoria/CategoriaTable'
 function App() {
   return (
     <>
-      <CategoriaTable/>
+      <DashboardCall/>
 
     </>
   )
