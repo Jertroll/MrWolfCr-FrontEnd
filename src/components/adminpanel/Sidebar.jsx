@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { FaHome, FaUsers, FaCog, FaChartPie } from "react-icons/fa"; // Usa react-icons para iconos
+import { FaHome, FaUsers, FaCog, FaChartPie,  } from "react-icons/fa"; // Usa react-icons para iconos
+import { FaTshirt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Sidebar = () => {
@@ -7,8 +8,8 @@ const Sidebar = () => {
   const Menus = [
     { title: "Home", icon: <FaHome />, path:'/' },
     { title: "Usuarios", icon: <FaUsers />, gap: true, path:'/usuario' },
-    { title: "Categoria", icon: <FaChartPie />, path:'/estadistica' },
-    { title: "Configuración", icon: <FaCog />,path:'/config' },
+    { title: "Categoria", icon: <FaChartPie />, path:'/categoria' },
+    { title: "Productos", icon: <FaTshirt />,path:'/producto' },
   ];
 
   return (
