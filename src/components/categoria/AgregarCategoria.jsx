@@ -2,7 +2,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 const AgregarCategoria = () => {
-    const [formData, setFormData] = useState({
+    //Estado inicial para le formulario
+  const [formData, setFormData] = useState({
         nombre_categoria: "",
         descripcion_categoria: "",
         imagen: "",
