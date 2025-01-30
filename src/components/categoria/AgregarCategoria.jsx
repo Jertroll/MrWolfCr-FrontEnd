@@ -1,24 +1,23 @@
-
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 const AgregarCategoria = () => {
-    //Estado inicial para le formulario
+  //Estado inicial para le formulario
   const [formData, setFormData] = useState({
-        nombre_categoria: "",
-        descripcion_categoria: "",
-        imagen: "",
-      }); 
+    nombre_categoria: "",
+    descripcion_categoria: "",
+    imagen: "",
+  });
 
-      const [mensaje, setMensaje] = useState(""); // Mensaje de éxito o error
+  const [mensaje, setMensaje] = useState(""); // Mensaje de éxito o error
 
-      const navigate = useNavigate(); // Para redirigir al usuario   
+  const navigate = useNavigate(); // Para redirigir al usuario
 
-      const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-      };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-      // Manejar el envío del formulario
+  // Manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault(); // Evitar recargar la página
 
@@ -31,7 +30,11 @@ const AgregarCategoria = () => {
 
       if (response.ok) {
         setMensaje("Categoría registrada exitosamente.");
-        setFormData({ nombre_categoria: "", descripcion_categoria: "", imagen: "" }); // Limpiar formulario
+        setFormData({
+          nombre_categoria: "",
+          descripcion_categoria: "",
+          imagen: "",
+        }); // Limpiar formulario
       } else {
         const errorData = await response.text();
         setMensaje(`Error al registrar categoría: ${errorData}`);
@@ -50,7 +53,9 @@ const AgregarCategoria = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-lg max-h-screen overflow-y-auto">
-        <h2 className="text-2xl font-bold mb-6 text-center">Registrar Categoría</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          Registrar Categoría
+        </h2>
 
         {/* Formulario */}
         <form onSubmit={handleSubmit}>
@@ -72,7 +77,10 @@ const AgregarCategoria = () => {
 
           {/* Campo: Descripción de la categoría */}
           <div className="mb-4">
-            <label htmlFor="descripcion_categoria" className="block font-semibold">
+            <label
+              htmlFor="descripcion_categoria"
+              className="block font-semibold"
+            >
               Descripción
             </label>
             <textarea
@@ -125,6 +133,6 @@ const AgregarCategoria = () => {
       </div>
     </div>
   );
-}
+};
 
-export default AgregarCategoria
+export default AgregarCategoria;

@@ -18,6 +18,12 @@ function TableReact() {
   const [editingUser, setEditingUser] = useState(null); // Estado para almacenar el usuario en edición
   const [userForm, setUserForm] = useState({}); // Estado para almacenar los datos del formulario
 
+  // Función para iniciar la edición de un usuario
+  const startEditing = (user) => {
+    setEditingUser(user);
+    setUserForm(user); // Carga los datos del usuario en el formulario
+  };
+
   // Función para obtener datos del backend
   const fetchData = async () => {
     try {
@@ -49,12 +55,6 @@ function TableReact() {
     } catch (error) {
       console.error("Error al eliminar el usuario:", error);
     }
-  };
-
-  // Función para iniciar la edición de un usuario
-  const startEditing = (user) => {
-    setEditingUser(user);
-    setUserForm(user); // Carga los datos del usuario en el formulario
   };
 
   // Función para manejar el cambio en el formulario
@@ -248,34 +248,35 @@ function TableReact() {
         </tbody>
       </table>
 
+      {/* Paginación */}
       <div className="flex justify-between mt-4">
         <button
-          className="bg-[#203500] text-white py-1 px-4 rounded hover:bg-[#162600]"
+          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.setPageIndex(0)}
           disabled={!table.getCanPreviousPage()}
         >
-          {"<<"}
+          Inicio
         </button>
         <button
-          className="bg-[#203500] text-white py-1 px-4 rounded hover:bg-[#162600]"
+          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
-          {"<"}
+          Anterior
         </button>
         <button
-          className="bg-[#203500] text-white py-1 px-4 rounded hover:bg-[#162600]"
+          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          {">"}
+          Siguiente
         </button>
         <button
-          className="bg-[#203500] text-white py-1 px-4 rounded hover:bg-[#162600]"
+          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.setPageIndex(table.getPageCount() - 1)}
           disabled={!table.getCanNextPage()}
         >
-          {">>"}
+          Final
         </button>
       </div>
     </div>

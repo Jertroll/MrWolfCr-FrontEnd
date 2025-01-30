@@ -9,36 +9,104 @@ import {
 } from "@tanstack/react-table";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom"; // Importa
+import { useEffect } from "react";
 
 export const ProductoTable = () => {
-  const [data, setData] = useState([
-    {
-      id: 1,
-      nombre: "Camisa RG Legends",
-      precio: 20000,
-      descripcion: "Camisa para pasear",
-      talla: "M",
-      imagen: "https://via.placeholder.com/50",
-      genero_dirigido: "Masculino",
-      id_categoria: 1,
-    },
-    // Agrega más categorías según sea necesario
-  ]);
-
   const navigate = useNavigate();
+  const [data, setData] = useState([]); // Estado para almacenar los datos
   const [filtering, setFiltering] = useState("");
   const [sorting, setSorting] = useState([]);
   const [editingProducto, setEditingProducto] = useState(null);
   const [productoForm, setProductoForm] = useState({});
 
+  // Función para iniciar la edición de un producto
   const startEditing = (producto) => {
     setEditingProducto(producto);
     setProductoForm(producto);
   };
 
-  const deleteProducto = (id) => {
-    setData((prevData) => prevData.filter((producto) => producto.id !== id));
+  // Función para obtener datos del backend
+  const fetchData = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/v1/productos");
+      if (!response.ok) {
+        throw new Error("Error al obtener los datos");
+      }
+      const productos = await response.json();
+      setData(productos); // Actualiza el estado con los datos obtenidos
+    } catch (error) {
+      console.error("Error al obtener los productos:", error);
+    }
   };
+
+  // Función para eliminar un usuario
+  const deleteProducto = async (id) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/v1/productos/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Error al eliminar el producto");
+      }
+      // Actualiza el estado eliminando el producto de la lista
+      setData((prevData) => prevData.filter((producto) => producto.id !== id));
+    } catch (error) {
+      console.error("Error al eliminar el producto:", error);
+    }
+  };
+
+  // Función para manejar el cambio en el formulario
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setProductoForm({ ...productoForm, [name]: value });
+  };
+  //Campos actualizados de actualizar usuario
+  const fieldNames = {
+    id: "Id Producto",
+    nombre: "Nombre de Producto",
+    precio: "Precio",
+    descripcion: "Descripcion",
+    talla: "Talla",
+    estado: "Estado",
+    imagen: "Imagen",
+    genero_dirigido: "Genero Dirigido",
+    id_categoria: "Categoria",
+  };
+
+  const saveChanges = async (e) => {
+    e.preventDefault(); // Previene el comportamiento por defecto del formulario
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/v1/productos/${productoForm.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(productoForm), // Envía los datos actualizados
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Error al actualizar el usuario");
+      }
+      // Actualiza el estado con los datos modificados
+      setData((prevData) =>
+        prevData.map((producto) =>
+          producto.id === productoForm.id ? productoForm : producto
+        )
+      );
+      setEditingProducto(null); // Cierra el formulario de edición
+    } catch (error) {
+      console.error("Error al actualizar el producto:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(); // Llama a la función al montar el componente
+  }, []);
 
   const columns = [
     { header: "Id Producto", accessorKey: "id" },
@@ -88,24 +156,9 @@ export const ProductoTable = () => {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     state: { sorting, globalFilter: filtering },
-    onSortingChange: (updater) => setSorting(updater),
-    onGlobalFilterChange: (updater) => setFiltering(updater),
+    onSortingChange: setSorting,
+    onGlobalFilterChange: setFiltering,
   });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setProductoForm({ ...productoForm, [name]: value });
-  };
-
-  const saveChanges = (e) => {
-    e.preventDefault();
-    setData((prevData) =>
-      prevData.map((producto) =>
-        producto.id === productoForm.id ? productoForm : producto
-      )
-    );
-    setEditingProducto(null);
-  };
 
   return (
     <div className="p-4">
@@ -128,7 +181,7 @@ export const ProductoTable = () => {
         </button>
       </div>
 
-      {/* Formulario para edición (opcional) */}
+      {/* Formulario para edición */}
       {editingProducto && (
         <form
           onSubmit={saveChanges}
@@ -137,7 +190,9 @@ export const ProductoTable = () => {
           <h2 className="text-lg font-semibold">Editar Producto</h2>
           {Object.keys(productoForm).map((key) => (
             <div key={key} className="mb-2">
-              <label className="block text-sm font-medium">{key}</label>
+              <label className="block text-sm font-medium">
+                {fieldNames[key] || key}
+              </label>
               <input
                 type="text"
                 name={key}
