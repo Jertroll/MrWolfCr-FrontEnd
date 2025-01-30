@@ -35,7 +35,7 @@ export const ProductoTable = () => {
     setEditingProducto(producto);
     setProductoForm(producto);
   };
-  
+
   const deleteProducto = (id) => {
     setData((prevData) => prevData.filter((producto) => producto.id !== id));
   };
@@ -88,11 +88,9 @@ export const ProductoTable = () => {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     state: { sorting, globalFilter: filtering },
-    onSortingChange: setSorting,
-    onGlobalFilterChange: setFiltering,
+    onSortingChange: (updater) => setSorting(updater),
+    onGlobalFilterChange: (updater) => setFiltering(updater),
   });
-
- 
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -109,7 +107,6 @@ export const ProductoTable = () => {
     setEditingProducto(null);
   };
 
- 
   return (
     <div className="p-4">
       <div className="flex items-center mb-4">
@@ -144,7 +141,7 @@ export const ProductoTable = () => {
               <input
                 type="text"
                 name={key}
-                value={productoForm[key]}
+                value={productoForm[key] ?? ""}
                 onChange={handleInputChange}
                 className="p-2 border border-gray-300 rounded-md w-full"
               />

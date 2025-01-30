@@ -6,6 +6,8 @@ import TableReact from "../tableReact/TableReact";
 import { useState } from 'react';
 import AgregarCategoria from "../categoria/AgregarCategoria";
 import CategoriaTable from "../categoria/CategoriaTable";
+import ProductoTable from "../productos/ProductoTable";
+import AgregarProductos from "../productos/AgregarProductos";
 function DashboardCall() {
   const [activeTab, setActiveTab] = useState('');
 
@@ -20,9 +22,11 @@ function DashboardCall() {
               <Route path="/" element={<></>} />
               <Route path="/usuario" element={<TableReact />} />
               <Route path="/categoria" element={<CategoriaTable/>} />
+              <Route path="/producto" element={<ProductoTable />} />
               
               <Route path="/agregarUsuario" element={<RegistroUsuario />} />
               <Route path="/agregarCategoria" element={<AgregarCategoria />} />
+              <Route path="/agregarProducto" element={<AgregarProductos />} />
             </Routes>
             
           </div>
