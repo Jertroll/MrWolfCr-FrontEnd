@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -63,9 +63,10 @@ export const ProductoTable = () => {
     const { name, value } = e.target;
     setProductoForm({ ...productoForm, [name]: value });
   };
-  //Campos actualizados de actualizar usuario
+  //Campos actualizados de actualizar producto
   const fieldNames = {
     id: "Id Producto",
+    codigo: "Codigo",
     nombre: "Nombre de Producto",
     precio: "Precio",
     descripcion: "Descripcion",
@@ -110,6 +111,7 @@ export const ProductoTable = () => {
 
   const columns = [
     { header: "Id Producto", accessorKey: "id" },
+    { header: "Codigo", accessorKey: "codigo" },
     { header: "Nombre", accessorKey: "nombre" },
     { header: "Precio", accessorKey: "precio" },
     { header: "Descripción", accessorKey: "descripcion" },

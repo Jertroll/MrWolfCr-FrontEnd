@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const AgregarProductos = () => {
   const [formData, setFormData] = useState({
+    codigo: "",
     nombre: "",
     precio: 0,
     descripcion: "",
@@ -35,6 +36,7 @@ const AgregarProductos = () => {
       if (response.ok) {
         setMensaje("Producto registrado exitosamente.");
         setFormData({
+          codigo: "",
           nombre: "",
           precio: 0,
           descripcion: "",
@@ -66,6 +68,20 @@ const AgregarProductos = () => {
           Registrar Producto
         </h2>
         <form onSubmit={handleSubmit}>
+        <div className="mb-4">
+            <label htmlFor="codigo" className="block font-semibold">
+              Codigo
+            </label>
+            <input
+              type="text"
+              id="codigo"
+              name="codigo"
+              value={formData.codigo}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-lg"
+              required
+            />
+          </div>
           <div className="mb-4">
             <label htmlFor="nombre" className="block font-semibold">
               Nombre
