@@ -26,13 +26,24 @@ const AgregarProductos = () => {
 
   // Manejar el envío del formulario
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Evitar recargar la página
+    e.preventDefault(); // Evitar recarga
+  
+    // Convertir valores numéricos antes de enviar
+    const dataToSend = {
+      ...formData,
+      precio: Number(formData.precio), // Convertir precio a número
+      id_categoria: Number(formData.id_categoria), // Convertir id_categoria a número
+    };
+  
+    console.log("Datos enviados al backend:", dataToSend); // Ver datos corregidos
+  
     try {
       const response = await fetch("http://localhost:3000/api/v1/productos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(dataToSend), // Enviar datos corregidos
       });
+  
       if (response.ok) {
         setMensaje("Producto registrado exitosamente.");
         setFormData({
