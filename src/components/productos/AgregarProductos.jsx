@@ -27,23 +27,23 @@ const AgregarProductos = () => {
   // Manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault(); // Evitar recarga
-  
+
     // Convertir valores numéricos antes de enviar
     const dataToSend = {
       ...formData,
       precio: Number(formData.precio), // Convertir precio a número
       id_categoria: Number(formData.id_categoria), // Convertir id_categoria a número
     };
-  
+
     console.log("Datos enviados al backend:", dataToSend); // Ver datos corregidos
-  
+
     try {
       const response = await fetch("http://localhost:3000/api/v1/productos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dataToSend), // Enviar datos corregidos
       });
-  
+
       if (response.ok) {
         setMensaje("Producto registrado exitosamente.");
         setFormData({
@@ -79,7 +79,7 @@ const AgregarProductos = () => {
           Registrar Producto
         </h2>
         <form onSubmit={handleSubmit}>
-        <div className="mb-4">
+          <div className="mb-4">
             <label htmlFor="codigo" className="block font-semibold">
               Codigo
             </label>
@@ -159,15 +159,18 @@ const AgregarProductos = () => {
             <label htmlFor="estado" className="block font-semibold">
               Estado
             </label>
-            <input
-              type="text"
+            <select
               id="estado"
               name="estado"
               value={formData.estado}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-lg"
               required
-            />
+            >
+              <option value="">No Seleccionado</option>
+              <option value="Disponible">Disponible</option>
+              <option value="No disponible">No disponible</option>
+            </select>
           </div>
           <div className="mb-4">
             <label htmlFor="imagen" className="block font-semibold">
