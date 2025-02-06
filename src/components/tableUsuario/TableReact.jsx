@@ -9,6 +9,8 @@ import {
 import { useEffect, useState } from "react";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import ReactModal from "react-modal";
+import "./tableUsuario.css"; // css
 
 function TableReact() {
   const navigate = useNavigate(); // Crea la función de navegación
@@ -20,9 +22,12 @@ function TableReact() {
 
   // Función para iniciar la edición de un usuario
   const startEditing = (user) => {
-    setEditingUser(user);
+    setEditingUser(user); // Guarda el usuario que se está editando
     setUserForm(user); // Carga los datos del usuario en el formulario
+    setIsModalOpen(true); // Abre el modal
   };
+
+  const [isModalOpen, setIsModalOpen] = useState(false); //estado para controlar la visibilidad de modal
 
   // Función para obtener datos del backend
   const fetchData = async () => {
@@ -32,14 +37,22 @@ function TableReact() {
         throw new Error("Error al obtener los datos");
       }
       const usuarios = await response.json();
-      setData(usuarios); // Actualiza el estado con los datos obtenidos
+      setData(usuarios);
     } catch (error) {
       console.error("Error al obtener los usuarios:", error);
+      alert(
+        "Hubo un error al obtener los usuarios. Por favor, intenta nuevamente."
+      );
     }
   };
 
   // Función para eliminar un usuario
   const deleteUser = async (cedula) => {
+    const confirmDelete = window.confirm(
+      "¿Estás seguro de que deseas eliminar este usuario?"
+    );
+    if (!confirmDelete) return;
+
     try {
       const response = await fetch(
         `http://localhost:3000/api/v1/usuarios/${cedula}`,
@@ -50,7 +63,6 @@ function TableReact() {
       if (!response.ok) {
         throw new Error("Error al eliminar el usuario");
       }
-      // Actualiza el estado eliminando el usuario de la lista
       setData((prevData) => prevData.filter((user) => user.cedula !== cedula));
     } catch (error) {
       console.error("Error al eliminar el usuario:", error);
@@ -62,22 +74,9 @@ function TableReact() {
     const { name, value } = e.target;
     setUserForm({ ...userForm, [name]: value });
   };
-  //Campos actualizados de actualizar usuario
-  const fieldNames = {
-    cedula: "Cédula",
-    nombre_usuario: "Nombre de Usuario",
-    nombre_completo: "Nombre Completo",
-    email: "Email",
-    telefono: "Teléfono",
-    direccion_envio: "Dirección de Residencia",
-    email_facturacion: "Email de Facturación",
-    imagen: "Imagen",
-    rol: "Tipo de Rol",
-  };
-
   // Función para guardar los cambios del usuario
   const saveChanges = async (e) => {
-    e.preventDefault(); // Previene el comportamiento por defecto del formulario
+    e.preventDefault();
     try {
       const response = await fetch(
         `http://localhost:3000/api/v1/usuarios/${userForm.cedula}`,
@@ -86,19 +85,18 @@ function TableReact() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(userForm), // Envía los datos actualizados
+          body: JSON.stringify(userForm),
         }
       );
       if (!response.ok) {
         throw new Error("Error al actualizar el usuario");
       }
-      // Actualiza el estado con los datos modificados
       setData((prevData) =>
         prevData.map((user) =>
           user.cedula === userForm.cedula ? userForm : user
         )
       );
-      setEditingUser(null); // Cierra el formulario de edición
+      setIsModalOpen(false); // Cierra el modal
     } catch (error) {
       console.error("Error al actualizar el usuario:", error);
     }
@@ -113,7 +111,7 @@ function TableReact() {
     { header: "Nombre de Usuario", accessorKey: "nombre_usuario" },
     { header: "Nombre Completo", accessorKey: "nombre_completo" },
     { header: "Email", accessorKey: "email" },
-    { header: "Contraseña", accessorKey: "contrasena" },
+    //{ header: "Contraseña", accessorKey: "contrasena" },
     { header: "Telefono", accessorKey: "telefono" },
     { header: "Direccion de Residencia", accessorKey: "direccion_envio" },
     { header: "Email de Facturacion", accessorKey: "email_facturacion" },
@@ -168,46 +166,137 @@ function TableReact() {
         Agregar Usuarios
       </button>
 
-      {/* Formulario para editar usuario */}
+      {/* Formulario para editar usuario con Modal */}
 
-      {editingUser && (
-        <form
-          onSubmit={saveChanges}
-          className="mb-4 p-4 border rounded shadow-md"
+      <ReactModal
+  isOpen={isModalOpen}
+  onRequestClose={() => setIsModalOpen(false)}
+  contentLabel="Editar Usuario"
+  className="modal"
+  overlayClassName="overlay"
+>
+  <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
+    <h2 className="text-2xl font-bold text-center mb-6">Editor de Usuario</h2>
+
+    <form onSubmit={saveChanges}>
+      <div className="grid grid-cols-2 gap-4">
+        {/* Columna 1 */}
+        <div>
+          <div className="mb-4">
+            <label className="block mb-2 font-semibold">Nombre de Usuario</label>
+            <input
+              type="text"
+              name="nombre_usuario"
+              value={userForm.nombre_usuario}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2 font-semibold">Nombre Completo</label>
+            <input
+              type="text"
+              name="nombre_completo"
+              value={userForm.nombre_completo}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2 font-semibold">Correo Electrónico</label>
+            <input
+              type="email"
+              name="email"
+              value={userForm.email}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2 font-semibold">Teléfono</label>
+            <input
+              type="tel"
+              name="telefono"
+              value={userForm.telefono}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+              required
+            />
+          </div>
+        </div>
+
+        {/* Columna 2 */}
+        <div>
+          <div className="mb-4">
+            <label className="block mb-2 font-semibold">Dirección de Residencia</label>
+            <input
+              type="text"
+              name="direccion_envio"
+              value={userForm.direccion_envio}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2 font-semibold">Correo de Facturación</label>
+            <input
+              type="email"
+              name="email_facturacion"
+              value={userForm.email_facturacion}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2 font-semibold">Imagen de Perfil</label>
+            <input
+              type="text"
+              name="imagen"
+              value={userForm.imagen}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2 font-semibold">Tipo de Rol</label>
+            <select
+              name="rol"
+              value={userForm.rol}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+              required
+            >
+              <option value="Cliente">Cliente</option>
+              <option value="Administrador">Administrador</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Botones de Acción */}
+      <div className="flex justify-center space-x-4 mt-6">
+        <button
+          type="button"
+          onClick={() => setIsModalOpen(false)}
+          className="bg-gray-300 text-black px-6 py-2 rounded-lg font-semibold hover:bg-gray-400"
         >
-          <h2 className="text-lg font-semibold">Editar Usuario</h2>
-          {Object.keys(userForm).map(
-            (key) =>
-              key !== "contrasena" && (
-                <div key={key} className="mb-2">
-                  <label className="block text-sm font-medium">
-                    {fieldNames[key] || key}
-                  </label>
-                  <input
-                    type="text"
-                    name={key}
-                    value={userForm[key]}
-                    onChange={handleInputChange}
-                    className="p-2 border border-gray-300 rounded-md w-full"
-                  />
-                </div>
-              )
-          )}
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-          >
-            Guardar Cambios
-          </button>
-          <button
-            type="button"
-            onClick={() => setEditingUser(null)}
-            className="bg-gray-300 text-black py-2 px-4 rounded hover:bg-gray-400 ml-2"
-          >
-            Cancelar
-          </button>
-        </form>
-      )}
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600"
+        >
+          Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</ReactModal>
 
       <table className="min-w-full border border-gray-200 shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-800 text-white">

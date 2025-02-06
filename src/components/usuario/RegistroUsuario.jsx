@@ -160,7 +160,7 @@ function RegistroUsuario() {
               />
             </div>
             <div>
-              <label className="block mb-2 font-semibold">Rol</label>
+              <label className="block mb-2 font-semibold">Rol de Usuario</label>
               <select
                 name="rol"
                 value={formData.rol}

@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -10,6 +9,10 @@ import {
 import { FaTrash, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom"; // Importa
 import { useEffect } from "react";
+import { useState } from "react";
+import ReactModal from "react-modal";
+import "./tableCategoria.css"
+
 
 const CategoriaTable = () => {
   const [data, setData] = useState([]);
@@ -23,7 +26,10 @@ const CategoriaTable = () => {
   const startEditing = (categoria) => {
     setEditingCategoria(categoria);
     setCategoriaForm(categoria);
+    setIsModalOpen(true); // Abre el modal
   };
+  const [isModalOpen, setIsModalOpen] = useState(false); //estado para controlar la visibilidad de modal
+
   // Función para obtener datos del backend
   const fetchData = async () => {
     try {
@@ -35,11 +41,18 @@ const CategoriaTable = () => {
       setData(categorias); // Actualiza el estado con los datos obtenidos
     } catch (error) {
       console.error("Error al obtener las categorias:", error);
+      alert(
+        "Hubo un error al obtener las categorias. Por favor, intenta nuevamente."
+      );
     }
   };
 
   // Función para eliminar una categoria
   const deleteCategoria = async (num_categoria) => {
+    const confirmDelete = window.confirm(
+      "¿Estás seguro de que deseas eliminar este usuario?"
+    );
+    if (!confirmDelete) return;
     try {
       const response = await fetch(
         `http://localhost:3000/api/v1/categorias/${num_categoria}`,
@@ -65,13 +78,6 @@ const CategoriaTable = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCategoriaForm({ ...categoriaForm, [name]: value });
-  };
-  //Campos actualizados de actualizar categoria
-  const fieldNames = {
-    num_categoria: "Numero de Categoria",
-    nombre_categoria: "Nombre de Categoria",
-    descripcion: "Descripcion",
-    imagen: "Imagen",
   };
 
   // Función para guardar los cambios de la categoria
@@ -99,9 +105,9 @@ const CategoriaTable = () => {
             : categoria
         )
       );
-      setEditingCategoria(null); // Cierra el formulario de edición
+      setIsModalOpen(false); // Cierra el modal
     } catch (error) {
-      console.error("Error al actualizar la categoria:", error);
+      console.error("Error al actualizar el usuario:", error);
     }
   };
 
@@ -179,43 +185,85 @@ const CategoriaTable = () => {
         </button>
       </div>
 
-      {/* Formulario para edición (opcional) */}
-      {editingCategoria && (
-        <form
-          onSubmit={saveChanges}
-          className="mb-4 p-4 border rounded shadow-md"
-        >
-          <h2 className="text-lg font-semibold">Editar Categoría</h2>
-          {Object.keys(categoriaForm).map((key) => (
-            <div key={key} className="mb-2">
-              <label className="block text-sm font-medium">
-                {fieldNames[key] || key}
-              </label>
-              <input
-                type="text"
-                name={key}
-                value={categoriaForm[key] ?? ""}
-                onChange={handleInputChange}
-                className="p-2 border border-gray-300 rounded-md w-full"
-              />
-            </div>
-          ))}
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-          >
-            Guardar Cambios
-          </button>
-          <button
-            type="button"
-            onClick={() => setEditingCategoria(null)}
-            className="bg-gray-300 text-black py-2 px-4 rounded hover:bg-gray-400 ml-2"
-          >
-            Cancelar
-          </button>
-        </form>
-      )}
+      <ReactModal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="Editar Categoria"
+        className="modal"
+        overlayClassName="overlay"
+      >
+        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
+          <h2 className="text-2xl font-bold text-center mb-6">
+            Editor de Categoria
+          </h2>
 
+          <form onSubmit={saveChanges}>
+            <div className=" gap-4">
+              {/* Columna 1 */}
+              <div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">
+                    Nombre de Categoria
+                  </label>
+                  <input
+                    type="text"
+                    name="nombre_categoria"
+                    value={categoriaForm.nombre_categoria}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">
+                    Descripcion
+                  </label>
+                  <input
+                    type="text"
+                    name="descripcion"
+                    value={categoriaForm.descripcion}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">
+                    Imagen
+                  </label>
+                  <input
+                    type="text"
+                    name="imagen"
+                    value={categoriaForm.imagen}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Botones de Acción */}
+            <div className="flex justify-center space-x-4 mt-6">
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="bg-gray-300 text-black px-6 py-2 rounded-lg font-semibold hover:bg-gray-400"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600"
+              >
+                Guardar
+              </button>
+            </div>
+          </form>
+        </div>
+      </ReactModal>
+
+      
       {/* Tabla */}
       <table className="min-w-full border border-gray-200 shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-800 text-white">
