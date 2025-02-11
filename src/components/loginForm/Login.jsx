@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate
 
 function Login() {
   const [email, setEmail] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Inicializa useNavigate
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -22,7 +24,7 @@ function Login() {
         // Almacena el token en sessionStorage
         sessionStorage.setItem('token', data.token);
         alert('Inicio de sesión exitoso');
-        // Redirige al usuario o actualiza el estado de la app
+        navigate('/dashboard'); // Redirige al usuario a /dashboard
       } else {
         setError(data.message || 'Error en la autenticación');
       }

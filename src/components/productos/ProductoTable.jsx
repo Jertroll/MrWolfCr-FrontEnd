@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -7,9 +6,11 @@ import {
   getFilteredRowModel,
   flexRender,
 } from "@tanstack/react-table";
+import { useEffect, useState } from "react";
 import { FaTrash, FaEdit } from "react-icons/fa";
-import { useNavigate } from "react-router-dom"; // Importa
-import { useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import ReactModal from "react-modal";
+import "./tableProducto.css";
 
 export const ProductoTable = () => {
   const navigate = useNavigate();
@@ -23,7 +24,10 @@ export const ProductoTable = () => {
   const startEditing = (producto) => {
     setEditingProducto(producto);
     setProductoForm(producto);
+    setIsModalOpen(true); // Abre el modal
   };
+
+  const [isModalOpen, setIsModalOpen] = useState(false); //estado para controlar la visibilidad de modal
 
   // Función para obtener datos del backend
   const fetchData = async () => {
@@ -36,11 +40,18 @@ export const ProductoTable = () => {
       setData(productos); // Actualiza el estado con los datos obtenidos
     } catch (error) {
       console.error("Error al obtener los productos:", error);
+      alert(
+        "Hubo un error al obtener los usuarios. Por favor, intenta nuevamente."
+      );
     }
   };
 
   // Función para eliminar un usuario
   const deleteProducto = async (id) => {
+    const confirmDelete = window.confirm(
+      "¿Estás seguro de que deseas eliminar este usuario?"
+    );
+    if (!confirmDelete) return;
     try {
       const response = await fetch(
         `http://localhost:3000/api/v1/productos/${id}`,
@@ -62,19 +73,6 @@ export const ProductoTable = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setProductoForm({ ...productoForm, [name]: value });
-  };
-  //Campos actualizados de actualizar producto
-  const fieldNames = {
-    id: "Id Producto",
-    codigo: "Codigo",
-    nombre: "Nombre de Producto",
-    precio: "Precio",
-    descripcion: "Descripcion",
-    talla: "Talla",
-    estado: "Estado",
-    imagen: "Imagen",
-    genero_dirigido: "Genero Dirigido",
-    id_categoria: "Categoria",
   };
 
   const saveChanges = async (e) => {
@@ -99,9 +97,9 @@ export const ProductoTable = () => {
           producto.id === productoForm.id ? productoForm : producto
         )
       );
-      setEditingProducto(null); // Cierra el formulario de edición
+      setIsModalOpen(false); // Cierra el modal
     } catch (error) {
-      console.error("Error al actualizar el producto:", error);
+      console.error("Error al actualizar el usuario:", error);
     }
   };
 
@@ -184,41 +182,166 @@ export const ProductoTable = () => {
       </div>
 
       {/* Formulario para edición */}
-      {editingProducto && (
-        <form
-          onSubmit={saveChanges}
-          className="mb-4 p-4 border rounded shadow-md"
-        >
-          <h2 className="text-lg font-semibold">Editar Producto</h2>
-          {Object.keys(productoForm).map((key) => (
-            <div key={key} className="mb-2">
-              <label className="block text-sm font-medium">
-                {fieldNames[key] || key}
-              </label>
-              <input
-                type="text"
-                name={key}
-                value={productoForm[key] ?? ""}
-                onChange={handleInputChange}
-                className="p-2 border border-gray-300 rounded-md w-full"
-              />
+      <ReactModal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="Editar Producto"
+        className="modal"
+        overlayClassName="overlay"
+      >
+        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
+          <h2 className="text-2xl font-bold text-center mb-6">
+            Editor de Producto
+          </h2>
+
+          <form onSubmit={saveChanges}>
+            <div className="grid grid-cols-2 gap-4">
+              {/* Columna 1 */}
+              <div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">
+                    Codigo de Producto
+                  </label>
+                  <input
+                    type="text"
+                    name="codigo"
+                    value={productoForm.codigo}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">Precio</label>
+                  <input
+                    type="number"
+                    name="precio"
+                    value={productoForm.precio}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">Talla</label>
+                  <select
+                    name="talla"
+                    value={productoForm.talla}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  >
+                    <option value="" disabled>
+                      Seleccione una talla
+                    </option>
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                  </select>
+                </div>
+
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">Imagen</label>
+                  <input
+                    type="text"
+                    name="imagen"
+                    value={productoForm.imagen}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Columna 2 */}
+              <div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">Nombre</label>
+                  <input
+                    type="text"
+                    name="nombre"
+                    value={productoForm.nombre}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">
+                    Descripcion
+                  </label>
+                  <input
+                    type="text"
+                    name="descripcion"
+                    value={productoForm.descripcion}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">Estado</label>
+                  <select
+                    name="estado"
+                    value={productoForm.estado}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  >
+                    <option value="Disponible">Disponible</option>
+                    <option value="No disponible">No disponible</option>
+                  </select>
+                </div>
+
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">
+                    Genero Dirigido
+                  </label>
+                  <select
+                    name="genero_dirigido"
+                    value={productoForm.genero_dirigido}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  >
+                    <option>No Seleccionado</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                  </select>
+                </div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">Categoria</label>
+                  <input
+                    type="number"
+                    name="id_categoria"
+                    value={productoForm.id_categoria}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  />
+                </div>
+              </div>
             </div>
-          ))}
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-          >
-            Guardar Cambios
-          </button>
-          <button
-            type="button"
-            onClick={() => setEditingProducto(null)}
-            className="bg-gray-300 text-black py-2 px-4 rounded hover:bg-gray-400 ml-2"
-          >
-            Cancelar
-          </button>
-        </form>
-      )}
+
+            {/* Botones de Acción */}
+            <div className="flex justify-center space-x-4 mt-6">
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="bg-gray-300 text-black px-6 py-2 rounded-lg font-semibold hover:bg-gray-400"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600"
+              >
+                Guardar
+              </button>
+            </div>
+          </form>
+        </div>
+      </ReactModal>
 
       {/* Tabla */}
       <table className="min-w-full border border-gray-200 shadow-md rounded-lg overflow-hidden">

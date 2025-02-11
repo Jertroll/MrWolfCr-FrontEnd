@@ -3,13 +3,13 @@ import { FaHome, FaUsers, FaCog, FaChartPie,  } from "react-icons/fa"; // Usa re
 import { FaTshirt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const Sidebar = () => {
+const Sidebar = () => {    
   const [open, setOpen] = useState(true);
   const Menus = [
     { title: "Home", icon: <FaHome />, path:'/' },
-    { title: "Usuarios", icon: <FaUsers />, gap: true, path:'/usuario' },
-    { title: "Categoria", icon: <FaChartPie />, path:'/categoria' },
-    { title: "Productos", icon: <FaTshirt />,path:'/producto' },
+    { title: "Usuarios", icon: <FaUsers />, gap: true, path:'/dashboard/usuario' },
+    { title: "Categoria", icon: <FaChartPie />, path:'/dashboard/categoria' },
+    { title: "Productos", icon: <FaTshirt />,path:'/dashboard/producto' },
   ];
 
   return (
