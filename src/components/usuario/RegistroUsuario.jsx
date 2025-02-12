@@ -47,7 +47,7 @@ function RegistroUsuario() {
   };
 
   const handleBack = () => {
-    navigate("/usuario");
+    navigate("/dashboard/usuario");
   };
 
   return (

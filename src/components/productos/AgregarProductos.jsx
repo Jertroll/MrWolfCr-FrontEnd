@@ -69,7 +69,7 @@ const AgregarProductos = () => {
 
   // Manejar la navegación al presionar "Regresar"
   const handleBack = () => {
-    navigate("/producto");
+    navigate("/dashboard/producto");
   };
 
   return (

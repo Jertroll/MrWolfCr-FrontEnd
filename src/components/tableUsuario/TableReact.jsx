@@ -161,7 +161,7 @@ function TableReact() {
       />
       <button
         className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 ml-3"
-        onClick={() => navigate("/agregarUsuario")} // Redirige al formulario
+        onClick={() => navigate("/dashboard/agregarUsuario")} // Redirige al formulario
       >
         Agregar Usuarios
       </button>

@@ -47,7 +47,7 @@ const AgregarCategoria = () => {
 
   // Manejar la navegación al presionar "Regresar"
   const handleBack = () => {
-    navigate("/categoria");
+    navigate("/dashboard/categoria");
   };
 
   return (
