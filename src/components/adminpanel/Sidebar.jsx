@@ -2,7 +2,6 @@ import { useState } from "react";
 import { FaHome, FaUsers, FaCog, FaChartPie } from "react-icons/fa";
 import { FaTshirt } from "react-icons/fa";
 import { Link } from "react-router-dom";
-
 import { useLocation } from "react-router-dom";
 
 const Sidebar = () => {
@@ -18,7 +17,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className={`flex`}>
+    <div className="flex">
       <div
         className={`${
           open ? "w-72" : "w-20"

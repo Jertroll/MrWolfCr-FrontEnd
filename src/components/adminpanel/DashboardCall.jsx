@@ -13,11 +13,17 @@ function DashboardCall() {
   const [activeTab, setActiveTab] = useState('');
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen overflow-hidden">
+      {/* Sidebar */}
       <Sidebar setActiveTab={setActiveTab} />
-      <div className="flex-1">
+
+      {/* Contenido principal */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Navbar */}
         <Navbar />
-        <div className="">
+
+        {/* Área de contenido con scroll */}
+        <div className="flex-1 overflow-y-auto p-4 bg-gray-100">
           <Routes>
             <Route path="/" element={<></>} />
             <Route path="/usuario" element={<TableReact />} />
