@@ -223,20 +223,19 @@ const AgregarProductos = () => {
           </div>
 
           {/* Botones */}
-          <div className="flex justify-between mt-6">
+          <div className="flex flex-col space-y-4 mt-6">
+            <button
+              type="submit"
+              className="w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800"
+            >
+              Registrar Producto
+            </button>
             <button
               type="button"
               onClick={handleBack}
-              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+              className="w-full bg-green-500 text-white py-2 rounded-lg font-semibold hover:bg-green-600"
             >
               Regresar
-            </button>
-
-            <button
-              type="submit"
-              className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800"
-            >
-              Registrar Producto
             </button>
           </div>
         </form>

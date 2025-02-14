@@ -220,8 +220,8 @@ const CategoriaTable = () => {
                   </label>
                   <input
                     type="text"
-                    name="descripcion"
-                    value={categoriaForm.descripcion}
+                    name="descripcion_categoria"
+                    value={categoriaForm.descripcion_categoria}
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 border rounded-lg focus:outline-none"
                     required

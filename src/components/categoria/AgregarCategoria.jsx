@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 const AgregarCategoria = () => {
-  //Estado inicial para le formulario
+  // Estado inicial para el formulario
   const [formData, setFormData] = useState({
     nombre_categoria: "",
     descripcion_categoria: "",
@@ -9,7 +10,6 @@ const AgregarCategoria = () => {
   });
 
   const [mensaje, setMensaje] = useState(""); // Mensaje de éxito o error
-
   const navigate = useNavigate(); // Para redirigir al usuario
 
   const handleChange = (e) => {
@@ -111,19 +111,19 @@ const AgregarCategoria = () => {
           </div>
 
           {/* Botones */}
-          <div className="flex justify-between">
+          <div className="flex flex-col space-y-4 mt-6">
+            <button
+              type="submit"
+              className="w-full bg-black text-white py-2 rounded-lg font-semibold hover:bg-gray-800"
+            >
+              Registrar Categoría
+            </button>
             <button
               type="button"
               onClick={handleBack}
-              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+              className="w-full bg-green-500 text-white py-2 rounded-lg font-semibold hover:bg-green-600"
             >
               Regresar
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800"
-            >
-              Registrar Categoría
             </button>
           </div>
         </form>

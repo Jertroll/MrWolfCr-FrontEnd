@@ -104,17 +104,7 @@ function Login() {
             <span className="border-b border-gray-300 w-1/4"></span>
           </div>
 
-          <button
-            type="button"
-            className="w-full flex items-center justify-center bg-white py-2 mt-4 rounded-lg border border-gray-300 font-semibold hover:bg-gray-100"
-          >
-            <img
-              src="https://img.icons8.com/color/16/000000/google-logo.png"
-              alt="Google icon"
-              className="mr-2"
-            />
-            Inicia Sesión con Google
-          </button>
+
         </form>
       </div>
     </div>
