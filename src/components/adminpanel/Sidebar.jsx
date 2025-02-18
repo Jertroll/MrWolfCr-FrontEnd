@@ -49,10 +49,10 @@ const Sidebar = () => {
                 Menu.gap ? "mt-9" : "mt-2"
               } ${
                 // Estilo activo basado en la ruta actual
-                location.pathname === Menu.path ? "bg-blue-500 text-white" : ""
+                location.pathname === Menu.path ? "bg-yellow-600 text-white" : ""
               } ${
                 // Estilo de hover
-                hoverIndex === index ? "bg-blue-500 text-white" : ""
+                hoverIndex === index ? "bg-yellow-600 text-white" : ""
               }`}
               onMouseEnter={() => setHoverIndex(index)}
               onMouseLeave={() => setHoverIndex(null)}

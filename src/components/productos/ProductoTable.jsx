@@ -114,6 +114,7 @@ export const ProductoTable = () => {
     { header: "Precio", accessorKey: "precio" },
     { header: "Descripción", accessorKey: "descripcion" },
     { header: "Talla", accessorKey: "talla" },
+    { header: "Estado", accessorKey: "estado" },
     {
       header: "Imagen",
       accessorKey: "imagen",
