@@ -13,10 +13,13 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import LocalMallIcon from '@mui/icons-material/LocalMall';
 import { createTheme } from '@mui/material/styles';
 import { green } from '@mui/material/colors';
+import PersonIcon from '@mui/icons-material/Person';
 
-const pages = ['Categorias', 'Pricing', 'Blog'];
+const pages = ['Mujer', 'Hombre',];
 const settings = ['Perfil', 'Account', 'Dashboard', 'Salir'];
 
 
@@ -40,20 +43,10 @@ function NavbarCliente() {
     setAnchorElUser(null);
   };
 
-  const theme = createTheme({
-    palette: {
-      primary: {
-        light: 'green[700]',
-        main: green[500],
-        dark: green[700],
-        darker: green[900],
-      },
-    },
-  });
 
   return (
     <AppBar position="static" sx={{backgroundColor: '#203500'}} >
-      <Container maxWidth="">
+      <Container maxWidth="flase">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> 
           <Typography
@@ -71,7 +64,7 @@ function NavbarCliente() {
               textDecoration: 'none',
             }}
           >
-            Mr.Wolf CR
+            Mr.Wolf
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -138,10 +131,16 @@ function NavbarCliente() {
               </Button>
             ))}
           </Box>
+
+
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+         
+          <LocalMallIcon fontSize='medium'></LocalMallIcon>
+          <ShoppingCartIcon fontSize='medium'></ShoppingCartIcon>
+
+            <Tooltip title="Opciones">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              <PersonIcon fontSize='medium' sx={{color: 'white' }}></PersonIcon>
               </IconButton>
             </Tooltip>
             <Menu
