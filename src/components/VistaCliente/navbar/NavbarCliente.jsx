@@ -48,7 +48,8 @@ function NavbarCliente() {
     <AppBar position="static" sx={{backgroundColor: '#203500'}} >
       <Container maxWidth="flase">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> 
+          <img style={{ marginRight: '10px' }} width="50" height="50"  src="src\assets\Logo Circular Mr Wolf-Photoroom.png" alt="Logo de Mr Wolf Sin fondo" />
+
           <Typography
             variant="h6"
             noWrap
