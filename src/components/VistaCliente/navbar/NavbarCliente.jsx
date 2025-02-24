@@ -136,8 +136,8 @@ function NavbarCliente() {
 
           <Box sx={{ flexGrow: 0 }}>
          
-          <LocalMallIcon fontSize='medium'></LocalMallIcon>
-          <ShoppingCartIcon fontSize='medium'></ShoppingCartIcon>
+          <LocalMallIcon fontSize='medium' sx={{mr: 1}}></LocalMallIcon>
+          <ShoppingCartIcon fontSize='medium' sx={{mr: 1}}></ShoppingCartIcon>
 
             <Tooltip title="Opciones">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

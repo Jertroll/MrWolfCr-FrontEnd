@@ -2,7 +2,7 @@
 import './App.css'
 
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import DashboardCall from './components/adminpanel/DashboardCall';
 import Login from './components/loginForm/Login';
 import RegistroUsuario from './components/usuario/RegistroUsuario';
@@ -14,12 +14,12 @@ import NavbarCliente from './components/VistaCliente/navbar/NavbarCliente';
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
         <Route path="/" element={<NavbarCliente />} />
         <Route path="/dashboard/*" element={<DashboardCall />} /> {/* Usa /* para rutas anidadas */}
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 

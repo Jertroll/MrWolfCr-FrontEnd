@@ -124,12 +124,13 @@ const CategoriaTable = () => {
       accessorKey: "imagen",
       cell: ({ row }) => (
         <img
-          src={row.original.imagen}
+          src={`http://localhost:3000/public/ImgCategorias/${row.original.imagen}`} // Aquí añadimos la URL completa
           alt="Imagen de categoría"
           className="h-16 w-16 object-cover"
         />
       ),
-    },
+    }
+    ,
     {
       header: "Acciones",
       accessorKey: "acciones",
@@ -290,19 +291,29 @@ const CategoriaTable = () => {
           ))}
         </thead>
         <tbody>
-          {table.getRowModel().rows.map((row, idx) => (
-            <tr
-              key={row.id}
-              className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="p-3 border-t">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
+  {table.getRowModel().rows.map((row, idx) => (
+    <tr key={row.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+      {row.getVisibleCells().map((cell) => (
+        <td key={cell.id} className="p-3 border-t">
+          {cell.column.id === 'imagen' ? ( // Aquí verificamos si la columna es la de la imagen
+            row.original.imagen ? (
+              <img
+                src={row.original.imagen}
+                alt="Imagen de categoría"
+                className="w-20 h-20 object-cover rounded-full"
+              />
+            ) : (
+              <div>{flexRender(cell.column.columnDef.cell, cell.getContext())}</div>
+            )
+          ) : (
+            flexRender(cell.column.columnDef.cell, cell.getContext()) // Para las demás columnas
+          )}
+        </td>
+      ))}
+    </tr>
+  ))}
+</tbody>
+
       </table>
 
       {/* Paginación */}
