@@ -10,11 +10,13 @@ import RegistroUsuarioCliente from './components/usuario/RegistroUsuarioCliente'
 import TableReact from './components/tableUsuario/TableReact';
 import AgregarCategoria from './components/categoria/AgregarCategoria';
 import CategoriaTable from './components/categoria/CategoriaTable';
+import NavbarCliente from './components/VistaCliente/navbar/NavbarCliente';
+
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<NavbarCliente />} />
         <Route path="/dashboard/*" element={<DashboardCall />} /> {/* Usa /* para rutas anidadas */}
       </Routes>
     </Router>
