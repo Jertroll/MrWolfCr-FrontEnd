@@ -82,7 +82,13 @@ const CategoriaTable = () => {
 
   // Función para guardar los cambios de la categoria
   const saveChanges = async (e) => {
-    e.preventDefault(); // Previene el comportamiento por defecto del formulario
+    e.preventDefault();
+  
+    if (!categoriaForm.nombre_categoria || !categoriaForm.descripcion_categoria || !categoriaForm.imagen) {
+      alert("Todos los campos son obligatorios.");
+      return;
+    }
+  
     try {
       const response = await fetch(
         `http://localhost:3000/api/v1/categorias/${categoriaForm.num_categoria}`,
@@ -91,13 +97,12 @@ const CategoriaTable = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(categoriaForm), // Envía los datos actualizados
+          body: JSON.stringify(categoriaForm),
         }
       );
       if (!response.ok) {
         throw new Error("Error al actualizar la categoria");
       }
-      // Actualiza el estado con los datos modificados
       setData((prevData) =>
         prevData.map((categoria) =>
           categoria.num_categoria === categoriaForm.num_categoria
@@ -105,7 +110,7 @@ const CategoriaTable = () => {
             : categoria
         )
       );
-      setIsModalOpen(false); // Cierra el modal
+      setIsModalOpen(false);
     } catch (error) {
       console.error("Error al actualizar el usuario:", error);
     }
@@ -124,9 +129,12 @@ const CategoriaTable = () => {
       accessorKey: "imagen",
       cell: ({ row }) => (
         <img
-          src={`http://localhost:3000/public/ImgCategorias/${row.original.imagen}`} // Aquí añadimos la URL completa
+          src={`http://localhost:3000${row.original.imagen}`} // Usa la ruta completa devuelta por el backend
           alt="Imagen de categoría"
           className="h-16 w-16 object-cover"
+          onError={(e) => {
+            e.target.src = "/public/assets/No imagen.jpg"; // Imagen por defecto
+          }}
         />
       ),
     }
