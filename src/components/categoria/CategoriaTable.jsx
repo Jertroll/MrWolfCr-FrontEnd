@@ -129,11 +129,12 @@ const CategoriaTable = () => {
       accessorKey: "imagen",
       cell: ({ row }) => (
         <img
-          src={`http://localhost:3000${row.original.imagen}`} // Usa la ruta completa devuelta por el backend
+        src={`http://localhost:3000/imagenes/${row.original.imagen}`}
+        // Usa la ruta completa devuelta por el backend
           alt="Imagen de categoría"
           className="h-16 w-16 object-cover"
           onError={(e) => {
-            e.target.src = "/public/assets/No imagen.jpg"; // Imagen por defecto
+            e.target.src = "/assets/No imagen.jpg"; // Imagen por defecto
           }}
         />
       ),
