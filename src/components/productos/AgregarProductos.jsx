@@ -9,7 +9,7 @@ const AgregarProductos = () => {
     descripcion: "",
     talla: "",
     estado: "",
-    imagen: "",
+    imagen: [],
     genero_dirigido: "",
     id_categoria: 0,
   });
@@ -19,28 +19,45 @@ const AgregarProductos = () => {
 
   // Para tomar los datos del cambio del formulario en el momento
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files); // Convertir FileList en un array
+    setFormData({ ...formData, imagen: files }); // Guardar todos los archivos
   };
 
   // Manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault(); // Evitar recarga
 
-    // Convertir valores numéricos antes de enviar
-    const dataToSend = {
-      ...formData,
-      precio: Number(formData.precio), // Convertir precio a número
-      id_categoria: Number(formData.id_categoria), // Convertir id_categoria a número
-    };
+    // Crear un FormData y agregar todos los valores del formulario
+    const data = new FormData();
+    data.append("codigo", formData.codigo);
+    data.append("nombre", formData.nombre);
+    data.append("precio", formData.precio ? Number(formData.precio) : 0);
+    data.append("descripcion", formData.descripcion);
+    data.append("talla", formData.talla);
+    data.append("estado", formData.estado);
+    data.append("genero_dirigido", formData.genero_dirigido);
+    data.append(
+      "id_categoria",
+      formData.id_categoria ? Number(formData.id_categoria) : 0
+    );
 
-    console.log("Datos enviados al backend:", dataToSend); // Ver datos corregidos
+    // Añadir todas las imágenes al FormData
+    if (formData.imagen && formData.imagen.length > 0) {
+      formData.imagen.forEach((file) => {
+        data.append("imagen", file); // Usar el mismo nombre para todos los archivos
+      });
+    }
+
+    console.log("Datos enviados al backend:", Object.fromEntries(data.entries()));
 
     try {
       const response = await fetch("http://localhost:3000/api/v1/productos", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dataToSend), // Enviar datos corregidos
+        body: data,
       });
 
       if (response.ok) {
@@ -52,10 +69,10 @@ const AgregarProductos = () => {
           descripcion: "",
           talla: "",
           estado: "",
-          imagen: "",
+          imagen: [],
           genero_dirigido: "",
           id_categoria: 0,
-        }); // Limpiar formulario
+        });
       } else {
         const errorData = await response.text();
         setMensaje(`Error al registrar el producto: ${errorData}`);
@@ -77,7 +94,7 @@ const AgregarProductos = () => {
         <h2 className="text-2xl font-bold mb-6 text-center">
           Registrar Producto
         </h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
           {/* Cuadrícula de 2 columnas */}
           <div className="grid grid-cols-2 gap-4">
             {/* Columna 1 */}
@@ -192,16 +209,16 @@ const AgregarProductos = () => {
             </div>
             <div>
               <label htmlFor="imagen" className="block font-semibold">
-                URL de la imagen
+                Imágenes del Producto
               </label>
               <input
-                type="text"
+                type="file"
+                multiple
                 id="imagen"
                 name="imagen"
-                value={formData.imagen}
-                onChange={handleChange}
+                accept="image/*"
+                onChange={handleFileChange}
                 className="w-full p-2 border border-gray-300 rounded-lg"
-                required
               />
             </div>
           </div>
