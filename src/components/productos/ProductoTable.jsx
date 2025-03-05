@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -6,110 +7,102 @@ import {
   getFilteredRowModel,
   flexRender,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
 import { FaTrash, FaEdit } from "react-icons/fa";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate
-import ReactModal from "react-modal";
+import { useNavigate } from "react-router-dom";
+import EditarProductoModal from "./paginas modal/EditarProductoModal";
+import ImagenesProductoModal from "./paginas modal/ImagenesProductoModal";
 import "./tableProducto.css";
 
-export const ProductoTable = () => {
+const ProductoTable = () => {
   const navigate = useNavigate();
   const [data, setData] = useState([]); // Estado para almacenar los datos
-  const [filtering, setFiltering] = useState("");
-  const [sorting, setSorting] = useState([]);
-  const [editingProducto, setEditingProducto] = useState(null);
-  const [productoForm, setProductoForm] = useState({});
-
-  // Función para iniciar la edición de un producto
-  const startEditing = (producto) => {
-    setEditingProducto(producto);
-    setProductoForm(producto);
-    setIsModalOpen(true); // Abre el modal
-  };
-
-  const [isModalOpen, setIsModalOpen] = useState(false); //estado para controlar la visibilidad de modal
+  const [filtering, setFiltering] = useState(""); // Estado para el filtrado
+  const [sorting, setSorting] = useState([]); // Estado para el ordenamiento
+  const [editingProducto, setEditingProducto] = useState(null); // Estado para el producto en edición
+  const [productoForm, setProductoForm] = useState({}); // Estado para el formulario de edición
+  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para el modal de edición
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false); // Estado para el modal de imágenes
+  const [selectedProductImages, setSelectedProductImages] = useState([]); // Estado para las imágenes seleccionadas
 
   // Función para obtener datos del backend
   const fetchData = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/v1/productos");
-      if (!response.ok) {
-        throw new Error("Error al obtener los datos");
-      }
+      if (!response.ok) throw new Error("Error al obtener los datos");
       const productos = await response.json();
-      setData(productos); // Actualiza el estado con los datos obtenidos
+      setData(productos);
     } catch (error) {
       console.error("Error al obtener los productos:", error);
-      alert(
-        "Hubo un error al obtener los usuarios. Por favor, intenta nuevamente."
-      );
+      alert("Hubo un error al obtener los productos. Por favor, intenta nuevamente.");
     }
   };
 
-  // Función para eliminar un usuario
+  // Función para eliminar un producto
   const deleteProducto = async (id) => {
-    const confirmDelete = window.confirm(
-      "¿Estás seguro de que deseas eliminar este usuario?"
-    );
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este producto?");
     if (!confirmDelete) return;
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/v1/productos/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Error al eliminar el producto");
-      }
-      // Actualiza el estado eliminando el producto de la lista
+      const response = await fetch(`http://localhost:3000/api/v1/productos/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Error al eliminar el producto");
       setData((prevData) => prevData.filter((producto) => producto.id !== id));
     } catch (error) {
       console.error("Error al eliminar el producto:", error);
     }
   };
 
-  // Función para manejar el cambio en el formulario
+  // Función para iniciar la edición de un producto
+  const startEditing = (producto) => {
+    setEditingProducto(producto);
+    setProductoForm(producto);
+    setIsModalOpen(true);
+  };
+
+  // Función para manejar cambios en el formulario de edición
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setProductoForm({ ...productoForm, [name]: value });
   };
 
+  // Función para guardar los cambios del formulario de edición
   const saveChanges = async (e) => {
-    e.preventDefault(); // Previene el comportamiento por defecto del formulario
+    e.preventDefault();
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/v1/productos/${productoForm.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(productoForm), // Envía los datos actualizados
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Error al actualizar el usuario");
-      }
-      // Actualiza el estado con los datos modificados
+      const response = await fetch(`http://localhost:3000/api/v1/productos/${productoForm.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(productoForm),
+      });
+      if (!response.ok) throw new Error("Error al actualizar el producto");
       setData((prevData) =>
-        prevData.map((producto) =>
-          producto.id === productoForm.id ? productoForm : producto
-        )
+        prevData.map((producto) => (producto.id === productoForm.id ? productoForm : producto))
       );
-      setIsModalOpen(false); // Cierra el modal
+      setIsModalOpen(false); // Cierra el modal después de guardar
     } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
+      console.error("Error al actualizar el producto:", error);
     }
   };
 
+  // Función para abrir el modal de imágenes
+  const openImageModal = (imagenes) => {
+    setSelectedProductImages(imagenes);
+    setIsImageModalOpen(true);
+  };
+
+  // Obtener datos al montar el componente
   useEffect(() => {
-    fetchData(); // Llama a la función al montar el componente
+    fetchData();
   }, []);
 
+  useEffect(() => {
+    console.log(data); // Verifica que los datos se están recibiendo correctamente
+  }, [data]);
+
+  // Columnas de la tabla
   const columns = [
     { header: "Id Producto", accessorKey: "id" },
-    { header: "Codigo", accessorKey: "codigo" },
+    { header: "Código", accessorKey: "codigo" },
     { header: "Nombre", accessorKey: "nombre" },
     { header: "Precio", accessorKey: "precio" },
     { header: "Descripción", accessorKey: "descripcion" },
@@ -119,15 +112,28 @@ export const ProductoTable = () => {
       header: "Imagen",
       accessorKey: "imagen",
       cell: ({ row }) => (
-        <img
-          src={row.original.imagen}
-          alt="Imagen de productos"
-          className="h-16 w-16 object-cover"
-        />
+        <div className="flex items-center space-x-2">
+          {row.original.imagenes && row.original.imagenes.slice(0, 3).map((imagen, index) => (
+            <img
+              key={index}
+              src={`http://localhost:3000/ImgProductos/${imagen.nomImagen}`}
+              alt={`Imagen ${index + 1}`}
+              className="h-16 w-16 object-cover"
+            />
+          ))}
+          {row.original.imagenes && row.original.imagenes.length > 3 && (
+            <button
+              className="text-blue-500 hover:text-blue-700"
+              onClick={() => openImageModal(row.original.imagenes)}
+            >
+              +{row.original.imagenes.length - 3}
+            </button>
+          )}
+        </div>
       ),
     },
-    { header: "Genero Dirigido", accessorKey: "genero_dirigido" },
-    { header: "Categoria", accessorKey: "id_categoria" },
+    { header: "Género Dirigido", accessorKey: "genero_dirigido" },
+    { header: "Categoría", accessorKey: "id_categoria" },
     {
       header: "Acciones",
       accessorKey: "acciones",
@@ -149,6 +155,8 @@ export const ProductoTable = () => {
       ),
     },
   ];
+
+  // Configuración de la tabla
   const table = useReactTable({
     data,
     columns,
@@ -173,176 +181,30 @@ export const ProductoTable = () => {
           className="p-2 border border-gray-300 rounded-md shadow-sm"
         />
 
-        {/* Botón para agregar categoría */}
+        {/* Botón para agregar producto */}
         <button
           className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 ml-3"
-          onClick={() => navigate("/dashboard/agregarProducto")} // Ajusta la ruta según corresponda
+          onClick={() => navigate("/dashboard/agregarProducto")}
         >
           Agregar Producto
         </button>
       </div>
 
-      {/* Formulario para edición */}
-      <ReactModal
+      {/* Modal de edición */}
+      <EditarProductoModal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
-        contentLabel="Editar Producto"
-        className="modal"
-        overlayClassName="overlay"
-      >
-        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
-          <h2 className="text-2xl font-bold text-center mb-6">
-            Editor de Producto
-          </h2>
+        productoForm={productoForm}
+        handleInputChange={handleInputChange}
+        saveChanges={saveChanges}
+      />
 
-          <form onSubmit={saveChanges}>
-            <div className="grid grid-cols-2 gap-4">
-              {/* Columna 1 */}
-              <div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">
-                    Codigo de Producto
-                  </label>
-                  <input
-                    type="text"
-                    name="codigo"
-                    value={productoForm.codigo}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">Precio</label>
-                  <input
-                    type="number"
-                    name="precio"
-                    value={productoForm.precio}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">Talla</label>
-                  <select
-                    name="talla"
-                    value={productoForm.talla}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
-                  >
-                    <option value="" disabled>
-                      Seleccione una talla
-                    </option>
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                    <option value="XL">XL</option>
-                  </select>
-                </div>
-
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">Imagen</label>
-                  <input
-                    type="text"
-                    name="imagen"
-                    value={productoForm.imagen}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              {/* Columna 2 */}
-              <div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">Nombre</label>
-                  <input
-                    type="text"
-                    name="nombre"
-                    value={productoForm.nombre}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">
-                    Descripcion
-                  </label>
-                  <input
-                    type="text"
-                    name="descripcion"
-                    value={productoForm.descripcion}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">Estado</label>
-                  <select
-                    name="estado"
-                    value={productoForm.estado}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
-                  >
-                    <option value="Disponible">Disponible</option>
-                    <option value="No disponible">No disponible</option>
-                  </select>
-                </div>
-
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">
-                    Genero Dirigido
-                  </label>
-                  <select
-                    name="genero_dirigido"
-                    value={productoForm.genero_dirigido}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
-                  >
-                    <option>No Seleccionado</option>
-                    <option value="Masculino">Masculino</option>
-                    <option value="Femenino">Femenino</option>
-                  </select>
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">Categoria</label>
-                  <input
-                    type="number"
-                    name="id_categoria"
-                    value={productoForm.id_categoria}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Botones de Acción */}
-            <div className="flex justify-center space-x-4 mt-6">
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-                className="bg-gray-300 text-black px-6 py-2 rounded-lg font-semibold hover:bg-gray-400"
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                className="bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600"
-              >
-                Guardar
-              </button>
-            </div>
-          </form>
-        </div>
-      </ReactModal>
+      {/* Modal de imágenes */}
+      <ImagenesProductoModal
+        isOpen={isImageModalOpen}
+        onRequestClose={() => setIsImageModalOpen(false)}
+        selectedProductImages={selectedProductImages}
+      />
 
       {/* Tabla */}
       <table className="min-w-full border border-gray-200 shadow-md rounded-lg overflow-hidden">
@@ -355,10 +217,7 @@ export const ProductoTable = () => {
                   className="p-3 text-left font-semibold"
                   onClick={header.column.getToggleSortingHandler()}
                 >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
+                  {flexRender(header.column.columnDef.header, header.getContext())}
                   {header.column.getIsSorted()
                     ? header.column.getIsSorted() === "asc"
                       ? " ⬆️"
@@ -371,10 +230,7 @@ export const ProductoTable = () => {
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row, idx) => (
-            <tr
-              key={row.id}
-              className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
-            >
+            <tr key={row.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="p-3 border-t">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
