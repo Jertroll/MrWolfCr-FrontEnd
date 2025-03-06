@@ -64,7 +64,6 @@ function TableReact() {
     const { name, value } = e.target;
     setUserForm({ ...userForm, [name]: value });
   };
-
   const saveChanges = async (e) => {
     e.preventDefault();
     try {
@@ -75,7 +74,7 @@ function TableReact() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(userForm), // Envía los datos actualizados
+          body: JSON.stringify(userForm),
         }
       );
       if (!response.ok) {
@@ -103,7 +102,7 @@ function TableReact() {
     { header: "Nombre de Usuario", accessorKey: "nombre_usuario" },
     { header: "Nombre Completo", accessorKey: "nombre_completo" },
     { header: "Email", accessorKey: "email" },
-    { header: "Contraseña", accessorKey: "contrasena" },
+    //{ header: "Contraseña", accessorKey: "contrasena" },
     { header: "Telefono", accessorKey: "telefono" },
     { header: "Direccion de Residencia", accessorKey: "direccion_envio" },
     { header: "Email de Facturacion", accessorKey: "email_facturacion" },
@@ -153,7 +152,7 @@ function TableReact() {
       />
       <button
         className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 ml-3"
-        onClick={() => navigate("/agregarUsuario")} // Redirige al formulario
+        onClick={() => navigate("/dashboard/agregarUsuario")} // Redirige al formulario
       >
         Agregar Usuarios
       </button>
@@ -237,32 +236,32 @@ function TableReact() {
 
       <div className="flex justify-between mt-4 flex-wrap">
         <button
-          className="bg-[#203500] text-white py-1 px-4 rounded hover:bg-[#162600]"
+          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.setPageIndex(0)}
           disabled={!table.getCanPreviousPage()}
         >
-          {"<<"}
+          Inicio
         </button>
         <button
-          className="bg-[#203500] text-white py-1 px-4 rounded hover:bg-[#162600]"
+          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
-          {"<"}
+          Anterior
         </button>
         <button
-          className="bg-[#203500] text-white py-1 px-4 rounded hover:bg-[#162600]"
+          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          {">"}
+          Siguiente
         </button>
         <button
-          className="bg-[#203500] text-white py-1 px-4 rounded hover:bg-[#162600]"
+          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.setPageIndex(table.getPageCount() - 1)}
           disabled={!table.getCanNextPage()}
         >
-          {">>"}
+          Final
         </button>
         <span>
           Página{" "}

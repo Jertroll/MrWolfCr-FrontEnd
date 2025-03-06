@@ -1,10 +1,14 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Navbar from "./Navbar";
 import Sidebar from './Sidebar';
 import RegistroUsuario from '../usuario/RegistroUsuario';
 import TableReact from "../tableReact/TableReact";
 import ActualizarPerfil from "../usuario/ActualizarPerfil";
 import { useState } from 'react';
+import AgregarCategoria from "../categoria/AgregarCategoria";
+import CategoriaTable from "../categoria/CategoriaTable";
+import ProductoTable from "../productos/ProductoTable";
+import AgregarProductos from "../productos/AgregarProductos";
 
 function DashboardCall() {
   const [activeTab, setActiveTab] = useState('');
@@ -51,7 +55,7 @@ function DashboardCall() {
           </div>
         )}
       </div>
-    </BrowserRouter>
+    </div>
   );
 }
 
