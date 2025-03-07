@@ -1,3 +1,4 @@
+import React, { useState } from "react"; // Importa useState
 import ReactModal from "react-modal";
 import PropTypes from "prop-types";
 
@@ -8,6 +9,13 @@ const EditarProductoModal = ({
   handleInputChange,
   saveChanges,
 }) => {
+  // Estado para almacenar los archivos seleccionados
+  const [selectedFiles, setSelectedFiles] = useState([]);
+
+  // Función para manejar la selección de archivos
+  const handleFileChange = (e) => {
+    setSelectedFiles(Array.from(e.target.files)); // Convierte FileList a un array
+  };
   return (
     <ReactModal
       isOpen={isOpen}
@@ -20,7 +28,7 @@ const EditarProductoModal = ({
         <h2 className="text-2xl font-bold text-center mb-6">
           Editor de Producto
         </h2>
-        <form onSubmit={saveChanges}>
+        <form onSubmit={(e) => saveChanges(e, selectedFiles)}>
           <div className="grid grid-cols-2 gap-4">
             {/* Columna 1 */}
             <div>
@@ -69,10 +77,10 @@ const EditarProductoModal = ({
               <div className="mb-4">
                 <label className="block mb-2 font-semibold">Imagen</label>
                 <input
-                  type="text"
+                  type="file"
                   name="imagen"
-                  value={productoForm.imagen || ""} // Valor por defecto
-                  onChange={handleInputChange}
+                  multiple 
+                  onChange={handleFileChange}
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none"
                 />
               </div>

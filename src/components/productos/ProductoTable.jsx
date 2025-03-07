@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -33,18 +33,25 @@ const ProductoTable = () => {
       setData(productos);
     } catch (error) {
       console.error("Error al obtener los productos:", error);
-      alert("Hubo un error al obtener los productos. Por favor, intenta nuevamente.");
+      alert(
+        "Hubo un error al obtener los productos. Por favor, intenta nuevamente."
+      );
     }
   };
 
   // Función para eliminar un producto
   const deleteProducto = async (id) => {
-    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este producto?");
+    const confirmDelete = window.confirm(
+      "¿Estás seguro de que deseas eliminar este producto?"
+    );
     if (!confirmDelete) return;
     try {
-      const response = await fetch(`http://localhost:3000/api/v1/productos/${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `http://localhost:3000/api/v1/productos/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (!response.ok) throw new Error("Error al eliminar el producto");
       setData((prevData) => prevData.filter((producto) => producto.id !== id));
     } catch (error) {
@@ -66,24 +73,61 @@ const ProductoTable = () => {
   };
 
   // Función para guardar los cambios del formulario de edición
-  const saveChanges = async (e) => {
+  const saveChanges = async (e, selectedFiles) => {
     e.preventDefault();
+  
     try {
-      const response = await fetch(`http://localhost:3000/api/v1/productos/${productoForm.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(productoForm),
-      });
-      if (!response.ok) throw new Error("Error al actualizar el producto");
-      setData((prevData) =>
-        prevData.map((producto) => (producto.id === productoForm.id ? productoForm : producto))
+      const formData = new FormData();
+  
+      // Agregar campos del formulario
+      formData.append("codigo", productoForm.codigo);
+      formData.append("nombre", productoForm.nombre);
+      formData.append("precio", productoForm.precio);
+      formData.append("descripcion", productoForm.descripcion);
+      formData.append("talla", productoForm.talla);
+      formData.append("estado", productoForm.estado);
+      formData.append("genero_dirigido", productoForm.genero_dirigido);
+      formData.append("id_categoria", productoForm.id_categoria);
+  
+      // Agregar imágenes seleccionadas
+      if (selectedFiles && selectedFiles.length > 0) {
+        selectedFiles.forEach((file) => {
+          formData.append("imagen", file); // "imagen" debe coincidir con el nombre esperado en el backend
+        });
+      }
+  
+      // Depuración: Verificar los datos enviados al backend
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+  
+      // Enviar la solicitud PUT al backend
+      const response = await fetch(
+        `http://localhost:3000/api/v1/productos/${productoForm.id}`,
+        {
+          method: "PUT",
+          body: formData, // No es necesario agregar el encabezado "Content-Type"
+        }
       );
-      setIsModalOpen(false); // Cierra el modal después de guardar
+  
+      if (!response.ok) throw new Error("Error al actualizar el producto");
+  
+      // Obtener el producto actualizado del backend
+      const updatedProducto = await response.json();
+  
+      // Actualizar el estado local con los nuevos datos del producto
+      setData((prevData) =>
+        prevData.map((producto) =>
+          producto.id === updatedProducto.id ? updatedProducto : producto
+        )
+      );
+  
+      // Cerrar el modal después de guardar
+      setIsModalOpen(false);
     } catch (error) {
       console.error("Error al actualizar el producto:", error);
     }
   };
-
   // Función para abrir el modal de imágenes
   const openImageModal = (imagenes) => {
     setSelectedProductImages(imagenes);
@@ -113,15 +157,18 @@ const ProductoTable = () => {
       accessorKey: "imagen",
       cell: ({ row }) => (
         <div className="flex items-center space-x-2">
-          {row.original.imagenes && row.original.imagenes.slice(0, 3).map((imagen, index) => (
-            <img
-              key={index}
-              src={`http://localhost:3000/ImgProductos/${imagen.nomImagen}`}
-              alt={`Imagen ${index + 1}`}
-              className="h-16 w-16 object-cover"
-            />
-          ))}
-          {row.original.imagenes && row.original.imagenes.length > 3 && (
+          {row.original.imagenes &&
+            row.original.imagenes
+              .slice(0, 3)
+              .map((imagen, index) => (
+                <img
+                  key={index}
+                  src={`http://localhost:3000/ImgProductos/${imagen.nomImagen}`}
+                  alt={`Imagen ${index + 1}`}
+                  className="h-16 w-16 object-cover"
+                />
+              ))}
+          {row.original.imagenes && row.original.imagenes.length > 2 && (
             <button
               className="text-blue-500 hover:text-blue-700"
               onClick={() => openImageModal(row.original.imagenes)}
@@ -217,7 +264,10 @@ const ProductoTable = () => {
                   className="p-3 text-left font-semibold"
                   onClick={header.column.getToggleSortingHandler()}
                 >
-                  {flexRender(header.column.columnDef.header, header.getContext())}
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
                   {header.column.getIsSorted()
                     ? header.column.getIsSorted() === "asc"
                       ? " ⬆️"
@@ -230,7 +280,10 @@ const ProductoTable = () => {
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row, idx) => (
-            <tr key={row.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+            <tr
+              key={row.id}
+              className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+            >
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="p-3 border-t">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}

@@ -23,7 +23,7 @@ const ImagenesProductoModal = ({
             selectedProductImages.map((imagen, index) => (
               <img
                 key={index}
-                src={`http://localhost:3000/${imagen.nomImagen}`}
+                src={`http://localhost:3000/ImgProductos/${imagen.nomImagen}`}
                 alt={`Imagen ${index + 1}`}
                 className="h-32 w-32 object-cover"
               />
