@@ -1,4 +1,4 @@
-import React, { useState } from "react"; // Importa useState
+import { useState } from "react"; // Importa useState
 import ReactModal from "react-modal";
 import PropTypes from "prop-types";
 

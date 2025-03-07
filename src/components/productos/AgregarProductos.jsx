@@ -1,18 +1,34 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import Select from "react-select";
+
+// Opciones de tallas
+const tallasOptions = [
+  { value: "1", label: "S" },
+  { value: "2", label: "M" },
+  { value: "3", label: "L" },
+  { value: "4", label: "X" },
+  { value: "5", label: "XL" },
+];
+
 const AgregarProductos = () => {
   const [formData, setFormData] = useState({
     codigo: "",
     nombre: "",
     precio: 0,
     descripcion: "",
-    talla: "",
+    tallas: [],
     estado: "",
     imagen: [],
     genero_dirigido: "",
     id_categoria: 0,
   });
+  // Manejar cambio en las tallas
+  const handleTallasChange = (selectedOptions) => {
+    const tallasValues = selectedOptions.map((option) => option.value);
+    setFormData({ ...formData, tallas: tallasValues });
+  };
 
   const [mensaje, setMensaje] = useState(""); // Mensaje de éxito o error
   const navigate = useNavigate(); // Para redirigir al usuario
@@ -29,7 +45,10 @@ const AgregarProductos = () => {
 
   // Manejar el envío del formulario
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Evitar recarga
+    e.preventDefault();
+
+    // Convertir el array de tallas a una cadena separada por comas
+    const tallasString = formData.tallas.join(",");
 
     // Crear un FormData y agregar todos los valores del formulario
     const data = new FormData();
@@ -37,7 +56,7 @@ const AgregarProductos = () => {
     data.append("nombre", formData.nombre);
     data.append("precio", formData.precio ? Number(formData.precio) : 0);
     data.append("descripcion", formData.descripcion);
-    data.append("talla", formData.talla);
+    data.append("tallas", tallasString); // Enviar tallas como cadena
     data.append("estado", formData.estado);
     data.append("genero_dirigido", formData.genero_dirigido);
     data.append(
@@ -48,11 +67,14 @@ const AgregarProductos = () => {
     // Añadir todas las imágenes al FormData
     if (formData.imagen && formData.imagen.length > 0) {
       formData.imagen.forEach((file) => {
-        data.append("imagen", file); // Usar el mismo nombre para todos los archivos
+        data.append("imagen", file);
       });
     }
 
-    console.log("Datos enviados al backend:", Object.fromEntries(data.entries()));
+    console.log(
+      "Datos enviados al backend:",
+      Object.fromEntries(data.entries())
+    );
 
     try {
       const response = await fetch("http://localhost:3000/api/v1/productos", {
@@ -67,7 +89,7 @@ const AgregarProductos = () => {
           nombre: "",
           precio: 0,
           descripcion: "",
-          talla: "",
+          tallas: [], // Reiniciar el array de tallas
           estado: "",
           imagen: [],
           genero_dirigido: "",
@@ -141,23 +163,18 @@ const AgregarProductos = () => {
               />
             </div>
             <div>
-              <label htmlFor="talla" className="block font-semibold">
-                Talla
+              <label htmlFor="tallas" className="block font-semibold">
+                Tallas
               </label>
-              <select
-                id="talla"
-                name="talla"
-                value={formData.talla}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg"
-                required
-              >
-                <option>No Seleccionado</option>
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-              </select>
+              <Select
+                isMulti
+                options={tallasOptions}
+                value={tallasOptions.filter((option) =>
+                  formData.tallas.includes(option.value)
+                )}
+                onChange={handleTallasChange}
+                className="w-full"
+              />
             </div>
             <div>
               <label htmlFor="estado" className="block font-semibold">
