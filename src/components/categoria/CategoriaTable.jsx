@@ -20,6 +20,7 @@ const CategoriaTable = () => {
   const [sorting, setSorting] = useState([]);
   const [editingCategoria, setEditingCategoria] = useState(null);
   const [categoriaForm, setCategoriaForm] = useState({});
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
 
   // Función para iniciar la edición de un categoria
   const startEditing = (categoria) => {
@@ -193,12 +194,22 @@ const CategoriaTable = () => {
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: getPaginationRowModel(), // Habilitar paginación
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    state: { sorting, globalFilter: filtering },
+    state: {
+      sorting,
+      globalFilter: filtering,
+      pagination: { pageIndex: 0, pageSize: 5 }, // Limitar a 5 categorías por página
+    },
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
+    onPaginationChange: (updater) => {
+      // Actualizar el estado de paginación
+      if (typeof updater === "function") {
+        setPagination(updater);
+      }
+    },
   });
 
   return (
@@ -393,8 +404,13 @@ const CategoriaTable = () => {
           Final
         </button>
       </div>
+      {/* Indicador de página */}
+      <div className="flex justify-center items-center mt-4">
+        <span className="text-gray-700">
+          Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
+        </span>
+      </div>
     </div>
   );
 };
-
 export default CategoriaTable;

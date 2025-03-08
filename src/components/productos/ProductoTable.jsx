@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -73,34 +73,34 @@ const ProductoTable = () => {
   };
 
   // Función para guardar los cambios del formulario de edición
-  const saveChanges = async (e, selectedFiles) => {
+  const saveChanges = async (e, tallasIds, selectedFiles) => {
     e.preventDefault();
-  
+
     try {
       const formData = new FormData();
-  
+
       // Agregar campos del formulario
       formData.append("codigo", productoForm.codigo);
       formData.append("nombre", productoForm.nombre);
       formData.append("precio", productoForm.precio);
       formData.append("descripcion", productoForm.descripcion);
-      formData.append("talla", productoForm.talla);
       formData.append("estado", productoForm.estado);
       formData.append("genero_dirigido", productoForm.genero_dirigido);
       formData.append("id_categoria", productoForm.id_categoria);
-  
+      formData.append("tallas", tallasIds.join(",")); // Enviar tallas como cadena separada por comas
+
       // Agregar imágenes seleccionadas
       if (selectedFiles && selectedFiles.length > 0) {
         selectedFiles.forEach((file) => {
           formData.append("imagen", file); // "imagen" debe coincidir con el nombre esperado en el backend
         });
       }
-  
+
       // Depuración: Verificar los datos enviados al backend
       for (let [key, value] of formData.entries()) {
         console.log(key, value);
       }
-  
+
       // Enviar la solicitud PUT al backend
       const response = await fetch(
         `http://localhost:3000/api/v1/productos/${productoForm.id}`,
@@ -109,19 +109,29 @@ const ProductoTable = () => {
           body: formData, // No es necesario agregar el encabezado "Content-Type"
         }
       );
-  
+
       if (!response.ok) throw new Error("Error al actualizar el producto");
-  
+
       // Obtener el producto actualizado del backend
       const updatedProducto = await response.json();
-  
-      // Actualizar el estado local con los nuevos datos del producto
-      setData((prevData) =>
-        prevData.map((producto) =>
-          producto.id === updatedProducto.id ? updatedProducto : producto
-        )
+
+      // Verificar la respuesta del backend
+      console.log(
+        "Producto actualizado recibido en el frontend:",
+        updatedProducto
       );
-  
+
+      // Actualizar el estado local con los nuevos datos del producto
+      setData((prevData) => {
+        const newData = prevData.map((producto) =>
+          producto.id === updatedProducto.producto.id
+            ? updatedProducto.producto
+            : producto
+        );
+        console.log("Estado actualizado:", newData); // Verificar el estado actualizado
+        return newData;
+      });
+
       // Cerrar el modal después de guardar
       setIsModalOpen(false);
     } catch (error) {
@@ -150,7 +160,17 @@ const ProductoTable = () => {
     { header: "Nombre", accessorKey: "nombre" },
     { header: "Precio", accessorKey: "precio" },
     { header: "Descripción", accessorKey: "descripcion" },
-    { header: "Talla", accessorKey: "talla" },
+    {
+      header: "Talla",
+      accessorKey: "tallas",
+      cell: ({ row }) => (
+        <div>
+          {row.original.tallas && row.original.tallas.length > 0
+            ? row.original.tallas.map((talla) => talla.nombre).join(", ")
+            : "Sin tallas"}
+        </div>
+      ),
+    },
     { header: "Estado", accessorKey: "estado" },
     {
       header: "Imagen",
