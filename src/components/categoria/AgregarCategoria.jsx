@@ -1,14 +1,27 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { Button } from "@mui/material";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { styled } from "@mui/material/styles";
 const AgregarCategoria = () => {
   // Estado inicial para el formulario
   const [formData, setFormData] = useState({
     nombre_categoria: "",
     descripcion_categoria: "",
-    imagen: "",
+    imagen: null,
   });
 
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 1,
+  });
   const [mensaje, setMensaje] = useState(""); // Mensaje de éxito o error
   const navigate = useNavigate(); // Para redirigir al usuario
 
@@ -17,24 +30,34 @@ const AgregarCategoria = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  // Manejar el envío del archivo en el formulario
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData({ ...formData, imagen: file });
+  };
+
   // Manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault(); // Evitar recargar la página
-
+  
+    const formDataToSend = new FormData();
+    formDataToSend.append("nombre_categoria", formData.nombre_categoria);
+    formDataToSend.append("descripcion_categoria", formData.descripcion_categoria);
+    formDataToSend.append("imagen", formData.imagen);
+  
     try {
       const response = await fetch("http://localhost:3000/api/v1/categorias", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: formDataToSend, // Enviar FormData sin 'Content-Type'
       });
-
+  
       if (response.ok) {
         setMensaje("Categoría registrada exitosamente.");
         setFormData({
           nombre_categoria: "",
           descripcion_categoria: "",
-          imagen: "",
-        }); // Limpiar formulario
+          imagen: null,
+        });
       } else {
         const errorData = await response.text();
         setMensaje(`Error al registrar categoría: ${errorData}`);
@@ -44,6 +67,7 @@ const AgregarCategoria = () => {
       setMensaje("Error en la solicitud. Intenta de nuevo.");
     }
   };
+  
 
   // Manejar la navegación al presionar "Regresar"
   const handleBack = () => {
@@ -97,17 +121,28 @@ const AgregarCategoria = () => {
           {/* Campo: Imagen */}
           <div className="mb-4">
             <label htmlFor="imagen" className="block font-semibold">
-              URL de la imagen
+
             </label>
-            <input
-              type="text"
-              id="imagen"
-              name="imagen"
-              value={formData.imagen}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-lg"
-              required
-            />
+            <Button
+              component="label"
+              role={undefined}
+              variant="contained"
+              tabIndex={-1}
+              startIcon={<CloudUploadIcon />}
+              className="w-full"
+            >
+              Subir imagen de Categoria
+              <VisuallyHiddenInput
+                type="file"
+                onChange={handleFileChange} // Maneja la selección del archivo
+                accept="image/*" // Acepta solo archivos de imagen
+              />
+            </Button>
+            {formData.imagen && (
+              <p className="mt-2 text-sm text-gray-600">
+                Archivo seleccionado: {formData.imagen.name}
+              </p>
+            )}
           </div>
 
           {/* Botones */}

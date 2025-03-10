@@ -11,8 +11,7 @@ import { useNavigate } from "react-router-dom"; // Importa
 import { useEffect } from "react";
 import { useState } from "react";
 import ReactModal from "react-modal";
-import "./tableCategoria.css"
-
+import "./tableCategoria.css";
 
 const CategoriaTable = () => {
   const [data, setData] = useState([]);
@@ -21,6 +20,7 @@ const CategoriaTable = () => {
   const [sorting, setSorting] = useState([]);
   const [editingCategoria, setEditingCategoria] = useState(null);
   const [categoriaForm, setCategoriaForm] = useState({});
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
 
   // Función para iniciar la edición de un categoria
   const startEditing = (categoria) => {
@@ -80,36 +80,70 @@ const CategoriaTable = () => {
     setCategoriaForm({ ...categoriaForm, [name]: value });
   };
 
+  //Funcion para menjar la carga de una imagen en el formulario de actualizar
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCategoriaForm((prevForm) => ({
+          ...prevForm,
+          imagen: reader.result, // Guarda la imagen en base64
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  
+
   // Función para guardar los cambios de la categoria
   const saveChanges = async (e) => {
-    e.preventDefault(); // Previene el comportamiento por defecto del formulario
+    e.preventDefault();
+  
+    if (!categoriaForm.nombre_categoria || !categoriaForm.descripcion_categoria) {
+      alert("Todos los campos son obligatorios.");
+      return;
+    }
+  
     try {
+      const formData = new FormData();
+      formData.append("nombre_categoria", categoriaForm.nombre_categoria);
+      formData.append("descripcion_categoria", categoriaForm.descripcion_categoria);
+  
+      // Agregar imagen solo si es un nuevo archivo (evita enviar la URL como imagen)
+      if (categoriaForm.imagen && categoriaForm.imagen instanceof File) {
+        formData.append("imagen", categoriaForm.imagen);
+      }
+  
       const response = await fetch(
         `http://localhost:3000/api/v1/categorias/${categoriaForm.num_categoria}`,
         {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(categoriaForm), // Envía los datos actualizados
+          body: formData, // No agregamos headers, ya que `FormData` los maneja automáticamente.
         }
       );
+  
       if (!response.ok) {
-        throw new Error("Error al actualizar la categoria");
+        throw new Error("Error al actualizar la categoría");
       }
-      // Actualiza el estado con los datos modificados
+  
+      const updatedCategoria = await response.json();
+  
       setData((prevData) =>
         prevData.map((categoria) =>
           categoria.num_categoria === categoriaForm.num_categoria
-            ? categoriaForm
+            ? updatedCategoria // Se actualiza con la nueva respuesta del backend
             : categoria
         )
       );
-      setIsModalOpen(false); // Cierra el modal
+  
+      setIsModalOpen(false);
     } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
+      console.error("Error al actualizar la categoría:", error);
     }
   };
+  
+  
 
   useEffect(() => {
     fetchData(); // Llama a la función al montar el componente
@@ -124,9 +158,13 @@ const CategoriaTable = () => {
       accessorKey: "imagen",
       cell: ({ row }) => (
         <img
-          src={row.original.imagen}
+          src={`http://localhost:3000/imagenes/${row.original.imagen}`}
+          // Usa la ruta completa devuelta por el backend
           alt="Imagen de categoría"
           className="h-16 w-16 object-cover"
+          onError={(e) => {
+            e.target.src = "/assets/No imagen.jpg"; // Imagen por defecto
+          }}
         />
       ),
     },
@@ -156,12 +194,22 @@ const CategoriaTable = () => {
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: getPaginationRowModel(), // Habilitar paginación
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    state: { sorting, globalFilter: filtering },
+    state: {
+      sorting,
+      globalFilter: filtering,
+      pagination: { pageIndex: 0, pageSize: 5 }, // Limitar a 5 categorías por página
+    },
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
+    onPaginationChange: (updater) => {
+      // Actualizar el estado de paginación
+      if (typeof updater === "function") {
+        setPagination(updater);
+      }
+    },
   });
 
   return (
@@ -198,7 +246,7 @@ const CategoriaTable = () => {
           </h2>
 
           <form onSubmit={saveChanges}>
-            <div className=" gap-4">
+            <div className="gap-4">
               {/* Columna 1 */}
               <div>
                 <div className="mb-4">
@@ -216,7 +264,7 @@ const CategoriaTable = () => {
                 </div>
                 <div className="mb-4">
                   <label className="block mb-2 font-semibold">
-                    Descripcion
+                    Descripción
                   </label>
                   <input
                     type="text"
@@ -228,16 +276,20 @@ const CategoriaTable = () => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block mb-2 font-semibold">
-                    Imagen
-                  </label>
+                  <label className="block mb-2 font-semibold">Imagen</label>
+                  {/* Vista previa de la imagen */}
+                  {categoriaForm.imagen && (
+                    <img
+                      src={categoriaForm.imagen}
+                      alt="Vista previa"
+                      className="w-40 h-40 object-cover rounded-lg mb-2"
+                    />
+                  )}
                   <input
-                    type="text"
-                    name="imagen"
-                    value={categoriaForm.imagen}
-                    onChange={handleInputChange}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
                     className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
                   />
                 </div>
               </div>
@@ -263,7 +315,6 @@ const CategoriaTable = () => {
         </div>
       </ReactModal>
 
-      
       {/* Tabla */}
       <table className="min-w-full border border-gray-200 shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-800 text-white">
@@ -297,7 +348,24 @@ const CategoriaTable = () => {
             >
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="p-3 border-t">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  {cell.column.id === "imagen" ? ( // Aquí verificamos si la columna es la de la imagen
+                    row.original.imagen ? (
+                      <img
+                        src={row.original.imagen}
+                        alt="Imagen de categoría"
+                        className="w-20 h-20 object-cover rounded-full"
+                      />
+                    ) : (
+                      <div>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </div>
+                    )
+                  ) : (
+                    flexRender(cell.column.columnDef.cell, cell.getContext()) // Para las demás columnas
+                  )}
                 </td>
               ))}
             </tr>
@@ -336,8 +404,13 @@ const CategoriaTable = () => {
           Final
         </button>
       </div>
+      {/* Indicador de página */}
+      <div className="flex justify-center items-center mt-4">
+        <span className="text-gray-700">
+          Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
+        </span>
+      </div>
     </div>
   );
 };
-
 export default CategoriaTable;
