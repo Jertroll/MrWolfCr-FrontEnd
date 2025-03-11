@@ -1,20 +1,22 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate
+import { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Para redireccionar al usuario
+import { jwtDecode } from 'jwt-decode'; // Corregido: usa { jwtDecode }
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [contrasena, setContrasena] = useState('');
+  const [email, setEmail] = useState("");
+  const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Inicializa useNavigate
+  const navigate = useNavigate(); // Para redireccionar al usuario
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3000/api/v1/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      // Hacer la solicitud al backend
+      const response = await fetch("http://localhost:3000/api/v1/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, contrasena }),
       });
 
@@ -22,15 +24,20 @@ function Login() {
 
       if (response.ok) {
         // Almacena el token en sessionStorage
-        sessionStorage.setItem('token', data.token);
-        alert('Inicio de sesión exitoso');
-        navigate('/dashboard'); // Redirige al usuario a /dashboard
+        sessionStorage.setItem("token", data.token);
+
+        // Decodificar el token para verificar su contenido
+        const decodedToken = jwtDecode(data.token);
+        console.log("Token decodificado:", decodedToken);
+
+        alert("Inicio de sesión exitoso");
+        navigate("/home"); // Redirige al usuario a /dashboard
       } else {
-        setError(data.message || 'Error en la autenticación');
+        setError(data.message || "Error en la autenticación");
       }
     } catch (error) {
-      console.error('Error en la autenticación:', error);
-      setError('Error en la autenticación. Intenta de nuevo.');
+      console.error("Error en la autenticación:", error);
+      setError("Error en la autenticación. Intenta de nuevo.");
     }
   };
 
@@ -44,10 +51,7 @@ function Login() {
             'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("https://source.unsplash.com/featured/?interior")',
         }}
       >
-        <img
-          src="src/assets/mrwolf.jpg"
-          alt="Logo Mr Wolf Cr"
-        />
+        <img src="src/assets/mrwolf.jpg" alt="Logo Mr Wolf Cr" />
         <div className="text-white text-center">
           <h1 className="text-4xl font-bold mb-4">
             La exclusividad nos representa
@@ -57,12 +61,26 @@ function Login() {
 
       {/* Sección Derecha */}
       <div className="w-1/2 flex flex-col items-center justify-center bg-gray-100 p-8">
-        <h2 className="text-2xl font-semibold mb-2" style={{ color: "#2A4A10" }}>Mr Wolf Cr</h2>
-        <h3 className="text-xl font-bold mb-6" style={{ color: "#2A4A10" }}>Inicio de Sesión</h3>
-        <p className="mb-4 text-gray-600">Bienvenido, pon tus credenciales aquí</p>
+        <h2
+          className="text-2xl font-semibold mb-2"
+          style={{ color: "#2A4A10" }}
+        >
+          Mr Wolf Cr
+        </h2>
+        <h3 className="text-xl font-bold mb-6" style={{ color: "#2A4A10" }}>
+          Inicio de Sesión
+        </h3>
+        <p className="mb-4 text-gray-600">
+          Bienvenido, pon tus credenciales aquí
+        </p>
 
         <form onSubmit={handleLogin} className="w-full max-w-sm">
-          <label className="block mb-2 text-gray-700 font-semibold" style={{ color: "#2A4A10" }}>Email</label>
+          <label
+            className="block mb-2 text-gray-700 font-semibold"
+            style={{ color: "#2A4A10" }}
+          >
+            Email
+          </label>
           <input
             type="email"
             value={email}
@@ -72,7 +90,12 @@ function Login() {
             required
           />
 
-          <label className="block mb-2 text-gray-700 font-semibold" style={{ color: "#2A4A10" }}>Contraseña</label>
+          <label
+            className="block mb-2 text-gray-700 font-semibold"
+            style={{ color: "#2A4A10" }}
+          >
+            Contraseña
+          </label>
           <input
             type="password"
             value={contrasena}
@@ -103,8 +126,6 @@ function Login() {
             <span className="mx-4 text-gray-500">o</span>
             <span className="border-b border-gray-300 w-1/4"></span>
           </div>
-
-
         </form>
       </div>
     </div>
