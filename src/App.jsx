@@ -13,7 +13,9 @@ import HomeAdmin from './components/adminpanel/HomeAdmin';
 
 function App() {
   return (
-    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <BrowserRouter
+      future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+    >
       <Routes>
         <Route path="/" element={<HomeAdmin />} />
         <Route path="/dashboard/*" element={<DashboardCall />} /> {/* Usa /* para rutas anidadas */}
@@ -23,4 +25,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
