@@ -12,14 +12,13 @@ import Carrito from "./components/carrito/Carrito";
 import AgregarCategoria from './components/categoria/AgregarCategoria';
 import CategoriaTable from './components/categoria/CategoriaTable';
 import NavbarCliente from './components/VistaCliente/navbar/NavbarCliente';
-import FooterCliente from './components/VistaCliente/footer/FooterCliente';
-import CarruselInicio from './components/VistaCliente/carruselProducto/Carrusel';
+import Home from './components/VistaCliente/Paginas/Home';
 
 function App() {
   return (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
-        <Route path="/" element={<CarruselInicio />} />
+        <Route path="/" element={<Home />} />
         <Route path="/dashboard/*" element={<DashboardCall />} /> {/* Usa /* para rutas anidadas */}
         <Route path="/carrito" element={<Carrito />} />
       </Routes>
