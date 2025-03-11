@@ -11,12 +11,13 @@ import TableReact from './components/tableUsuario/TableReact';
 import AgregarCategoria from './components/categoria/AgregarCategoria';
 import CategoriaTable from './components/categoria/CategoriaTable';
 import NavbarCliente from './components/VistaCliente/navbar/NavbarCliente';
+import Home from './components/VistaCliente/Paginas/Home';
 
 function App() {
   return (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Home />} />
         <Route path="/dashboard/*" element={<DashboardCall />} /> {/* Usa /* para rutas anidadas */}
       </Routes>
     </BrowserRouter>

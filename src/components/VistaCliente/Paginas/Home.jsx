@@ -1,8 +1,12 @@
+import NavbarCliente from "../navbar/NavbarCliente";
 
 function Home() {
   return (
-    <div>Home</div>
-  )
+    <>
+      <NavbarCliente />
+      <div>Home</div>
+    </>
+  );
 }
 
-export default Home
+export default Home;
