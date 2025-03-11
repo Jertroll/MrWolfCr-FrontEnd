@@ -1,7 +1,6 @@
+import "./App.css";
 
-import './App.css'
-
-
+import ProtectedRoute from "./components/ProtectedRoute";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import DashboardCall from './components/adminpanel/DashboardCall';
 import Login from './components/loginForm/Login';
@@ -16,14 +15,25 @@ import Home from './components/VistaCliente/Paginas/Home';
 
 function App() {
   return (
-    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <BrowserRouter
+      future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
+    >
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/dashboard/*" element={<DashboardCall />} /> {/* Usa /* para rutas anidadas */}
-        <Route path="/carrito" element={<Carrito />} />
+        <Route path="/" element={<Login />} />
+        <Route
+          path="/dashboard/*"
+          element={
+            <ProtectedRoute requiredRole="Administrador">
+              <DashboardCall />
+            </ProtectedRoute>
+          }
+        />
+        {/* Otras rutas públicas */}
+        <Route path="/home" element={<Home />} />
+        <Route path="/registro" element={<RegistroUsuarioCliente />} />
       </Routes>
     </BrowserRouter>
   );
 }
 
-export default App
+export default App;
