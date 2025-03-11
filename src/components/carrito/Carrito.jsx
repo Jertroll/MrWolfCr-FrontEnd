@@ -17,64 +17,82 @@ const Carrito = () => {
             .catch((error) => console.error("Error al cargar el carrito", error));
     }, []);
 
-    const actualizarCantidad = async (usuarioId, productoId, cantidad) => {
+    const actualizarCantidad = async (productoId, nuevaCantidad) => {
+        // Verificar que el producto exista en el carrito
+        const productoExistente = carrito.find(item => item.productoId === productoId);
+        if (!productoExistente) {
+            console.error("Producto no encontrado en el carrito.");
+            return;
+        }
+
         try {
-            const response = await fetch(`http://localhost:3000/api/v1/carrito`, {
-                method: 'PUT',
+            const response = await fetch("http://localhost:3000/api/v1/carrito", {
+                method: "PUT",
                 headers: {
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ usuarioId, productoId, cantidad }), // Asegúrate de enviar todos los parámetros necesarios
+                body: JSON.stringify({
+                    usuarioId: Number(usuarioId),
+                    productoId: Number(productoId),
+                    cantidad: Number(nuevaCantidad),
+                }),
             });
-    
+
             if (!response.ok) {
-                const errorDetails = await response.json(); // O usa response.text() si no es JSON
-                throw new Error(`Error ${response.status}: ${errorDetails.message}`);
+                const errorMessage = await response.text();
+                throw new Error(`Error ${response.status}: ${errorMessage}`);
             }
-    
-            const updatedProducto = await response.json(); // Maneja la respuesta aquí
-            setCarrito((prevCarrito) =>
-                prevCarrito.map((producto) =>
-                    producto.productoId === updatedProducto.productoId ? updatedProducto : producto
+
+            // Actualizar el carrito en el estado
+            setCarrito(prevCarrito => 
+                prevCarrito.map(item => 
+                    item.productoId === productoId ? { ...item, cantidad: nuevaCantidad } : item
                 )
             );
-    
+
+            console.log("Cantidad actualizada con éxito");
         } catch (error) {
             console.error("Error al actualizar cantidad:", error);
         }
     };
-    
-    
-// Eliminar producto
-function eliminarProducto(usuarioId, productoId) {
-    fetch('http://localhost:3000/api/v1/carrito', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ usuarioId, productoId }), // Enviar ambos IDs en el cuerpo
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Error al eliminar el producto');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Producto eliminado:', data);
-      // Actualiza la UI según sea necesario
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
-  }
 
+    const eliminarProducto = async (productoId) => {
+        // Verificar que el producto exista en el carrito
+        const productoExistente = carrito.find(item => item.productoId === productoId);
+        if (!productoExistente) {
+            console.error("Producto no encontrado en el carrito.");
+            return;
+        }
+
+        try {
+            const response = await fetch("http://localhost:3000/api/v1/carrito", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ 
+                    usuarioId: Number(usuarioId),
+                    productoId: Number(productoId),
+                }),
+            });
+
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw new Error(`Error ${response.status}: ${errorMessage}`);
+            }
+
+            // Eliminar el producto del carrito en el estado
+            setCarrito(prevCarrito => prevCarrito.filter(item => item.productoId !== productoId));
+
+            console.log("Producto eliminado:", productoId);
+        } catch (error) {
+            console.error("Error al eliminar producto:", error);
+        }
+    };
 
     // Vaciar carrito
     const vaciarCarrito = () => {
-        fetch(`http://localhost:3000/api/v1/carrito/${usuarioId}`, {
-            method: "DELETE",
-        })
+        fetch(`http://localhost:3000/api/v1/carrito/${usuarioId}`, { method: "DELETE" })
             .then(() => {
                 setCarrito([]); // Vaciar el estado del carrito
             })
@@ -118,7 +136,7 @@ function eliminarProducto(usuarioId, productoId) {
                                             min="1"
                                             readOnly
                                         />
-                                        <button onClick={() => actualizarCantidad(producto.productoId, producto.cantidad + 1)}>+</button>
+                                        <button onClick={() => actualizarCantidad(producto.productoId, (producto.cantidad ?? 0) + 1)}>+</button>
                                         <button onClick={() => eliminarProducto(producto.productoId)} className="eliminar">&#128465;</button>
                                     </td>
                                 </tr>
