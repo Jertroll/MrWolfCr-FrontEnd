@@ -3,7 +3,6 @@ import { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -11,11 +10,11 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import IconButton from '@mui/material/IconButton';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PersonIcon from '@mui/icons-material/Person';
-
-import Carrito from "../../carrito/Carrito";// Importa el componente del carrito
+import Carrito from '../../carrito/Carrito'; // Importa el componente del carrito
 
 const pages = ['Mujer', 'Hombre'];
 const settings = ['Perfil', 'Cuenta', 'Dashboard', 'Salir'];
@@ -23,7 +22,7 @@ const settings = ['Perfil', 'Cuenta', 'Dashboard', 'Salir'];
 function NavbarCliente() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const [mostrarCarrito, setMostrarCarrito] = useState(false);  // Estado para mostrar el carrito
+  const [mostrarCarrito, setMostrarCarrito] = useState(false);
 
   const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
   const handleCloseNavMenu = () => setAnchorElNav(null);
@@ -61,7 +60,7 @@ function NavbarCliente() {
               Mr.Wolf
             </Typography>
 
-            {/* Menú responsive */}
+            {/* Menú Responsive */}
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
               <IconButton size="large" onClick={handleOpenNavMenu} color="inherit">
                 <MenuIcon />
@@ -97,7 +96,6 @@ function NavbarCliente() {
             <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center', gap: 2 }}>
               <LocalMallIcon fontSize="medium" />
               
-              {/* Botón del carrito de compras */}
               <IconButton onClick={() => setMostrarCarrito(!mostrarCarrito)} color="inherit">
                 <ShoppingCartIcon fontSize="medium" />
               </IconButton>
@@ -124,47 +122,9 @@ function NavbarCliente() {
           </Toolbar>
         </Container>
       </AppBar>
-
-       {/* Muestra el carrito si está activado */}
-       {mostrarCarrito && Carrito && <Carrito />}
+      {/* Muestra el carrito si está activado */}
+      {mostrarCarrito && <Carrito />}
     </>
-
-          <Box sx={{ flexGrow: 0 }}>
-         
-          <LocalMallIcon fontSize='medium' sx={{mr: 1}}></LocalMallIcon>
-          <ShoppingCartIcon fontSize='medium' sx={{mr: 1}}></ShoppingCartIcon>
-
-            <Tooltip title="Opciones">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <PersonIcon fontSize='medium' sx={{color: 'white' }}></PersonIcon>
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
   );
 }
 
