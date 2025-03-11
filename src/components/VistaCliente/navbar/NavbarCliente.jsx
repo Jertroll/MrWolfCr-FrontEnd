@@ -128,6 +128,43 @@ function NavbarCliente() {
        {/* Muestra el carrito si está activado */}
        {mostrarCarrito && Carrito && <Carrito />}
     </>
+
+          <Box sx={{ flexGrow: 0 }}>
+         
+          <LocalMallIcon fontSize='medium' sx={{mr: 1}}></LocalMallIcon>
+          <ShoppingCartIcon fontSize='medium' sx={{mr: 1}}></ShoppingCartIcon>
+
+            <Tooltip title="Opciones">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <PersonIcon fontSize='medium' sx={{color: 'white' }}></PersonIcon>
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 }
 
