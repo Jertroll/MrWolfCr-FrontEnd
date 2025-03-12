@@ -10,6 +10,7 @@ import AgregarCategoria from './components/categoria/AgregarCategoria';
 import CategoriaTable from './components/categoria/CategoriaTable';
 import NavbarCliente from './components/VistaCliente/navbar/NavbarCliente';
 import HomeAdmin from './components/adminpanel/HomeAdmin';
+import Home from './components/VistaCliente/Paginas/Home';
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
       future={{ v7_startTransition: true, v7_relativeSplatPath: true }}
     >
       <Routes>
-        <Route path="/" element={<HomeAdmin />} />
+        <Route path="/" element={<Home/>} />
         <Route path="/dashboard/*" element={<DashboardCall />} /> {/* Usa /* para rutas anidadas */}
         
       </Routes>

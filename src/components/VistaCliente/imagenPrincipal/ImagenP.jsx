@@ -37,14 +37,14 @@ const ImagenP = () => {
         transition={{ duration: 1 }}
         className="relative text-center px-6">
         
-        <h1 className="text-5xl font-bold mb-4">Nueva colección de verano</h1>
-        <p className="text-lg mb-6">Descubre los últimos estilos y tendencias para esta temporada.</p>
+        <h1 className="text-5xl font-bold mb-4">Mr.Wolf</h1>
+        <p className="text-lg mb-6">Estilo y comodidad al alcanze de tu mano.</p>
         
         <motion.a 
           whileHover={{ scale: 1.1 }} 
           whileTap={{ scale: 0.9 }}
           href="#coleccion"
-          className="bg-pink-600 px-6 py-3 rounded-full text-lg font-semibold shadow-lg hover:bg-pink-700 transition">
+          className="bg-green-600 px-6 py-3 rounded-full text-lg font-semibold shadow-lg hover:bg-green-700 transition">
           Ver colección
         </motion.a>
       </motion.div>
