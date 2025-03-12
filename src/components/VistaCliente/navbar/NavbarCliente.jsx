@@ -14,7 +14,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import PersonIcon from "@mui/icons-material/Person";
 import { jwtDecode } from "jwt-decode"; // Importa jwt-decode
-import Carrito from '../../carrito/Carrito';
+import Carrito from '../carrito/Carrito';
 import { useNavigate } from "react-router-dom"; // Importa useNavigate
 
 const pages = ["Mujer", "Hombre"];
@@ -148,10 +148,10 @@ function NavbarCliente() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <LocalMallIcon fontSize="medium" sx={{ mr: 1 }} />
-            <IconButton onClick={() => setMostrarCarrito(!mostrarCarrito)} color="inherit">
-                <ShoppingCartIcon fontSize="medium" />
-              </IconButton>
+    <LocalMallIcon fontSize="medium" sx={{ mr: 1 }} />
+    <IconButton onClick={() => navigate("/carrito")} color="inherit"> 
+    <ShoppingCartIcon fontSize="medium" />
+    </IconButton>
 
             <Tooltip title="Opciones">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

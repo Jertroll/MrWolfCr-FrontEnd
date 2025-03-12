@@ -1,21 +1,43 @@
 import React, { useState, useEffect } from "react";
 import "./Carrito.css"; // Importamos los estilos
+const obtenerUsuarioIdDesdeToken = () => {
+    const token = sessionStorage.getItem("token"); // O sessionStorage.getItem("token");
+    if (!token) return null; // Si no hay token, devuelve null
 
-const usuarioId = "2"; // Reemplaza con el ID real del usuario
+    try {
+        const base64Url = token.split(".")[1]; // Extrae la parte útil del JWT
+        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+        const jsonPayload = decodeURIComponent(
+            atob(base64)
+                .split("")
+                .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+                .join("")
+        );
+        const { usuarioId } = JSON.parse(jsonPayload); // Extrae el usuarioId
+        return usuarioId;
+    } catch (error) {
+        console.error("Error al decodificar el token:", error);
+        return null;
+    }
+};
 
+const usuarioId = obtenerUsuarioIdDesdeToken();
 const Carrito = () => {
     const [carrito, setCarrito] = useState([]);
 
     // Cargar el carrito desde el backend
     useEffect(() => {
-        fetch(`http://localhost:3000/api/v1/carrito/${usuarioId}`)
-            .then((res) => res.json())
-            .then((data) => {
-                console.log("Datos recibidos:", data);
-                setCarrito(Array.isArray(data) ? data : []);
-            })
-            .catch((error) => console.error("Error al cargar el carrito", error));
-    }, []);
+        if (!usuarioId) return; // Evita errores si no hay usuario logueado
+    
+        fetch(`http://localhost:3000/api/v1/carrito/${usuarioId}`, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem("token")}`, // Envía el token en la cabecera
+            },
+        })
+        .then((res) => res.json())
+        .then((data) => setCarrito(Array.isArray(data) ? data : []))
+        .catch((error) => console.error("Error al cargar el carrito", error));
+    }, [usuarioId]);
 
     const actualizarCantidad = async (productoId, nuevaCantidad) => {
         // Verificar que el producto exista en el carrito
@@ -102,7 +124,7 @@ const Carrito = () => {
     return (
         <div className="carrito-container">
             <h2 className="titulo">Tu carrito</h2>
-            <a href="/tienda" className="seguir-comprando">Seguir comprando</a>
+            <a href="/home" className="seguir-comprando">Seguir comprando</a>
 
             {carrito.length === 0 ? (
                 <p className="carrito-vacio">Tu carrito está vacío</p>
