@@ -18,11 +18,11 @@ const EditarProductoModal = ({
 
   // Opciones de tallas (deben coincidir con las tallas en la base de datos)
   const tallasOptions = [
-    { value: 1, label: "S" },
-    { value: 2, label: "M" },
-    { value: 3, label: "L" },
-    { value: 4, label: "X" },
-    { value: 5, label: "XL" },
+    { value: "1", label: "XS" },
+    { value: "2", label: "S" },
+    { value: "3", label: "M" },
+    { value: "4", label: "L" },
+    { value: "5", label: "XL" },
   ];
 
   // Cargar las tallas seleccionadas al abrir el modal

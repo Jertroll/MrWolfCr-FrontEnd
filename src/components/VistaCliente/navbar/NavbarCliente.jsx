@@ -1,36 +1,63 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Menu from "@mui/material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
+import Container from "@mui/material/Container";
+import Button from "@mui/material/Button";
+import Tooltip from "@mui/material/Tooltip";
+import MenuItem from "@mui/material/MenuItem";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import LocalMallIcon from "@mui/icons-material/LocalMall";
+import PersonIcon from "@mui/icons-material/Person";
+import { jwtDecode } from "jwt-decode"; // Importa jwt-decode
 
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import LocalMallIcon from '@mui/icons-material/LocalMall';
-import { createTheme } from '@mui/material/styles';
-import { green } from '@mui/material/colors';
-import PersonIcon from '@mui/icons-material/Person';
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
 
-const pages = ['Mujer', 'Hombre',];
-const settings = ['Perfil', 'Account', 'Dashboard', 'Salir'];
-
-
+const pages = ["Mujer", "Hombre"];
+const settings = ["Perfil", "Account", "Salir"]; // Elimina 'Dashboard' de aquí
 
 function NavbarCliente() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [userRole, setUserRole] = React.useState(null); // Estado para almacenar el rol del usuario
+
+
+
+  const navigate = useNavigate(); // Hook para redireccionar
+
+  const handleLogout = () => {
+      sessionStorage.removeItem("token"); // Elimina el token
+      navigate("/login"); // Redirige al login
+  };
+
+  const handleDashboardClick = () => {
+    handleCloseUserMenu(); // Cierra el menú
+    navigate("/dashboard"); // Redirige a /dashboard
+};
+
+
+
+  // Efecto para decodificar el token y obtener el rol del usuario
+  React.useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        setUserRole(decodedToken.rol); // Guarda el rol en el estado
+      } catch (error) {
+        console.error("Error al decodificar el token:", error);
+      }
+    }
+  }, []);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -43,12 +70,17 @@ function NavbarCliente() {
     setAnchorElUser(null);
   };
 
-
   return (
-    <AppBar position="static" sx={{backgroundColor: '#203500'}} >
-      <Container maxWidth="flase">
+    <AppBar position="static" sx={{ backgroundColor: "#203500" }}>
+      <Container maxWidth="false">
         <Toolbar disableGutters>
-          <img style={{ marginRight: '10px' }} width="50" height="50"  src="src\assets\Logo Circular Mr Wolf-Photoroom.png" alt="Logo de Mr Wolf Sin fondo" />
+          <img
+            style={{ marginRight: "10px" }}
+            width="50"
+            height="50"
+            src="src/assets/Logo Circular Mr Wolf-Photoroom.png"
+            alt="Logo de Mr Wolf Sin fondo"
+          />
 
           <Typography
             variant="h6"
@@ -57,18 +89,18 @@ function NavbarCliente() {
             href="#app-bar-with-responsive-menu"
             sx={{
               mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
+              display: { xs: "none", md: "flex" },
+              fontFamily: "monospace",
               fontWeight: 700,
-              letterSpacing: '.1rem',
-              color: 'inherit',
-              textDecoration: 'none',
+              letterSpacing: ".1rem",
+              color: "inherit",
+              textDecoration: "none",
             }}
           >
             Mr.Wolf
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -83,88 +115,86 @@ function NavbarCliente() {
               id="menu-appbar"
               anchorEl={anchorElNav}
               anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
+                vertical: "bottom",
+                horizontal: "left",
               }}
               keepMounted
               transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
+                vertical: "top",
+                horizontal: "left",
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              sx={{ display: { xs: 'block', md: 'none' } }}
+              sx={{ display: { xs: "block", md: "none" } }}
             >
               {pages.map((page) => (
                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                  <Typography sx={{ textAlign: "center" }}>{page}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                sx={{ my: 2, color: "white", display: "block" }}
               >
                 {page}
               </Button>
             ))}
           </Box>
 
-
           <Box sx={{ flexGrow: 0 }}>
-         
-          <LocalMallIcon fontSize='medium' sx={{mr: 1}}></LocalMallIcon>
-          <ShoppingCartIcon fontSize='medium' sx={{mr: 1}}></ShoppingCartIcon>
+            <LocalMallIcon fontSize="medium" sx={{ mr: 1 }} />
+            <ShoppingCartIcon fontSize="medium" sx={{ mr: 1 }} />
 
             <Tooltip title="Opciones">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <PersonIcon fontSize='medium' sx={{color: 'white' }}></PersonIcon>
+                <PersonIcon fontSize="medium" sx={{ color: "white" }} />
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: '45px' }}
+              sx={{ mt: "45px" }}
               id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+                vertical: "top",
+                horizontal: "right",
               }}
               keepMounted
               transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+                vertical: "top",
+                horizontal: "right",
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+              {settings.map((setting) =>
+                setting === "Salir" ? (
+                  <MenuItem key={setting} onClick={handleLogout}>
+                    <Typography sx={{ textAlign: "center" }}>
+                      {setting}
+                    </Typography>
+                  </MenuItem>
+                ) : (
+                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                    <Typography sx={{ textAlign: "center" }}>
+                      {setting}
+                    </Typography>
+                  </MenuItem>
+                )
+              )}
+              {/* Mostrar 'Dashboard' solo si el usuario es Administrador */}
+              {userRole === "Administrador" && (
+                <MenuItem onClick={handleDashboardClick}>
+                  <Typography sx={{ textAlign: "center" }}>
+                    Dashboard
+                  </Typography>
                 </MenuItem>
-              ))}
+              )}
             </Menu>
           </Box>
         </Toolbar>
@@ -172,4 +202,5 @@ function NavbarCliente() {
     </AppBar>
   );
 }
+
 export default NavbarCliente;

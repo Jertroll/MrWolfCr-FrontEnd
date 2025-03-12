@@ -5,10 +5,10 @@ import Select from "react-select";
 
 // Opciones de tallas
 const tallasOptions = [
-  { value: "1", label: "S" },
-  { value: "2", label: "M" },
-  { value: "3", label: "L" },
-  { value: "4", label: "X" },
+  { value: "1", label: "XS" },
+  { value: "2", label: "S" },
+  { value: "3", label: "M" },
+  { value: "4", label: "L" },
   { value: "5", label: "XL" },
 ];
 
@@ -174,6 +174,7 @@ const AgregarProductos = () => {
                 )}
                 onChange={handleTallasChange}
                 className="w-full"
+                inputId="tallas" // Agrega un ID para el input
               />
             </div>
             <div>
