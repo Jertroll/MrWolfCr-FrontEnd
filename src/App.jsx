@@ -13,12 +13,13 @@ import CategoriaTable from './components/categoria/CategoriaTable';
 import NavbarCliente from './components/VistaCliente/navbar/NavbarCliente';
 import FooterCliente from './components/VistaCliente/footer/FooterCliente';
 import CarruselInicio from './components/VistaCliente/carruselProducto/Carrusel';
+import ProductosAleatorios from './components/VistaCliente/proAleactorios/ProductosAleatorios';
 
 function App() {
   return (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
-        <Route path="/" element={<CarruselInicio />} />
+        <Route path="/" element={<ProductosAleatorios />} />
         <Route path="/dashboard/*" element={<DashboardCall />} /> {/* Usa /* para rutas anidadas */}
       </Routes>
     </BrowserRouter>
