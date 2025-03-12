@@ -11,6 +11,7 @@ import TableReact from "./components/tableUsuario/TableReact";
 import AgregarCategoria from "./components/categoria/AgregarCategoria";
 import CategoriaTable from "./components/categoria/CategoriaTable";
 import NavbarCliente from "./components/VistaCliente/navbar/NavbarCliente";
+import Carrito from "./components/VistaCliente/carrito/Carrito";
 import Home from "./components/VistaCliente/Paginas/Home";
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
         />
         {/* Otras rutas públicas */}
         <Route path="/home" element={<Home />} />
+        <Route path="/carrito" element={<Carrito />} />
         <Route path="/registro" element={<RegistroUsuarioCliente />} />
       </Routes>
     </BrowserRouter>

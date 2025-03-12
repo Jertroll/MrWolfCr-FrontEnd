@@ -14,7 +14,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import PersonIcon from "@mui/icons-material/Person";
 import { jwtDecode } from "jwt-decode"; // Importa jwt-decode
-
+import Carrito from '../carrito/Carrito';
 import { useNavigate } from "react-router-dom"; // Importa useNavigate
 
 const pages = ["Mujer", "Hombre"];
@@ -24,7 +24,7 @@ function NavbarCliente() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [userRole, setUserRole] = React.useState(null); // Estado para almacenar el rol del usuario
-
+  const [mostrarCarrito, setMostrarCarrito] =  React.useState(false);
 
 
   const navigate = useNavigate(); // Hook para redireccionar
@@ -148,8 +148,10 @@ function NavbarCliente() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <LocalMallIcon fontSize="medium" sx={{ mr: 1 }} />
-            <ShoppingCartIcon fontSize="medium" sx={{ mr: 1 }} />
+    <LocalMallIcon fontSize="medium" sx={{ mr: 1 }} />
+    <IconButton onClick={() => navigate("/carrito")} color="inherit"> 
+    <ShoppingCartIcon fontSize="medium" />
+    </IconButton>
 
             <Tooltip title="Opciones">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
