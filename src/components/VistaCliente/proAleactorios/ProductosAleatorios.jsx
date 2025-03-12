@@ -36,7 +36,7 @@ const ProductosAleatorios = () => {
           <img 
             src={`http://localhost:3000/public/ImgProductos/${producto.imagenes[0]?.nomImagen}`}
             alt={producto.nombre} 
-            className="w-full h-32 object-cover rounded-md"
+            className="w-full h-32 object-contain rounded-md"
           />
           <h3 className="text-sm font-semibold mt-1">{producto.nombre}</h3>
           <p className="text-gray-700 text-sm">₡{producto.precio}</p>
