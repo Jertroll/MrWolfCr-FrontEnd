@@ -22,6 +22,7 @@ const ProductosAleatorios = () => {
   }, []);
 
   const verDetalleProducto = (id) => {
+    console.log("Redirigiendo a:", id); // Verifica que el ID es correcto
     navigate(`/producto/${id}`); // Redirige a la página del producto
   };
 

@@ -13,6 +13,8 @@ import CategoriaTable from "./components/categoria/CategoriaTable";
 import NavbarCliente from "./components/VistaCliente/navbar/NavbarCliente";
 import Carrito from "./components/VistaCliente/carrito/Carrito";
 import Home from "./components/VistaCliente/Paginas/Home";
+import ProductosAleatorios  from"./components/VistaCliente/proAleactorios/ProductosAleatorios";
+import DetalleProducto from "./components/VistaCliente/Paginas/DetalleProducto";
 
 function App() {
   return (
@@ -33,6 +35,12 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/carrito" element={<Carrito />} />
         <Route path="/registro" element={<RegistroUsuarioCliente />} />
+
+        {/* Nueva ruta para productos aleatorios */}
+        <Route path="/productos" element={<ProductosAleatorios />} />
+
+        {/* Ruta para el detalle del producto con ID dinámico */}
+        <Route path="/producto/:id" element={<DetalleProducto />} />
       </Routes>
     </BrowserRouter>
   );
