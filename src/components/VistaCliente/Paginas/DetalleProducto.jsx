@@ -23,6 +23,10 @@ const DetalleProducto = () => {
     fetchProducto();
   }, [id]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
+  
   if (!producto) return <p>Cargando producto...</p>;
 
   const cambiarImagen = (index) => setImagenIndex(index);
