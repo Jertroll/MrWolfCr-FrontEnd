@@ -31,7 +31,7 @@ function NavbarCliente() {
 
   const handleLogout = () => {
       sessionStorage.removeItem("token"); // Elimina el token
-      navigate("/"); // Redirige al login
+      navigate("/ "); // Redirige al login
   };
 
   const handleDashboardClick = () => {
