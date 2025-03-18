@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import EditarProductoModal from "./paginas modal/EditarProductoModal";
 import ImagenesProductoModal from "./paginas modal/ImagenesProductoModal";
 import "./tableProducto.css";
+import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
 
 const ProductoTable = () => {
   const navigate = useNavigate();
@@ -179,7 +180,7 @@ const ProductoTable = () => {
         <div className="flex items-center space-x-2">
           {row.original.imagenes &&
             row.original.imagenes
-              .slice(0, 3)
+              .slice(0, 1)
               .map((imagen, index) => (
                 <img
                   key={index}
@@ -188,12 +189,13 @@ const ProductoTable = () => {
                   className="h-16 w-16 object-cover"
                 />
               ))}
-          {row.original.imagenes && row.original.imagenes.length > 2 && (
+          {row.original.imagenes && row.original.imagenes.length > 1 && (
             <button
               className="text-blue-500 hover:text-blue-700"
               onClick={() => openImageModal(row.original.imagenes)}
+              aria-label="Ver más imágenes"
             >
-              +{row.original.imagenes.length - 3}
+              <ZoomOutMapIcon className="w-6 h-6"/> {/* Mostrar el ícono en lugar del botón */}
             </button>
           )}
         </div>
