@@ -10,7 +10,7 @@ const ProductosPorCategoria =() => {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/v1/productos/categoria/${id}`);
+        const response = await fetch(`http://localhost:3000/api/v1/productos/categoria/${id}`);// http://localhost:3000/api/v1/productos/categoria/1
         if (!response.ok) throw new Error("Error al obtener los productos");
         const data = await response.json();
         setProductos(data);
@@ -29,12 +29,7 @@ const ProductosPorCategoria =() => {
   };
 
   return (
-    <div className="productos-container">
-      <h2>Productos de la categoría {id}</h2>
-      {productos.length === 0 ? (
-        <p>No hay productos disponibles.</p>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 p-2">
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 p-2">
       {productos.map((producto) => (
         <div 
           key={producto.id} 
@@ -50,8 +45,6 @@ const ProductosPorCategoria =() => {
           <p className="text-gray-700 text-sm">₡{producto.precio}</p>
         </div>
       ))}
-    </div>
-      )}
     </div>
   );
 };
