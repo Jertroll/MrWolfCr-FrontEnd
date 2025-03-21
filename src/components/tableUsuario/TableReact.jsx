@@ -142,10 +142,14 @@ function TableReact() {
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: getPaginationRowModel(), // Habilitar paginación
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    state: { sorting, globalFilter: filtering },
+    state: {
+      sorting,
+      globalFilter: filtering,
+      pagination: { pageIndex: 0, pageSize: 10 }, // Limitar a 10 usuarios por página
+    },
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
   });
@@ -169,134 +173,150 @@ function TableReact() {
       {/* Formulario para editar usuario con Modal */}
 
       <ReactModal
-  isOpen={isModalOpen}
-  onRequestClose={() => setIsModalOpen(false)}
-  contentLabel="Editar Usuario"
-  className="modal"
-  overlayClassName="overlay"
->
-  <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
-    <h2 className="text-2xl font-bold text-center mb-6">Editor de Usuario</h2>
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="Editar Usuario"
+        className="modal"
+        overlayClassName="overlay"
+      >
+        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
+          <h2 className="text-2xl font-bold text-center mb-6">
+            Editor de Usuario
+          </h2>
 
-    <form onSubmit={saveChanges}>
-      <div className="grid grid-cols-2 gap-4">
-        {/* Columna 1 */}
-        <div>
-          <div className="mb-4">
-            <label className="block mb-2 font-semibold">Nombre de Usuario</label>
-            <input
-              type="text"
-              name="nombre_usuario"
-              value={userForm.nombre_usuario}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2 font-semibold">Nombre Completo</label>
-            <input
-              type="text"
-              name="nombre_completo"
-              value={userForm.nombre_completo}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2 font-semibold">Correo Electrónico</label>
-            <input
-              type="email"
-              name="email"
-              value={userForm.email}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2 font-semibold">Teléfono</label>
-            <input
-              type="tel"
-              name="telefono"
-              value={userForm.telefono}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-              required
-            />
-          </div>
+          <form onSubmit={saveChanges}>
+            <div className="grid grid-cols-2 gap-4">
+              {/* Columna 1 */}
+              <div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">
+                    Nombre de Usuario
+                  </label>
+                  <input
+                    type="text"
+                    name="nombre_usuario"
+                    value={userForm.nombre_usuario}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">
+                    Nombre Completo
+                  </label>
+                  <input
+                    type="text"
+                    name="nombre_completo"
+                    value={userForm.nombre_completo}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">
+                    Correo Electrónico
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={userForm.email}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">Teléfono</label>
+                  <input
+                    type="tel"
+                    name="telefono"
+                    value={userForm.telefono}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Columna 2 */}
+              <div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">
+                    Dirección de Residencia
+                  </label>
+                  <input
+                    type="text"
+                    name="direccion_envio"
+                    value={userForm.direccion_envio}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">
+                    Correo de Facturación
+                  </label>
+                  <input
+                    type="email"
+                    name="email_facturacion"
+                    value={userForm.email_facturacion}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">
+                    Imagen de Perfil
+                  </label>
+                  <input
+                    type="text"
+                    name="imagen"
+                    value={userForm.imagen}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block mb-2 font-semibold">
+                    Tipo de Rol
+                  </label>
+                  <select
+                    name="rol"
+                    value={userForm.rol}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
+                    required
+                  >
+                    <option value="Cliente">Cliente</option>
+                    <option value="Administrador">Administrador</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Botones de Acción */}
+            <div className="flex justify-center space-x-4 mt-6">
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="bg-gray-300 text-black px-6 py-2 rounded-lg font-semibold hover:bg-gray-400"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600"
+              >
+                Guardar
+              </button>
+            </div>
+          </form>
         </div>
-
-        {/* Columna 2 */}
-        <div>
-          <div className="mb-4">
-            <label className="block mb-2 font-semibold">Dirección de Residencia</label>
-            <input
-              type="text"
-              name="direccion_envio"
-              value={userForm.direccion_envio}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2 font-semibold">Correo de Facturación</label>
-            <input
-              type="email"
-              name="email_facturacion"
-              value={userForm.email_facturacion}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2 font-semibold">Imagen de Perfil</label>
-            <input
-              type="text"
-              name="imagen"
-              value={userForm.imagen}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2 font-semibold">Tipo de Rol</label>
-            <select
-              name="rol"
-              value={userForm.rol}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-              required
-            >
-              <option value="Cliente">Cliente</option>
-              <option value="Administrador">Administrador</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Botones de Acción */}
-      <div className="flex justify-center space-x-4 mt-6">
-        <button
-          type="button"
-          onClick={() => setIsModalOpen(false)}
-          className="bg-gray-300 text-black px-6 py-2 rounded-lg font-semibold hover:bg-gray-400"
-        >
-          Cancelar
-        </button>
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600"
-        >
-          Guardar
-        </button>
-      </div>
-    </form>
-  </div>
-</ReactModal>
+      </ReactModal>
 
       <table className="min-w-full border border-gray-200 shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-800 text-white">
@@ -338,7 +358,8 @@ function TableReact() {
       </table>
 
       {/* Paginación */}
-      <div className="flex justify-between mt-4">
+      <div className="flex justify-between items-center mt-4">
+        {/* Botón para ir a la primera página */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.setPageIndex(0)}
@@ -346,6 +367,8 @@ function TableReact() {
         >
           Inicio
         </button>
+
+        {/* Botón para ir a la página anterior */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.previousPage()}
@@ -353,6 +376,14 @@ function TableReact() {
         >
           Anterior
         </button>
+
+        {/* Indicador de página actual y total de páginas */}
+        <span className="text-gray-700">
+          Página {table.getState().pagination.pageIndex + 1} de{" "}
+          {table.getPageCount()}
+        </span>
+
+        {/* Botón para ir a la página siguiente */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.nextPage()}
@@ -360,6 +391,8 @@ function TableReact() {
         >
           Siguiente
         </button>
+
+        {/* Botón para ir a la última página */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.setPageIndex(table.getPageCount() - 1)}

@@ -115,13 +115,7 @@ function RegistroUsuarioCliente() {
             required
           />
 
-          <label className="block mb-2 font-semibold">Imagen de perfil</label>
-          <input
-            type="file"
-            name="imagen"
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-          />
+
 
           <button
             type="submit"
@@ -131,7 +125,7 @@ function RegistroUsuarioCliente() {
           </button>
 
           <p className="text-center text-gray-600 mt-4">
-            ¿Ya tiene una cuenta? <a href="#" className="text-red-500">Inicie sesión aquí</a>
+            ¿Ya tiene una cuenta? <a href="/login" className="text-red-500">Inicie sesión aquí</a>
           </p>
         </form>
       </div>

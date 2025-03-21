@@ -14,45 +14,50 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import PersonIcon from "@mui/icons-material/Person";
 import { jwtDecode } from "jwt-decode"; // Importa jwt-decode
-import Carrito from '../carrito/Carrito';
 import { useNavigate } from "react-router-dom"; // Importa useNavigate
 
 const pages = ["Mujer", "Hombre"];
-const settings = ["Perfil", "Account", "Salir"]; // Elimina 'Dashboard' de aquí
+const settings = ["Perfil", "Account", "Salir"]; // Opciones del menú cuando el usuario ha iniciado sesión
 
 function NavbarCliente() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [userRole, setUserRole] = React.useState(null); // Estado para almacenar el rol del usuario
-  const [mostrarCarrito, setMostrarCarrito] =  React.useState(false);
-
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false); // Estado para verificar si el usuario ha iniciado sesión
 
   const navigate = useNavigate(); // Hook para redireccionar
 
-  const handleLogout = () => {
-      sessionStorage.removeItem("token"); // Elimina el token
-      navigate("/ "); // Redirige al login
-  };
-
-  const handleDashboardClick = () => {
-    handleCloseUserMenu(); // Cierra el menú
-    navigate("/dashboard"); // Redirige a /dashboard
-};
-
-
-
-  // Efecto para decodificar el token y obtener el rol del usuario
+  // Verificar si el usuario ha iniciado sesión al cargar el componente
   React.useEffect(() => {
     const token = sessionStorage.getItem("token");
     if (token) {
       try {
         const decodedToken = jwtDecode(token);
         setUserRole(decodedToken.rol); // Guarda el rol en el estado
+        setIsLoggedIn(true); // El usuario ha iniciado sesión
       } catch (error) {
         console.error("Error al decodificar el token:", error);
       }
+    } else {
+      setIsLoggedIn(false); // El usuario no ha iniciado sesión
     }
   }, []);
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("token"); // Elimina el token
+    setIsLoggedIn(false); // Actualiza el estado de inicio de sesión
+    navigate("/"); // Redirige al login
+  };
+
+  const handleDashboardClick = () => {
+    handleCloseUserMenu(); // Cierra el menú
+    navigate("/dashboard"); // Redirige a /dashboard
+  };
+
+  const handleLoginClick = () => {
+    handleCloseUserMenu(); // Cierra el menú
+    navigate("/login"); // Redirige a la página de inicio de sesión
+  };
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -148,10 +153,10 @@ function NavbarCliente() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-    <LocalMallIcon fontSize="medium" sx={{ mr: 1 }} />
-    <IconButton onClick={() => navigate("/carrito")} color="inherit"> 
-    <ShoppingCartIcon fontSize="medium" />
-    </IconButton>
+            <LocalMallIcon fontSize="medium" sx={{ mr: 1 }} />
+            <IconButton onClick={() => navigate("/carrito")} color="inherit">
+              <ShoppingCartIcon fontSize="medium" />
+            </IconButton>
 
             <Tooltip title="Opciones">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -174,26 +179,38 @@ function NavbarCliente() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) =>
-                setting === "Salir" ? (
-                  <MenuItem key={setting} onClick={handleLogout}>
-                    <Typography sx={{ textAlign: "center" }}>
-                      {setting}
-                    </Typography>
-                  </MenuItem>
-                ) : (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography sx={{ textAlign: "center" }}>
-                      {setting}
-                    </Typography>
-                  </MenuItem>
-                )
-              )}
-              {/* Mostrar 'Dashboard' solo si el usuario es Administrador */}
-              {userRole === "Administrador" && (
-                <MenuItem onClick={handleDashboardClick}>
+              {isLoggedIn ? (
+                // Opciones cuando el usuario ha iniciado sesión
+                <>
+                  {settings.map((setting) =>
+                    setting === "Salir" ? (
+                      <MenuItem key={setting} onClick={handleLogout}>
+                        <Typography sx={{ textAlign: "center" }}>
+                          {setting}
+                        </Typography>
+                      </MenuItem>
+                    ) : (
+                      <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                        <Typography sx={{ textAlign: "center" }}>
+                          {setting}
+                        </Typography>
+                      </MenuItem>
+                    )
+                  )}
+                  {/* Mostrar 'Dashboard' solo si el usuario es Administrador */}
+                  {userRole === "Administrador" && (
+                    <MenuItem onClick={handleDashboardClick}>
+                      <Typography sx={{ textAlign: "center" }}>
+                        Dashboard
+                      </Typography>
+                    </MenuItem>
+                  )}
+                </>
+              ) : (
+                // Opción para iniciar sesión cuando el usuario no ha iniciado sesión
+                <MenuItem onClick={handleLoginClick}>
                   <Typography sx={{ textAlign: "center" }}>
-                    Dashboard
+                    Iniciar Sesión
                   </Typography>
                 </MenuItem>
               )}

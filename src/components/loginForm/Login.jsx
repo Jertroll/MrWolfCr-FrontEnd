@@ -41,6 +41,15 @@ function Login() {
     }
   };
 
+    // Función para redirigir al usuario a la página de registro
+    const handleRegistro = () => {
+      navigate("/registro"); // Redirige al usuario a /registro
+    };
+
+    const handleHome = () => {
+      navigate("/"); // Redirige al usuario a /registro
+    };
+
   return (
     <div className="flex h-screen">
       {/* Sección Izquierda */}
@@ -116,6 +125,7 @@ function Login() {
 
           <button
             type="button"
+            onClick={handleRegistro}
             className="w-full bg-gray-100 text-black py-2 rounded-lg border border-gray-300 font-semibold hover:bg-gray-200 mb-4"
           >
             Regístrate
@@ -126,6 +136,14 @@ function Login() {
             <span className="mx-4 text-gray-500">o</span>
             <span className="border-b border-gray-300 w-1/4"></span>
           </div>
+          <br />
+          <button
+            type="button"
+            onClick={handleHome}
+            className="w-full bg-red-500 text-white py-2 rounded-lg border border-gray-300 font-semibold hover:bg-gray-200 mb-4"
+          >
+            Regresar al Inicio
+          </button>
         </form>
       </div>
     </div>
