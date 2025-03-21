@@ -78,7 +78,7 @@ const MenuCategorias = () => {
           <MenuItem
             key={categoria.num_categoria}
             component={Link}
-            to={`/categoria/${categoria.num_categoria}`}
+            to={`/productos/categoria/${categoria.num_categoria}`}
             sx={{
               color: "white",
               "&:hover": { backgroundColor: "#305500" },
