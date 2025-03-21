@@ -16,6 +16,7 @@ import Home from "./components/VistaCliente/Paginas/Home";
 import ProductosAleatorios  from"./components/VistaCliente/proAleactorios/ProductosAleatorios";
 import DetalleProducto from "./components/VistaCliente/Paginas/DetalleProducto";
 import ProductosPorCategorias from './components/VistaCliente/Paginas/ProductosPorCategoria';
+import Productos from './components/productos/VerProductos';
 
 function App() {
   return (
@@ -38,7 +39,8 @@ function App() {
         <Route path="/registro" element={<RegistroUsuarioCliente />} />
 
         {/* Nueva ruta para productos aleatorios */}
-        <Route path="/productos" element={<ProductosAleatorios />} />
+        <Route path="/productos" element={<Productos/>} />
+        <Route path="/productos/aleatorios" element={<ProductosAleatorios />} />
 
         <Route path="/productos/categoria/:id" element={<ProductosPorCategorias/>} />
 
