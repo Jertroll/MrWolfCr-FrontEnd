@@ -1,26 +1,27 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-const ProductosAleatorios = () => {
-  const [productos, setProductos] = useState([]); // Estado para almacenar los productos
+const ProductosPorCategoria =() => {
+  const { id } = useParams();
+  const [productos, setProductos] = useState([]);
   const navigate = useNavigate();
 
-  const fetchData = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/v1/productos/Aleatorios");
-      if (!response.ok) throw new Error("Error al obtener los datos");
-      const data = await response.json();
-      setProductos(data);
-    } catch (error) {
-      console.error("Error al obtener los productos:", error);
-      alert("Hubo un error al obtener los productos. Por favor, intenta nuevamente.");
-    }
-  };
-
   useEffect(() => {
-    fetchData();
-  }, []);
+    const fetchProductos = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/v1/productos/categoria/${id}`);// http://localhost:3000/api/v1/productos/categoria/1
+        if (!response.ok) throw new Error("Error al obtener los productos");
+        const data = await response.json();
+        setProductos(data);
+      } catch (error) {
+        console.error("Error al obtener los productos:", error);
+        alert("Hubo un error al obtener los productos. Intenta nuevamente.");
+      }
+    };
 
+    fetchProductos();
+  }, [id]); // ✅ Se ejecuta cuando cambia la categoría seleccionada
 
   const verDetalleProducto = (id) => {
     navigate(`/producto/${id}`);
@@ -48,4 +49,4 @@ const ProductosAleatorios = () => {
   );
 };
 
-export default ProductosAleatorios;
+export default ProductosPorCategoria;

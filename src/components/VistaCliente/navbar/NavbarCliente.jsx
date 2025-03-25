@@ -1,11 +1,12 @@
-import * as React from "react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
+//import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
@@ -13,57 +14,110 @@ import MenuItem from "@mui/material/MenuItem";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import PersonIcon from "@mui/icons-material/Person";
-import { jwtDecode } from "jwt-decode"; // Importa jwt-decode
-import Carrito from '../carrito/Carrito';
-import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import { jwtDecode } from "jwt-decode";
 
 const pages = ["Mujer", "Hombre"];
-const settings = ["Perfil", "Account", "Salir"]; // Elimina 'Dashboard' de aquí
+const settings = ["Perfil", "Account", "Salir"];
 
-function NavbarCliente() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [userRole, setUserRole] = React.useState(null); // Estado para almacenar el rol del usuario
-  const [mostrarCarrito, setMostrarCarrito] =  React.useState(false);
+// ✅ Nuevo componente: Menú de Categorías
+const MenuCategorias = () => {
+  const [categorias, setCategorias] = useState([]);
+  const [menuVisible, setMenuVisible] = useState(false);
 
+  useEffect(() => {
+    const fetchCategorias = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/v1/categorias");
+        if (!response.ok) throw new Error("Error al obtener los datos");
+        const data = await response.json();
+        setCategorias(data);
+      } catch (error) {
+        console.error("Error al obtener las categorías:", error);
+      }
+    };
 
-  const navigate = useNavigate(); // Hook para redireccionar
+    fetchCategorias();
+  }, []);
 
-  const handleLogout = () => {
-      sessionStorage.removeItem("token"); // Elimina el token
-      navigate("/login"); // Redirige al login
-  };
-
-  const handleDashboardClick = () => {
-    handleCloseUserMenu(); // Cierra el menú
-    navigate("/dashboard"); // Redirige a /dashboard
+  return (
+    <Box
+    sx={{ position: "relative", display: "inline-block", ml: 2 }}
+    onMouseEnter={() => setMenuVisible(true)}
+    onMouseLeave={() => setMenuVisible(false)}
+  >
+    <Button sx={{ color: "white" }}>Productos ▾</Button>
+    {menuVisible && (
+      <Box
+        sx={{
+          position: "absolute",
+          top: "100%",
+          left: 0,
+          backgroundColor: "#203500", 
+          boxShadow: 3,
+          borderRadius: 1,
+          zIndex: 10,
+          minWidth: "200px",
+          p: 1,
+        }}
+      >
+        {/*Opción "Ver Todos" */}
+        <MenuItem
+          component={Link}
+          to="/productos"
+          sx={{
+            color: "white",
+            "&:hover": { backgroundColor: "#305500" },
+            fontWeight: "bold",
+          }}
+        >
+          Ver Todos
+        </MenuItem>
+  
+        {/* Lista de categorías con el mismo color */}
+        {categorias.map((categoria) => (
+          <MenuItem
+            key={categoria.num_categoria}
+            component={Link}
+            to={`/productos/categoria/${categoria.num_categoria}`}
+            sx={{
+              color: "white",
+              "&:hover": { backgroundColor: "#305500" },
+            }}
+          >
+            {categoria.nombre_categoria}
+          </MenuItem>
+        ))}
+      </Box>
+    )}
+  </Box>
+  );
+  
 };
 
+function NavbarCliente() {
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [userRole, setUserRole] = useState(null);
+  const navigate = useNavigate();
 
-
-  // Efecto para decodificar el token y obtener el rol del usuario
-  React.useEffect(() => {
+  useEffect(() => {
     const token = sessionStorage.getItem("token");
     if (token) {
       try {
         const decodedToken = jwtDecode(token);
-        setUserRole(decodedToken.rol); // Guarda el rol en el estado
+        setUserRole(decodedToken.rol);
       } catch (error) {
         console.error("Error al decodificar el token:", error);
       }
     }
   }, []);
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
+  const handleLogout = () => {
+    sessionStorage.removeItem("token");
+    navigate("/login");
   };
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
   };
 
   const handleCloseUserMenu = () => {
@@ -86,7 +140,7 @@ function NavbarCliente() {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="#"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -100,58 +154,23 @@ function NavbarCliente() {
             Mr.Wolf
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{ display: { xs: "block", md: "none" } }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: "center" }}>{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          {/* ✅ Nueva sección: Contenedor de los botones y el menú de categorías */}
+          <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
             {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
+              <Button key={page} sx={{ color: "white" }}>
                 {page}
               </Button>
             ))}
+
+            {/* ✅ Aquí se agregó el menú de categorías dentro del navbar */}
+            <MenuCategorias />
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
-    <LocalMallIcon fontSize="medium" sx={{ mr: 1 }} />
-    <IconButton onClick={() => navigate("/carrito")} color="inherit"> 
-    <ShoppingCartIcon fontSize="medium" />
-    </IconButton>
+          <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
+            <LocalMallIcon fontSize="medium" sx={{ mr: 1 }} />
+            <IconButton onClick={() => navigate("/carrito")} color="inherit">
+              <ShoppingCartIcon fontSize="medium" />
+            </IconButton>
 
             <Tooltip title="Opciones">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -177,24 +196,17 @@ function NavbarCliente() {
               {settings.map((setting) =>
                 setting === "Salir" ? (
                   <MenuItem key={setting} onClick={handleLogout}>
-                    <Typography sx={{ textAlign: "center" }}>
-                      {setting}
-                    </Typography>
+                    <Typography>{setting}</Typography>
                   </MenuItem>
                 ) : (
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography sx={{ textAlign: "center" }}>
-                      {setting}
-                    </Typography>
+                    <Typography>{setting}</Typography>
                   </MenuItem>
                 )
               )}
-              {/* Mostrar 'Dashboard' solo si el usuario es Administrador */}
               {userRole === "Administrador" && (
-                <MenuItem onClick={handleDashboardClick}>
-                  <Typography sx={{ textAlign: "center" }}>
-                    Dashboard
-                  </Typography>
+                <MenuItem onClick={() => navigate("/dashboard")}>
+                  <Typography>Dashboard</Typography>
                 </MenuItem>
               )}
             </Menu>

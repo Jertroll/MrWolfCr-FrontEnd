@@ -174,6 +174,7 @@ const AgregarProductos = () => {
                 )}
                 onChange={handleTallasChange}
                 className="w-full"
+                inputId="tallas" // Agrega un ID para el input
               />
             </div>
             <div>

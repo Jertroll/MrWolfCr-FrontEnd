@@ -7,7 +7,7 @@ const ProductosAleatorios = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/v1/productos/Aleatorios");
+      const response = await fetch("http://localhost:3000/api/v1/productos");
       if (!response.ok) throw new Error("Error al obtener los datos");
       const data = await response.json();
       setProductos(data);
