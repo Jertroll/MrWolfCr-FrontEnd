@@ -30,7 +30,7 @@ const AlgunasCategorias = () => {
 
   return (
     <div className="categorias-container">
-      <h2>Categorías populares</h2>
+      <h2 className="text-3xl font-bold mb-4">Categorías Populares</h2>
       <div className="categorias-grid">
         {categorias.map((categoria) => (
           <div key={categoria.num_categoria} className="categoria-card"
