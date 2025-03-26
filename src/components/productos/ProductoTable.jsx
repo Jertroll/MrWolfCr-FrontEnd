@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import EditarProductoModal from "./paginas modal/EditarProductoModal";
 import ImagenesProductoModal from "./paginas modal/ImagenesProductoModal";
 import "./tableProducto.css";
+import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
 
 const ProductoTable = () => {
   const navigate = useNavigate();
@@ -179,7 +180,7 @@ const ProductoTable = () => {
         <div className="flex items-center space-x-2">
           {row.original.imagenes &&
             row.original.imagenes
-              .slice(0, 3)
+              .slice(0, 1)
               .map((imagen, index) => (
                 <img
                   key={index}
@@ -188,12 +189,14 @@ const ProductoTable = () => {
                   className="h-16 w-16 object-cover"
                 />
               ))}
-          {row.original.imagenes && row.original.imagenes.length > 2 && (
+          {row.original.imagenes && row.original.imagenes.length > 1 && (
             <button
               className="text-blue-500 hover:text-blue-700"
               onClick={() => openImageModal(row.original.imagenes)}
+              aria-label="Ver más imágenes"
             >
-              +{row.original.imagenes.length - 3}
+              <ZoomOutMapIcon className="w-6 h-6" />{" "}
+              {/* Mostrar el ícono en lugar del botón */}
             </button>
           )}
         </div>
@@ -234,6 +237,11 @@ const ProductoTable = () => {
     state: { sorting, globalFilter: filtering },
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
+    initialState: {
+      pagination: {
+        pageSize: 5,
+      },
+    },
   });
 
   return (
@@ -315,7 +323,8 @@ const ProductoTable = () => {
       </table>
 
       {/* Paginación */}
-      <div className="flex justify-between mt-4">
+      <div className="flex justify-between items-center mt-4">
+        {/* Botón para ir a la primera página */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.setPageIndex(0)}
@@ -323,6 +332,8 @@ const ProductoTable = () => {
         >
           Inicio
         </button>
+
+        {/* Botón para ir a la página anterior */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.previousPage()}
@@ -330,6 +341,14 @@ const ProductoTable = () => {
         >
           Anterior
         </button>
+
+        {/* Indicador de página actual y total de páginas */}
+        <span className="text-gray-700">
+          Página {table.getState().pagination.pageIndex + 1} de{" "}
+          {table.getPageCount()}
+        </span>
+
+        {/* Botón para ir a la página siguiente */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.nextPage()}
@@ -337,6 +356,8 @@ const ProductoTable = () => {
         >
           Siguiente
         </button>
+
+        {/* Botón para ir a la última página */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.setPageIndex(table.getPageCount() - 1)}

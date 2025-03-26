@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import EditarProductoModal from '../components/productos/paginas modal/EditarProductoModal';
-import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
+import { vi, describe, it, expect, beforeEach } from "vitest";
 
 describe('EditarProductoModal - Modificar Producto', () => {
     // Datos de prueba para el producto
