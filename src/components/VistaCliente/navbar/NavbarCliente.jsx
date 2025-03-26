@@ -12,7 +12,11 @@ import {
   Tooltip,
   MenuItem,
 } from "@mui/material";
-import { ShoppingCart as ShoppingCartIcon, LocalMall as LocalMallIcon, Person as PersonIcon } from "@mui/icons-material";
+import {
+  ShoppingCart as ShoppingCartIcon,
+  LocalMall as LocalMallIcon,
+  Person as PersonIcon,
+} from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
 
 const pages = ["Mujer", "Hombre"];
@@ -58,7 +62,15 @@ const MenuCategorias = () => {
             p: 1,
           }}
         >
-          <MenuItem component={Link} to="/productos" sx={{ color: "white", fontWeight: "bold", "&:hover": { backgroundColor: "#305500" } }}>
+          <MenuItem
+            component={Link}
+            to="/productos"
+            sx={{
+              color: "white",
+              fontWeight: "bold",
+              "&:hover": { backgroundColor: "#305500" },
+            }}
+          >
             Ver Todos
           </MenuItem>
           {categorias.map((categoria) => (
@@ -106,14 +118,36 @@ function NavbarCliente() {
     <AppBar position="static" sx={{ backgroundColor: "#203500" }}>
       <Container maxWidth="false">
         <Toolbar disableGutters>
-          <img style={{ marginRight: "10px" }} width="50" height="50" src="src/assets/Logo Circular Mr Wolf-Photoroom.png" alt="Logo de Mr Wolf" />
-          <Typography variant="h6" noWrap component="a" href="#" sx={{ mr: 2, display: { xs: "none", md: "flex" }, fontFamily: "monospace", fontWeight: 700, letterSpacing: ".1rem", color: "inherit", textDecoration: "none" }}>
+          <img
+            style={{ marginRight: "10px" }}
+            width="50"
+            height="50"
+            src="/img/Logo Circular Mr Wolf-Photoroom.png"
+            alt="Logo de Mr Wolf"
+          />
+          <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            href="#"
+            sx={{
+              mr: 2,
+              display: { xs: "none", md: "flex" },
+              fontFamily: "monospace",
+              fontWeight: 700,
+              letterSpacing: ".1rem",
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
             Mr.Wolf
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
             {pages.map((page) => (
-              <Button key={page} sx={{ color: "white" }}>{page}</Button>
+              <Button key={page} sx={{ color: "white" }}>
+                {page}
+              </Button>
             ))}
             <MenuCategorias />
           </Box>
@@ -124,7 +158,10 @@ function NavbarCliente() {
               <ShoppingCartIcon fontSize="medium" />
             </IconButton>
             <Tooltip title="Opciones">
-              <IconButton onClick={(e) => setAnchorElUser(e.currentTarget)} sx={{ p: 0 }}>
+              <IconButton
+                onClick={(e) => setAnchorElUser(e.currentTarget)}
+                sx={{ p: 0 }}
+              >
                 <PersonIcon fontSize="medium" sx={{ color: "white" }} />
               </IconButton>
             </Tooltip>
@@ -139,7 +176,14 @@ function NavbarCliente() {
               {isLoggedIn ? (
                 <>
                   {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={setting === "Salir" ? handleLogout : () => setAnchorElUser(null)}>
+                    <MenuItem
+                      key={setting}
+                      onClick={
+                        setting === "Salir"
+                          ? handleLogout
+                          : () => setAnchorElUser(null)
+                      }
+                    >
                       <Typography>{setting}</Typography>
                     </MenuItem>
                   ))}

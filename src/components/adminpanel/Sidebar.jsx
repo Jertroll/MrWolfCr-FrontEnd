@@ -25,7 +25,7 @@ const Sidebar = () => {
         style={{ backgroundColor: "#203500" }}
       >
         <img
-          src="./src/assets/control.png"
+          src="./img/control.png"
           alt="Toggle Sidebar"
           className={`absolute cursor-pointer -right-3 top-9 w-7 border-gray-800 border-2 rounded-full ${
             !open && "rotate-180"
