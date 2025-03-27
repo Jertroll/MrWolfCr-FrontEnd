@@ -30,13 +30,19 @@ const AlgunasCategorias = () => {
 
   return (
     <div className="categorias-container">
-      <h2 className="text-3xl font-bold mb-4">Categorías Populares</h2>
+      <h1 className="text-5xl font mb-4" style={{ fontFamily: 'Baskerville Display PT, serif' }}>
+        Categorias Populares
+      </h1>
+
       <div className="categorias-grid">
         {categorias.map((categoria) => (
           <div key={categoria.num_categoria} className="categoria-card"
            onClick={() => handleCategoriaClick(categoria.num_categoria)}>
             <img src={categoria.imagen} alt={categoria.nombre} />
-            <h3>{categoria.nombre}</h3>
+            <div className="categoria-texto">
+              <h3>{categoria.nombre}</h3>
+              <span className="flecha">→</span> {/* Flechita */}
+            </div>
           </div>
         ))}
       </div>

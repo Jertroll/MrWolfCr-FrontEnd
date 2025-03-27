@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./ProductosAleatorios.css"; // Importamos el CSS
+import "./ProductosAleatorios.css"; 
 
 const ProductosAleatorios = () => {
   const [productos, setProductos] = useState([]);
@@ -32,7 +32,7 @@ const ProductosAleatorios = () => {
       {/* Contenedor del logo */}
       <div className="logo-container">
         <img 
-          src="src/assets/mrb.jpg" 
+          src="src/assets/logoBlanco.jpg" 
           alt="Logo de la tienda" 
           className="logo-imagen"
         />
