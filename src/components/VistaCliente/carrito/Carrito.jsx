@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./Carrito.css"; // Importamos los estilos
+
+
 const obtenerUsuarioIdDesdeToken = () => {
     const token = sessionStorage.getItem("token"); // O sessionStorage.getItem("token");
     if (!token) return null; // Si no hay token, devuelve null
