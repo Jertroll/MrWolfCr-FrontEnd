@@ -1,0 +1,12 @@
+[
+    {
+        "id" : 1,
+        "pregunta": "Como inicio sesion",
+        "respuesta": "Ve al login"
+    },
+    {
+        "id" : 2,
+        "pregunta": "Como inicio sesion",
+        "respuesta": "Ve al login"
+    }
+]

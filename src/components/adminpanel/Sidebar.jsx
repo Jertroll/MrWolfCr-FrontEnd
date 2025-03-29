@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaHome, FaUsers, FaCog, FaChartPie } from "react-icons/fa";
+import { FaHome, FaUsers, FaChartPie } from "react-icons/fa";
 import { FaTshirt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
