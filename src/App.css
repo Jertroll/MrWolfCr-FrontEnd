@@ -1,0 +1,23 @@
+/* En tu archivo CSS principal */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 20px; /* Ajusta según necesites */
+  }
+  @font-face {
+    font-family: 'Baskerville Display PT';
+    src: url('/fonts/BaskervilleDisplayPT.woff2') format('woff2'),
+         url('/fonts/BaskervilleDisplayPT.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  h1, h2, h3 {
+    font-family: 'Baskerville Display PT', serif;
+  }
+  

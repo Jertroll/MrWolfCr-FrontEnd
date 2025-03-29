@@ -1,25 +1,27 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-//import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import LocalMallIcon from "@mui/icons-material/LocalMall";
-import PersonIcon from "@mui/icons-material/Person";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  IconButton,
+  Typography,
+  Menu,
+  Container,
+  Button,
+  Tooltip,
+  MenuItem,
+} from "@mui/material";
+import {
+  ShoppingCart as ShoppingCartIcon,
+  LocalMall as LocalMallIcon,
+  Person as PersonIcon,
+} from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
 
 const pages = ["Mujer", "Hombre"];
 const settings = ["Perfil", "Account", "Salir"];
 
-// ✅ Nuevo componente: Menú de Categorías
 const MenuCategorias = () => {
   const [categorias, setCategorias] = useState([]);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -41,62 +43,56 @@ const MenuCategorias = () => {
 
   return (
     <Box
-    sx={{ position: "relative", display: "inline-block", ml: 2 }}
-    onMouseEnter={() => setMenuVisible(true)}
-    onMouseLeave={() => setMenuVisible(false)}
-  >
-    <Button sx={{ color: "white" }}>Productos ▾</Button>
-    {menuVisible && (
-      <Box
-        sx={{
-          position: "absolute",
-          top: "100%",
-          left: 0,
-          backgroundColor: "#203500", 
-          boxShadow: 3,
-          borderRadius: 1,
-          zIndex: 10,
-          minWidth: "200px",
-          p: 1,
-        }}
-      >
-        {/*Opción "Ver Todos" */}
-        <MenuItem
-          component={Link}
-          to="/productos"
+      sx={{ position: "relative", display: "inline-block", ml: 2 }}
+      onMouseEnter={() => setMenuVisible(true)}
+      onMouseLeave={() => setMenuVisible(false)}
+    >
+      <Button sx={{ color: "white" }}>Productos ▾</Button>
+      {menuVisible && (
+        <Box
           sx={{
-            color: "white",
-            "&:hover": { backgroundColor: "#305500" },
-            fontWeight: "bold",
+            position: "absolute",
+            top: "100%",
+            left: 0,
+            backgroundColor: "#203500",
+            boxShadow: 3,
+            borderRadius: 1,
+            zIndex: 10,
+            minWidth: "200px",
+            p: 1,
           }}
         >
-          Ver Todos
-        </MenuItem>
-  
-        {/* Lista de categorías con el mismo color */}
-        {categorias.map((categoria) => (
           <MenuItem
-            key={categoria.num_categoria}
             component={Link}
-            to={`/productos/categoria/${categoria.num_categoria}`}
+            to="/productos"
             sx={{
               color: "white",
+              fontWeight: "bold",
               "&:hover": { backgroundColor: "#305500" },
             }}
           >
-            {categoria.nombre_categoria}
+            Ver Todos
           </MenuItem>
-        ))}
-      </Box>
-    )}
-  </Box>
+          {categorias.map((categoria) => (
+            <MenuItem
+              key={categoria.num_categoria}
+              component={Link}
+              to={`/productos/categoria/${categoria.num_categoria}`}
+              sx={{ color: "white", "&:hover": { backgroundColor: "#305500" } }}
+            >
+              {categoria.nombre_categoria}
+            </MenuItem>
+          ))}
+        </Box>
+      )}
+    </Box>
   );
-  
 };
 
 function NavbarCliente() {
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -105,6 +101,7 @@ function NavbarCliente() {
       try {
         const decodedToken = jwtDecode(token);
         setUserRole(decodedToken.rol);
+        setIsLoggedIn(true);
       } catch (error) {
         console.error("Error al decodificar el token:", error);
       }
@@ -113,15 +110,8 @@ function NavbarCliente() {
 
   const handleLogout = () => {
     sessionStorage.removeItem("token");
-    navigate("/login");
-  };
-
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
+    setIsLoggedIn(false);
+    navigate("/");
   };
 
   return (
@@ -132,10 +122,9 @@ function NavbarCliente() {
             style={{ marginRight: "10px" }}
             width="50"
             height="50"
-            src="src/assets/Logo Circular Mr Wolf-Photoroom.png"
-            alt="Logo de Mr Wolf Sin fondo"
+            src="/img/Logo Circular Mr Wolf-Photoroom.png"
+            alt="Logo de Mr Wolf"
           />
-
           <Typography
             variant="h6"
             noWrap
@@ -154,15 +143,12 @@ function NavbarCliente() {
             Mr.Wolf
           </Typography>
 
-          {/* ✅ Nueva sección: Contenedor de los botones y el menú de categorías */}
           <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
             {pages.map((page) => (
               <Button key={page} sx={{ color: "white" }}>
                 {page}
               </Button>
             ))}
-
-            {/* ✅ Aquí se agregó el menú de categorías dentro del navbar */}
             <MenuCategorias />
           </Box>
 
@@ -171,42 +157,45 @@ function NavbarCliente() {
             <IconButton onClick={() => navigate("/carrito")} color="inherit">
               <ShoppingCartIcon fontSize="medium" />
             </IconButton>
-
             <Tooltip title="Opciones">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton
+                onClick={(e) => setAnchorElUser(e.currentTarget)}
+                sx={{ p: 0 }}
+              >
                 <PersonIcon fontSize="medium" sx={{ color: "white" }} />
               </IconButton>
             </Tooltip>
             <Menu
               sx={{ mt: "45px" }}
-              id="menu-appbar"
               anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
               open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+              onClose={() => setAnchorElUser(null)}
+              anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
-              {settings.map((setting) =>
-                setting === "Salir" ? (
-                  <MenuItem key={setting} onClick={handleLogout}>
-                    <Typography>{setting}</Typography>
-                  </MenuItem>
-                ) : (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography>{setting}</Typography>
-                  </MenuItem>
-                )
-              )}
-              {userRole === "Administrador" && (
-                <MenuItem onClick={() => navigate("/dashboard")}>
-                  <Typography>Dashboard</Typography>
+              {isLoggedIn ? (
+                <>
+                  {settings.map((setting) => (
+                    <MenuItem
+                      key={setting}
+                      onClick={
+                        setting === "Salir"
+                          ? handleLogout
+                          : () => setAnchorElUser(null)
+                      }
+                    >
+                      <Typography>{setting}</Typography>
+                    </MenuItem>
+                  ))}
+                  {userRole === "Administrador" && (
+                    <MenuItem onClick={() => navigate("/dashboard")}>
+                      <Typography>Dashboard</Typography>
+                    </MenuItem>
+                  )}
+                </>
+              ) : (
+                <MenuItem onClick={() => navigate("/login")}>
+                  <Typography>Iniciar Sesión</Typography>
                 </MenuItem>
               )}
             </Menu>
