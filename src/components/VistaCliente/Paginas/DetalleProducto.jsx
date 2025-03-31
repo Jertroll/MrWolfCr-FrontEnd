@@ -101,6 +101,7 @@ const DetalleProducto = () => {
           <button className="mt-6 w-full bg-black text-white py-2 rounded-lg text-lg font-semibold hover:bg-gray-800">
             Agregar al carrito
           </button>
+          
         </div>
       </div>
 
