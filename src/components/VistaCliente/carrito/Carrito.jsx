@@ -3,35 +3,13 @@ import PropTypes from "prop-types";
 
 const CartContext = createContext();
 
-export const CartProvider = ({ children }) => {
+export const Carrito = ({ children }) => {
     const [cart, setCart] = useState([]);
 
-    // Obtener carrito al montar el componente
     useEffect(() => {
         fetchCart();
     }, []);
 
-    // Función para agregar al carrito
-    const addToCart = async (productId, tallaId, quantity = 1) => {
-        try {
-            const response = await fetch("http://localhost:3000/api/v1/cart/add", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ productId, tallaId, quantity }),
-            });
-
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.message || "Error al agregar el producto");
-
-            setCart(data.cart);
-            alert("Producto agregado al carrito");
-        } catch (error) {
-            console.error("Error:", error);
-            alert("No se pudo agregar el producto");
-        }
-    };
-
-    // Función para obtener el carrito
     const fetchCart = async () => {
         try {
             const response = await fetch("http://localhost:3000/api/v1/cart");
@@ -43,11 +21,10 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-    // Función para eliminar un producto del carrito
     const removeFromCart = async (productId) => {
         try {
             const response = await fetch("http://localhost:3000/api/v1/cart/remove", {
-                method: "POST",
+                method: "DELETE",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ productId }),
             });
@@ -55,7 +32,7 @@ export const CartProvider = ({ children }) => {
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || "Error al eliminar el producto");
 
-            setCart(data.cart);
+            await fetchCart(); // Refrescar el carrito
             alert("Producto eliminado del carrito");
         } catch (error) {
             console.error("Error:", error);
@@ -63,10 +40,9 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-    // Función para vaciar el carrito
     const clearCart = async () => {
         try {
-            const response = await fetch("http://localhost:3000/api/cart/clear", {
+            const response = await fetch("http://localhost:3000/api/v1/cart/clear", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
             });
@@ -83,16 +59,16 @@ export const CartProvider = ({ children }) => {
     };
 
     return (
-        <CartContext.Provider value={{ cart, addToCart, fetchCart, removeFromCart, clearCart }}>
+        <CartContext.Provider value={{ cart, fetchCart, removeFromCart, clearCart }}>
             {children}
         </CartContext.Provider>
     );
 };
 
-// **Validación de PropTypes**
-CartProvider.propTypes = {
+Carrito.propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-// Hook personalizado para usar el contexto
 export const useCart = () => useContext(CartContext);
+
+export default Carrito;

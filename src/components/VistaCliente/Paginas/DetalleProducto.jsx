@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ProductosAleatorios from "../proAleactorios/ProductosAleatorios"; // Importar el componente
+import ProductosAleatorios from "../proAleactorios/ProductosAleatorios";
+import AgregarCarrito from "../carrito/AgregarCarrito"; // Importa el componente
 
 const DetalleProducto = () => {
   const { id } = useParams();
   const [producto, setProducto] = useState(null);
   const [imagenIndex, setImagenIndex] = useState(0);
+  const [tallaSeleccionada, setTallaSeleccionada] = useState(null); // Estado para la talla
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -26,7 +28,7 @@ const DetalleProducto = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
-  
+
   if (!producto) return <p>Cargando producto...</p>;
 
   const cambiarImagen = (index) => setImagenIndex(index);
@@ -80,7 +82,7 @@ const DetalleProducto = () => {
           <p className="mt-2 text-gray-700">{producto.descripcion}</p>
           <p className="mt-2 text-lg font-semibold">₡{producto.precio}</p>
 
-          {/* Selección de tallas */}
+          {/* Selección de Tallas */}
           {producto.tallas && producto.tallas.length > 0 && (
             <div className="mt-4">
               <h3 className="text-md font-semibold">Selecciona tu talla:</h3>
@@ -88,7 +90,12 @@ const DetalleProducto = () => {
                 {producto.tallas.map((talla, index) => (
                   <button
                     key={index}
-                    className="px-4 py-2 rounded-lg border text-sm font-medium bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200"
+                    className={`px-4 py-2 rounded-lg border text-sm font-medium ${
+                      tallaSeleccionada === talla
+                        ? "bg-black text-white border-black"
+                        : "bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200"
+                    }`}
+                    onClick={() => setTallaSeleccionada(talla)}
                   >
                     {talla}
                   </button>
@@ -97,11 +104,8 @@ const DetalleProducto = () => {
             </div>
           )}
 
-          {/* Botón de Comprar */}
-          <button className="mt-6 w-full bg-black text-white py-2 rounded-lg text-lg font-semibold hover:bg-gray-800">
-            Agregar al carrito
-          </button>
-          
+          {/* Componente de agregar al carrito */}
+          <AgregarCarrito producto={producto} tallaSeleccionada={tallaSeleccionada} />
         </div>
       </div>
 

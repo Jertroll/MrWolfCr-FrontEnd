@@ -3,7 +3,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardCall from "./components/adminpanel/DashboardCall";
 import Login from "./components/loginForm/Login";
 import RegistroUsuarioCliente from "./components/usuario/RegistroUsuarioCliente";
-import Carrito from "./components/VistaCliente/carrito/Carrito";
+import Carrito  from "./components/VistaCliente/carrito/Carrito";
 import Home from "./components/VistaCliente/Paginas/Home";
 import Productos from "./components/productos/VerProductos";
 import ProductosAleatorios from "./components/VistaCliente/proAleactorios/ProductosAleatorios";
