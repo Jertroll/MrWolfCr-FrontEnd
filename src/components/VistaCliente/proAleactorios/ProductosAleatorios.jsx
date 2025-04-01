@@ -32,7 +32,7 @@ const ProductosAleatorios = () => {
       {/* Contenedor del logo */}
       <div className="logo-container">
         <img 
-          src="src/assets/logoBlanco.jpg" 
+          src="/assets/logoBlanco.jpg" 
           alt="Logo de la tienda" 
           className="logo-imagen"
         />

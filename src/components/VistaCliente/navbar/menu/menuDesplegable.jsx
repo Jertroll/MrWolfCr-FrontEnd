@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { MenuItem, Button, Box } from "@mui/material";
 
 const MenuCategorias = () => {
   const [categorias, setCategorias] = useState([]);
   const [menuVisible, setMenuVisible] = useState(false);
-  
+
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
@@ -12,10 +13,8 @@ const MenuCategorias = () => {
         if (!response.ok) throw new Error("Error al obtener los datos");
         const data = await response.json();
         setCategorias(data);
-        console.log("Datos recibidos:", data);
       } catch (error) {
         console.error("Error al obtener las categorías:", error);
-        alert("Hubo un error al obtener las categorías. Por favor, intenta nuevamente.");
       }
     };
 
@@ -23,26 +22,42 @@ const MenuCategorias = () => {
   }, []);
 
   return (
-    <div
-      className="dropdown-container"
-      onMouseEnter={() => setMenuVisible(true)}
-      onMouseLeave={() => setMenuVisible(false)}
-    >
-      <button className="dropdown-button">Productos ▾</button>
-      {menuVisible && (
-        <div className="dropdown-menu">
-          {categorias.map((categoria) => (
-            <Link
-              key={categoria.num_categoria}
-              to={`/categoria/${categoria.num_categoria}`}
-              className="dropdown-item"
-            >
-              {categoria.nombre_categoria}
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
+    <Box sx={{ display: "flex", gap: 2 }}>
+      {/* Menú de Productos */}
+      <Box
+        sx={{ position: "relative", display: "inline-block" }}
+        onMouseEnter={() => setMenuVisible(true)}
+        onMouseLeave={() => setMenuVisible(false)}
+      >
+        <Button sx={{ color: "white" }}>Productos ▾</Button>
+        {menuVisible && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              backgroundColor: "#203500",
+              boxShadow: 3,
+              borderRadius: 1,
+              zIndex: 10,
+              minWidth: "200px",
+              p: 1,
+            }}
+          >
+            {categorias.map((categoria) => (
+              <MenuItem
+                key={categoria.num_categoria}
+                component={Link}
+                to={`/productos/categoria/${categoria.num_categoria}`}
+                sx={{ color: "white", "&:hover": { backgroundColor: "#305500" } }}
+              >
+                {categoria.nombre_categoria}
+              </MenuItem>
+            ))}
+          </Box>
+        )}
+      </Box>
+    </Box>
   );
 };
 
