@@ -21,3 +21,9 @@
     font-family: 'Baskerville Display PT', serif;
   }
   
+
+
+  .content {
+    flex: 1; /* Esto empuja el footer hacia abajo */
+  }
+  

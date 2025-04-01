@@ -1,12 +1,52 @@
 [
     {
-        "id" : 1,
-        "pregunta": "Como inicio sesion",
-        "respuesta": "Ve al login"
+        "id": 1,
+        "pregunta": "¿Cómo puedo crear una cuenta?",
+        "respuesta": "Haz clic en 'Registrarse' en la parte superior y completa el formulario con tus datos."
     },
     {
-        "id" : 2,
-        "pregunta": "Como inicio sesion",
-        "respuesta": "Ve al login"
+        "id": 2,
+        "pregunta": "¿Cómo inicio sesión?",
+        "respuesta": "Haz clic en 'Iniciar sesión', ingresa tu correo y contraseña, y presiona el botón de acceso."
+    },
+    {
+        "id": 3,
+        "pregunta": "Olvidé mi contraseña, ¿qué hago?",
+        "respuesta": "Ve a la página de inicio de sesión y haz clic en '¿Olvidaste tu contraseña?' para recuperarla."
+    },
+    {
+        "id": 4,
+        "pregunta": "¿Cuáles son los métodos de pago disponibles?",
+        "respuesta": "Aceptamos tarjetas de crédito/débito, PayPal y transferencias bancarias."
+    },
+    {
+        "id": 5,
+        "pregunta": "¿Cuánto tiempo tarda el envío?",
+        "respuesta": "El tiempo de entrega varía entre 3 y 7 días hábiles dependiendo de tu ubicación."
+    },
+    {
+        "id": 6,
+        "pregunta": "¿Puedo rastrear mi pedido?",
+        "respuesta": "Sí, recibirás un código de rastreo una vez que tu pedido haya sido enviado."
+    },
+    {
+        "id": 7,
+        "pregunta": "¿Puedo devolver un producto?",
+        "respuesta": "Sí, puedes devolver un producto dentro de los primeros 15 días después de la compra si no estás satisfecho."
+    },
+    {
+        "id": 8,
+        "pregunta": "¿Cómo contacto al servicio de atención al cliente?",
+        "respuesta": "Puedes enviarnos un correo a contacto@mrwolf.com o llamarnos al +506 2101-9480."
+    },
+    {
+        "id": 9,
+        "pregunta": "¿Ofrecen descuentos o promociones?",
+        "respuesta": "Sí, suscríbete a nuestro boletín para recibir descuentos exclusivos."
+    },
+    {
+        "id": 10,
+        "pregunta": "¿Tienen tienda física?",
+        "respuesta": "Sí, nuestra tienda se encuentra en Liberia, costado oeste del Banco Popular."
     }
 ]
