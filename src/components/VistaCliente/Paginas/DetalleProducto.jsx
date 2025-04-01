@@ -7,7 +7,7 @@ const DetalleProducto = () => {
   const { id } = useParams();
   const [producto, setProducto] = useState(null);
   const [imagenIndex, setImagenIndex] = useState(0);
-  const [tallaSeleccionada, setTallaSeleccionada] = useState(null); // Estado para la talla
+  const [tallaSeleccionada, setTallaSeleccionada] = useState(null); // Estado para la talla (ID)
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -15,6 +15,9 @@ const DetalleProducto = () => {
         const response = await fetch(`http://localhost:3000/api/v1/productos/${id}`);
         if (!response.ok) throw new Error("Error al obtener el producto");
         const data = await response.json();
+        console.log("Datos del producto:", data); // 🛠 Verificar los datos completos
+        console.log("Tallas:", data.tallas); // 🛠 Verificar si hay tallas
+  
         setProducto(data);
         setImagenIndex(0);
       } catch (error) {
@@ -87,17 +90,17 @@ const DetalleProducto = () => {
             <div className="mt-4">
               <h3 className="text-md font-semibold">Selecciona tu talla:</h3>
               <div className="flex gap-2 mt-2">
-                {producto.tallas.map((talla, index) => (
+                {producto.tallas.map((talla) => (
                   <button
-                    key={index}
+                    key={talla.id} // Clave única basada en ID
                     className={`px-4 py-2 rounded-lg border text-sm font-medium ${
-                      tallaSeleccionada === talla
+                      tallaSeleccionada === talla.id
                         ? "bg-black text-white border-black"
                         : "bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200"
                     }`}
-                    onClick={() => setTallaSeleccionada(talla)}
+                    onClick={() => setTallaSeleccionada(talla.id)} // Guarda el ID pero muestra el nombre
                   >
-                    {talla}
+                    {talla.nombre} {/* Muestra el nombre de la talla */}
                   </button>
                 ))}
               </div>

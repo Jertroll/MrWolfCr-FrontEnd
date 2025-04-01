@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { obtenerUsuarioDesdeToken } from "../utils/auth"; // Importamos la función desde utils/auth.js
+import { obtenerUsuarioDesdeToken } from "../../utils/auth"; // Importamos la función desde utils/auth.js
 
 const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
     const [cantidad, setCantidad] = useState(1);
