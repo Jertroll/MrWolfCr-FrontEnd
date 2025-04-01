@@ -39,8 +39,8 @@ const AlgunasCategorias = () => {
           <div key={categoria.num_categoria} className="categoria-card"
            onClick={() => handleCategoriaClick(categoria.num_categoria)}>
             <img src={categoria.imagen} alt={categoria.nombre} />
-            <div className="categoria-texto">
-              <h3>{categoria.nombre}</h3>
+            <div className="categoria-texto" style={{ fontFamily: 'Baskerville Display PT, serif' }} >
+              <h3>{categoria.nombre_categoria}</h3>
               <span className="flecha">→</span> {/* Flechita */}
             </div>
           </div>

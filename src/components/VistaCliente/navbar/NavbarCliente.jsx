@@ -19,9 +19,7 @@ import {
 } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
 
-const pages = ["Mujer", "Hombre"];
-const settings = ["Perfil", "Account", "Salir"];
-
+// Menú de categorías
 const MenuCategorias = () => {
   const [categorias, setCategorias] = useState([]);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -67,7 +65,6 @@ const MenuCategorias = () => {
             to="/productos"
             sx={{
               color: "white",
-              fontWeight: "bold",
               "&:hover": { backgroundColor: "#305500" },
             }}
           >
@@ -88,6 +85,53 @@ const MenuCategorias = () => {
     </Box>
   );
 };
+
+// Menú de filtro por género
+const MenuFiltro = () => {
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  return (
+    <Box
+      sx={{ position: "relative", display: "inline-block", ml: 2 }}
+      onMouseEnter={() => setMenuVisible(true)}
+      onMouseLeave={() => setMenuVisible(false)}
+    >
+      <Button sx={{ color: "white" }}>Filtrar por ▾</Button>
+      {menuVisible && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: "100%",
+            left: 0,
+            backgroundColor: "#203500",
+            boxShadow: 3,
+            borderRadius: 1,
+            zIndex: 10,
+            minWidth: "200px",
+            p: 1,
+          }}
+        >
+         <MenuItem
+            component={Link}
+            to="/productos/genero/masculino"  // Usar minúsculas en la ruta
+            sx={{ color: "white", "&:hover": { backgroundColor: "#305500" } }}
+          >
+            Masculino
+          </MenuItem>
+          <MenuItem
+            component={Link}
+            to="/productos/genero/femenino"  // Usar minúsculas en la ruta
+            sx={{ color: "white", "&:hover": { backgroundColor: "#305500" } }}
+          >
+            Femenino
+          </MenuItem>
+        </Box>
+      )}
+    </Box>
+  );
+};
+
+
 
 function NavbarCliente() {
   const [anchorElUser, setAnchorElUser] = useState(null);
@@ -119,17 +163,18 @@ function NavbarCliente() {
       <Container maxWidth="false">
         <Toolbar disableGutters>
           <img
-            style={{ marginRight: "10px" }}
+            style={{ marginRight: "10px", cursor: "pointer" }} 
             width="50"
             height="50"
             src="/img/Logo Circular Mr Wolf-Photoroom.png"
             alt="Logo de Mr Wolf"
+            onClick={() => navigate("/")} 
           />
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="#"
+            component={Link}  
+            to="/"  
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -138,18 +183,15 @@ function NavbarCliente() {
               letterSpacing: ".1rem",
               color: "inherit",
               textDecoration: "none",
+              cursor: "pointer", 
             }}
           >
             Mr.Wolf
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
-            {pages.map((page) => (
-              <Button key={page} sx={{ color: "white" }}>
-                {page}
-              </Button>
-            ))}
             <MenuCategorias />
+            <MenuFiltro />
           </Box>
 
           <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
@@ -175,18 +217,9 @@ function NavbarCliente() {
             >
               {isLoggedIn ? (
                 <>
-                  {settings.map((setting) => (
-                    <MenuItem
-                      key={setting}
-                      onClick={
-                        setting === "Salir"
-                          ? handleLogout
-                          : () => setAnchorElUser(null)
-                      }
-                    >
-                      <Typography>{setting}</Typography>
-                    </MenuItem>
-                  ))}
+                  <MenuItem onClick={handleLogout}>
+                    <Typography>Salir</Typography>
+                  </MenuItem>
                   {userRole === "Administrador" && (
                     <MenuItem onClick={() => navigate("/dashboard")}>
                       <Typography>Dashboard</Typography>

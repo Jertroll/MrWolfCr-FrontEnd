@@ -17,7 +17,7 @@
   text-align: center;
   padding: 10px;
   border-radius: 5px;
-  width: 200px;
+  width: 220px;
   height: 250px; /* Ajusta la altura para acomodar la imagen y el texto */
   display: flex;
   flex-direction: column; /* Apilar imagen y texto verticalmente */
@@ -44,13 +44,14 @@
 
 /* Contenedor del nombre y flecha */
 .categoria-texto {
-  margin-top: 10px;
-  font-size: 16px;
+  margin-top: 8px;
+  font-size: 13px;
 }
 
 .categoria-texto h3 {
-  margin: 0;
+  margin: auto;
   font-weight: bold;
+ text-align: left;
 }
 
 .flecha {

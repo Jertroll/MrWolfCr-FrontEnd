@@ -10,6 +10,7 @@ import ProductosAleatorios from "./components/VistaCliente/proAleactorios/Produc
 import ProductosPorCategorias from "./components/VistaCliente/Paginas/ProductosPorCategoria";
 import DetalleProducto from "./components/VistaCliente/Paginas/DetalleProducto";
 import NavFooterCliente from "./components/VistaCliente/Paginas/NavFooterCliente";
+import ProductosPorGenero from "./components/VistaCliente/ProductoGenero/ProductosPorGenero";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/productos/aleatorios" element={<ProductosAleatorios />} />
           <Route path="/productos/categoria/:id" element={<ProductosPorCategorias />} />
           <Route path="/producto/:id" element={<DetalleProducto />} />
+          <Route path="/productos/genero/:genero" element={<ProductosPorGenero />} />
         </Route>
 
         {/* Ruta de admin (sin layout) */}
