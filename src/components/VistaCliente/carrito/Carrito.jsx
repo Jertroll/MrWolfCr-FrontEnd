@@ -18,8 +18,7 @@ const Carrito = () => {
                 setLoading(false);
             })
             .catch((err) => {
-                setError("Error al obtener el carrito");
-                setLoading(false);
+                console.error("Error en la solicitud:", err);
             });
     }, []);
 
