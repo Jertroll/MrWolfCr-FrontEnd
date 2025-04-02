@@ -1,25 +1,25 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom"; // Hook para redirección
-import { obtenerUsuarioDesdeToken } from "../../utils/auth"; // Importamos la función desde utils/auth.js
+import { useNavigate } from "react-router-dom"; 
+import { obtenerUsuarioDesdeToken } from "../../utils/auth"; 
 
 const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
     const [cantidad, setCantidad] = useState(1);
     const [usuario, setUsuario] = useState(null);
-    const navigate = useNavigate(); // Hook para redirigir al usuario
+    const navigate = useNavigate(); 
 
     useEffect(() => {
         const user = obtenerUsuarioDesdeToken();
-        setUsuario(user); // Guardamos el usuario si existe
+        setUsuario(user); 
     }, []);
 
-    const disponible = producto.estado === "Disponible"; // Verificar disponibilidad del producto
-    const usuarioAutenticado = usuario !== null; // Verificar si el usuario está autenticado
+    const disponible = producto.estado === "Disponible"; 
+    const usuarioAutenticado = usuario !== null; 
 
     const handleAgregar = async () => {
         if (!usuarioAutenticado) {
             alert("Debes iniciar sesión para agregar productos al carrito.");
-            navigate("/login"); // Redirige a la página de login
+            navigate("/login");
             return;
         }
 
@@ -65,7 +65,7 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
                 className="border rounded-lg p-2 w-20 text-center"
             />
             <button
-                onClick={handleAgregar} // Maneja la redirección o el agregado al carrito
+                onClick={handleAgregar} 
                 className={`mt-2 w-full py-2 rounded-lg font-medium text-white transition-opacity duration-300 ${
                     disponible ? "bg-black hover:bg-gray-800" : "bg-gray-400 opacity-50 cursor-not-allowed"
                 }`}

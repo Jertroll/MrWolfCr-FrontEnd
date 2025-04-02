@@ -113,7 +113,7 @@ function NavbarCliente() {
     try {
       const response = await fetch("http://localhost:3000/api/v1/logout", {
         method: "POST",
-        credentials: "include", // Asegúrate de incluir las cookies para que la sesión se pueda cerrar
+        credentials: "include", 
       });
   
       if (!response.ok) {
@@ -123,10 +123,7 @@ function NavbarCliente() {
       // Si la sesión se cierra correctamente, eliminamos el token de la sesión del cliente
       sessionStorage.removeItem("token");
   
-      // Actualizamos el estado para reflejar que el usuario ya no está logueado
       setIsLoggedIn(false);
-  
-      // Redirigimos al usuario a la página de inicio o alguna página de tu elección
       navigate("/");
   
     } catch (error) {
