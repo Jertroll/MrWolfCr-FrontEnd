@@ -1,175 +1,153 @@
-import React, { useState, useEffect } from "react";
-import "./Carrito.css"; // Importamos los estilos
-const obtenerUsuarioIdDesdeToken = () => {
-    const token = sessionStorage.getItem("token"); // O sessionStorage.getItem("token");
-    if (!token) return null; // Si no hay token, devuelve null
+import { useEffect, useState } from "react";
 
-    try {
-        const base64Url = token.split(".")[1]; // Extrae la parte útil del JWT
-        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-        const jsonPayload = decodeURIComponent(
-            atob(base64)
-                .split("")
-                .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-                .join("")
-        );
-        const { usuarioId } = JSON.parse(jsonPayload); // Extrae el usuarioId
-        return usuarioId;
-    } catch (error) {
-        console.error("Error al decodificar el token:", error);
-        return null;
-    }
-};
-
-const usuarioId = obtenerUsuarioIdDesdeToken();
 const Carrito = () => {
     const [carrito, setCarrito] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [seleccionados, setSeleccionados] = useState([]); // Productos seleccionados
 
-    // Cargar el carrito desde el backend
     useEffect(() => {
-        if (!usuarioId) return; // Evita errores si no hay usuario logueado
-    
-        fetch(`http://localhost:3000/api/v1/carrito/${usuarioId}`, {
-            headers: {
-                "Authorization": `Bearer ${localStorage.getItem("token")}`, // Envía el token en la cabecera
-            },
+        fetch("http://localhost:3000/api/v1/cart", {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include"
         })
-        .then((res) => res.json())
-        .then((data) => setCarrito(Array.isArray(data) ? data : []))
-        .catch((error) => console.error("Error al cargar el carrito", error));
-    }, [usuarioId]);
-
-    const actualizarCantidad = async (productoId, nuevaCantidad) => {
-        // Verificar que el producto exista en el carrito
-        const productoExistente = carrito.find(item => item.productoId === productoId);
-        if (!productoExistente) {
-            console.error("Producto no encontrado en el carrito.");
-            return;
-        }
-
-        try {
-            const response = await fetch("http://localhost:3000/api/v1/carrito", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    usuarioId: Number(usuarioId),
-                    productoId: Number(productoId),
-                    cantidad: Number(nuevaCantidad),
-                }),
-            });
-
-            if (!response.ok) {
-                const errorMessage = await response.text();
-                throw new Error(`Error ${response.status}: ${errorMessage}`);
-            }
-
-            // Actualizar el carrito en el estado
-            setCarrito(prevCarrito => 
-                prevCarrito.map(item => 
-                    item.productoId === productoId ? { ...item, cantidad: nuevaCantidad } : item
-                )
-            );
-
-            console.log("Cantidad actualizada con éxito");
-        } catch (error) {
-            console.error("Error al actualizar cantidad:", error);
-        }
-    };
-
-    const eliminarProducto = async (productoId) => {
-        // Verificar que el producto exista en el carrito
-        const productoExistente = carrito.find(item => item.productoId === productoId);
-        if (!productoExistente) {
-            console.error("Producto no encontrado en el carrito.");
-            return;
-        }
-
-        try {
-            const response = await fetch("http://localhost:3000/api/v1/carrito", {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ 
-                    usuarioId: Number(usuarioId),
-                    productoId: Number(productoId),
-                }),
-            });
-
-            if (!response.ok) {
-                const errorMessage = await response.text();
-                throw new Error(`Error ${response.status}: ${errorMessage}`);
-            }
-
-            // Eliminar el producto del carrito en el estado
-            setCarrito(prevCarrito => prevCarrito.filter(item => item.productoId !== productoId));
-
-            console.log("Producto eliminado:", productoId);
-        } catch (error) {
-            console.error("Error al eliminar producto:", error);
-        }
-    };
-
-    // Vaciar carrito
-    const vaciarCarrito = () => {
-        fetch(`http://localhost:3000/api/v1/carrito/${usuarioId}`, { method: "DELETE" })
-            .then(() => {
-                setCarrito([]); // Vaciar el estado del carrito
+            .then((res) => res.json())
+            .then((data) => {
+                setCarrito(data.cart);
+                setLoading(false);
             })
-            .catch((error) => console.error("Error al vaciar el carrito", error));
+            .catch((err) => {
+                console.error("Error en la solicitud:", err);
+            });
+    }, []);
+
+    const eliminarDelCarrito = (productId, tallaId) => {
+        fetch("http://localhost:3000/api/v1/cart/remove", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ productId, tallaId }),
+            credentials: "include"
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.message === "Producto eliminado") {
+                    setCarrito(prevCarrito => prevCarrito.filter(p => !(p.id === productId && p.tallaId === tallaId)));
+                    setSeleccionados(prev => prev.filter(p => !(p.id === productId && p.tallaId === tallaId)));
+                }
+            })
+            .catch(() => setError("Error al eliminar el producto"));
     };
+
+    const toggleSeleccionado = (producto) => {
+        setSeleccionados((prev) =>
+            prev.some((p) => p.id === producto.id && p.tallaId === producto.tallaId)
+                ? prev.filter((p) => !(p.id === producto.id && p.tallaId === producto.tallaId))
+                : [...prev, producto]
+        );
+    };
+
+    const eliminarSeleccionados = () => {
+        seleccionados.forEach((producto) => eliminarDelCarrito(producto.id, producto.tallaId));
+    };
+
+    if (loading) return <p>Cargando carrito...</p>;
+    if (error) return <p>{error}</p>;
 
     return (
-        <div className="carrito-container">
-            <h2 className="titulo">Tu carrito</h2>
-            <a href="/home" className="seguir-comprando">Seguir comprando</a>
-
+        <div style={{ maxWidth: "900px", margin: "auto", padding: "20px" }}>
+            <h2>Carrito de Compras</h2>
             {carrito.length === 0 ? (
-                <p className="carrito-vacio">Tu carrito está vacío</p>
+                <p>El carrito está vacío</p>
             ) : (
                 <>
-                    <table className="tabla-carrito">
-                        <thead>
-                            <tr>
-                                <th>Producto</th>
-                                <th>Total</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {Array.isArray(carrito) ? carrito.map((producto) => (
-                                <tr key={producto.productoId}>
-                                    <td className="producto-info">
-                                        <img src={producto.imagen} alt={producto.nombre} className="producto-img" />
-                                        <div>
-                                            <h3>{producto.nombre}</h3>
-                                            <p>₡ {producto?.precio?.toLocaleString() || "Precio no disponible"}</p>
-                                            <p>Talla: {producto.talla}</p>
-                                        </div>
-                                    </td>
-                                    <td className="total">₡ {producto.total.toLocaleString("es-CR")}</td>
-                                    <td className="cantidad">
-                                        <button onClick={() => actualizarCantidad(producto.productoId, producto.cantidad - 1)}>-</button>
-                                        <input
-                                            type="number"
-                                            value={producto.cantidad}
-                                            min="1"
-                                            readOnly
-                                        />
-                                        <button onClick={() => actualizarCantidad(producto.productoId, (producto.cantidad ?? 0) + 1)}>+</button>
-                                        <button onClick={() => eliminarProducto(producto.productoId)} className="eliminar">&#128465;</button>
-                                    </td>
-                                </tr>
-                            )) : <tr><td colSpan="3">Error cargando el carrito</td></tr>}
-                        </tbody>
-                    </table>
-                    <button onClick={vaciarCarrito} className="vaciar-carrito">Vaciar Carrito</button>
+                    <button 
+                        onClick={eliminarSeleccionados} 
+                        disabled={seleccionados.length === 0} 
+                        style={{
+                            background: "red",
+                            color: "white",
+                            border: "none",
+                            padding: "10px",
+                            cursor: seleccionados.length === 0 ? "not-allowed" : "pointer",
+                            borderRadius: "5px",
+                            marginBottom: "10px"
+                        }}
+                    >
+                        🗑 Eliminar Seleccionados
+                    </button>
+
+                    <ul style={{ listStyle: "none", padding: 0 }}>
+                        {carrito.map((producto) => (
+                            <li key={producto.id} style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                padding: "15px",
+                                borderBottom: "1px solid #ddd"
+                            }}>
+                                {/* Checkbox */}
+                                <input
+                                    type="checkbox"
+                                    checked={seleccionados.some((p) => p.id === producto.id && p.tallaId === producto.tallaId)}
+                                    onChange={() => toggleSeleccionado(producto)}
+                                    style={{ marginRight: "10px" }}
+                                />
+
+                                {/* Imagen del producto */}
+                                <img 
+                                    src={`http://localhost:3000/public/ImgProductos/${producto.imagenes?.[0]?.nomImagen}`} 
+                                    alt={producto.nombre} 
+                                    width={100} height={100}
+                                    style={{ borderRadius: "5px", objectFit: "cover" }}
+                                />
+
+                                {/* Información del producto */}
+                                <div style={{ flex: 1, marginLeft: "15px" }}>
+                                    <p style={{ fontSize: "16px", fontWeight: "bold" }}>{producto.nombre}</p>
+                                    <p style={{ color: "#666" }}>₡ {producto.precio.toLocaleString()}</p>
+                                    <p style={{ color: "#999" }}>Talla: {producto.tallaNombre}</p>
+                                </div>
+
+                                {/* Controles de cantidad */}
+                                <div style={{ display: "flex", alignItems: "center", border: "1px solid #ddd", borderRadius: "5px" }}>
+                                    <button style={buttonStyle}>-</button>
+                                    <span style={{ margin: "0 10px" }}>{producto.quantity}</span>
+                                    <button style={buttonStyle}>+</button>
+                                </div>
+
+                                {/* Precio total y eliminar */}
+                                <div style={{ textAlign: "right" }}>
+                                    <p style={{ fontSize: "18px", fontWeight: "bold", color: "#28a745" }}>₡ {(producto.precio * producto.quantity).toLocaleString()}</p>
+                                    <button 
+                                        onClick={() => eliminarDelCarrito(producto.id, producto.tallaId)} 
+                                        style={{
+                                            background: "red",
+                                            color: "white",
+                                            border: "none",
+                                            padding: "5px 10px",
+                                            cursor: "pointer",
+                                            borderRadius: "5px"
+                                        }}
+                                    >
+                                        🗑
+                                    </button>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
                 </>
             )}
         </div>
     );
+};
+
+// Estilo de los botones de cantidad
+const buttonStyle = {
+    background: "#f0f0f0",
+    border: "none",
+    padding: "5px 10px",
+    cursor: "pointer"
 };
 
 export default Carrito;

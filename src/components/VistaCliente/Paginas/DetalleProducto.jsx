@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ProductosAleatorios from "../proAleactorios/ProductosAleatorios"; // Importar el componente
+import ProductosAleatorios from "../proAleactorios/ProductosAleatorios";
+import AgregarCarrito from "../carrito/AgregarCarrito"; // Importa el componente
 
 const DetalleProducto = () => {
   const { id } = useParams();
   const [producto, setProducto] = useState(null);
   const [imagenIndex, setImagenIndex] = useState(0);
+  const [tallaSeleccionada, setTallaSeleccionada] = useState(null); // Estado para la talla (ID)
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -13,6 +15,9 @@ const DetalleProducto = () => {
         const response = await fetch(`http://localhost:3000/api/v1/productos/${id}`);
         if (!response.ok) throw new Error("Error al obtener el producto");
         const data = await response.json();
+        console.log("Datos del producto:", data); // 🛠 Verificar los datos completos
+        console.log("Tallas:", data.tallas); // 🛠 Verificar si hay tallas
+  
         setProducto(data);
         setImagenIndex(0);
       } catch (error) {
@@ -26,7 +31,7 @@ const DetalleProducto = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
-  
+
   if (!producto) return <p>Cargando producto...</p>;
 
   const cambiarImagen = (index) => setImagenIndex(index);
@@ -80,27 +85,30 @@ const DetalleProducto = () => {
           <p className="mt-2 text-gray-700">{producto.descripcion}</p>
           <p className="mt-2 text-lg font-semibold">₡{producto.precio}</p>
 
-          {/* Selección de tallas */}
+          {/* Selección de Tallas */}
           {producto.tallas && producto.tallas.length > 0 && (
             <div className="mt-4">
               <h3 className="text-md font-semibold">Selecciona tu talla:</h3>
               <div className="flex gap-2 mt-2">
-                {producto.tallas.map((talla, index) => (
+                {producto.tallas.map((talla) => (
                   <button
-                    key={index}
-                    className="px-4 py-2 rounded-lg border text-sm font-medium bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200"
+                    key={talla.id} // Clave única basada en ID
+                    className={`px-4 py-2 rounded-lg border text-sm font-medium ${
+                      tallaSeleccionada === talla.id
+                        ? "bg-black text-white border-black"
+                        : "bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200"
+                    }`}
+                    onClick={() => setTallaSeleccionada(talla.id)} // Guarda el ID pero muestra el nombre
                   >
-                    {talla}
+                    {talla.nombre} {/* Muestra el nombre de la talla */}
                   </button>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Botón de Comprar */}
-          <button className="mt-6 w-full bg-black text-white py-2 rounded-lg text-lg font-semibold hover:bg-gray-800">
-            Agregar al carrito
-          </button>
+          {/* Componente de agregar al carrito */}
+          <AgregarCarrito producto={producto} tallaSeleccionada={tallaSeleccionada} />
         </div>
       </div>
 

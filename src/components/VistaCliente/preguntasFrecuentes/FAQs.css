@@ -1,0 +1,21 @@
+.faqs-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .faq-item {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+  }
+  
+  .faq-item h3 {
+    color: #333;
+    font-size: 1.2rem;
+  }
+  
+  .faq-item p {
+    color: #666;
+    line-height: 1.6;
+  }
