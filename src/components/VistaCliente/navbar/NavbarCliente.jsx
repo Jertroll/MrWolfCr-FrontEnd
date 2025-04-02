@@ -16,6 +16,7 @@ import {
   ShoppingCart as ShoppingCartIcon,
   LocalMall as LocalMallIcon,
   Person as PersonIcon,
+  Bolt,
 } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
 import { MdHelp } from "react-icons/md";
@@ -47,7 +48,7 @@ const MenuCategorias = () => {
       onMouseEnter={() => setMenuVisible(true)}
       onMouseLeave={() => setMenuVisible(false)}
     >
-      <Button sx={{ color: "white" }}>Productos ▾</Button>
+      <Button sx={{ color: "white", fontFamily: "'Baskerville Display PT', serif" }}>Productos ▾</Button>
       {menuVisible && (
         <Box
           sx={{
@@ -66,7 +67,7 @@ const MenuCategorias = () => {
             component={Link}
             to="/productos"
             sx={{
-              color: "white",
+              color: "white", fontFamily: "'Baskerville Display PT', serif",
               "&:hover": { backgroundColor: "#305500" },
             }}
           >
@@ -77,7 +78,7 @@ const MenuCategorias = () => {
               key={categoria.num_categoria}
               component={Link}
               to={`/productos/categoria/${categoria.num_categoria}`}
-              sx={{ color: "white", "&:hover": { backgroundColor: "#305500" } }}
+              sx={{ color: "white", fontFamily: "'Baskerville Display PT', serif", "&:hover": { backgroundColor: "#305500" } }}
             >
               {categoria.nombre_categoria}
             </MenuItem>
@@ -98,7 +99,7 @@ const MenuFiltro = () => {
       onMouseEnter={() => setMenuVisible(true)}
       onMouseLeave={() => setMenuVisible(false)}
     >
-      <Button sx={{ color: "white" }}>Filtrar por ▾</Button>
+      <Button sx={{ color: "white", fontFamily: "'Baskerville Display PT', serif" }}>Filtrar por ▾</Button>
       {menuVisible && (
         <Box
           sx={{
@@ -116,14 +117,14 @@ const MenuFiltro = () => {
          <MenuItem
             component={Link}
             to="/productos/genero/masculino"  // Usar minúsculas en la ruta
-            sx={{ color: "white", "&:hover": { backgroundColor: "#305500" } }}
+            sx={{ color: "white", fontFamily: "'Baskerville Display PT', serif", "&:hover": { backgroundColor: "#305500" } }}
           >
             Masculino
           </MenuItem>
           <MenuItem
             component={Link}
             to="/productos/genero/femenino"  // Usar minúsculas en la ruta
-            sx={{ color: "white", "&:hover": { backgroundColor: "#305500" } }}
+            sx={{ color: "white",  fontFamily: "'Baskerville Display PT', serif", "&:hover": { backgroundColor: "#305500" } }}
           >
             Femenino
           </MenuItem>
@@ -198,7 +199,7 @@ function NavbarCliente() {
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
+              fontFamily:'Baskerville Display PT',
               fontWeight: 700,
               letterSpacing: ".1rem",
               color: "inherit",
@@ -235,7 +236,7 @@ function NavbarCliente() {
                 onClick={(e) => setAnchorElUser(e.currentTarget)}
                 sx={{ p: 0 }}
               >
-                <PersonIcon fontSize="medium" sx={{ color: "white" }} />
+                <PersonIcon fontSize="medium" sx={{ color: "white", fontFamily: "'Baskerville Display PT', serif" }} />
               </IconButton>
             </Tooltip>
             <Menu

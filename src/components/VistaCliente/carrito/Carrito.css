@@ -8,6 +8,7 @@
 .titulo {
     font-size: 24px;
     font-weight: bold;
+    font-family: 'Baskerville Display PT, serif';
 }
 
 .seguir-comprando {
@@ -15,12 +16,15 @@
     text-decoration: none;
     color: black;
     font-weight: bold;
+    font-family: 'Baskerville Display PT, serif';
+    background-color: rgb(230, 228, 228);
 }
 
 .tabla-carrito {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    min-width: 120px;
 }
 
 .tabla-carrito th {
@@ -29,18 +33,22 @@
     border-bottom: 2px solid #ddd;
     font-size: 14px;
     text-transform: uppercase;
-    color: gray;
+    color: rgb(49, 49, 49);
+    min-width: 120px;
+    font-family: 'Baskerville Display PT, serif';
 }
 
 .tabla-carrito td {
     padding: 15px 10px;
     vertical-align: middle;
     border-bottom: 1px solid #ddd;
+    min-width: 120px;
 }
 
 .producto-info {
     display: flex;
     align-items: center;
+    font-family: 'Baskerville Display PT, serif';
 }
 
 .producto-img {
@@ -82,6 +90,7 @@
 
 .total {
     font-weight: bold;
+    font-family: 'Baskerville Display PT, serif';
 }
 
 .vaciar-carrito {
@@ -92,8 +101,24 @@
     margin-top: 20px;
     cursor: pointer;
     font-size: 16px;
+    font-family: 'Baskerville Display PT, serif';
 }
 
 .vaciar-carrito:hover {
     background-color: #ff1a1a;
+}
+@media screen and (max-width: 768px) {
+    .tabla-responsive {
+        overflow-x: auto;
+    }
+
+    .tabla-carrito {
+        width: 100%;
+        min-width: 600px;
+    }
+
+    .vaciar-carrito {
+        width: 100%;
+        text-align: center;
+    }
 }

@@ -82,7 +82,7 @@
 }
 
 .register-btn:hover {
-  background-color: #6d4803;
+  color: #ce8e16;
 }
 
 .back-btn {
@@ -91,5 +91,5 @@
 }
 
 .back-btn:hover {
-  background-color: #6d4803;
+  color: #ce8e16;
 }
