@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../VistaCliente/proAleactorios/ProductosAleatorios.css"; // Asegúrate de incluir tu archivo CSS
 
 const ProductosAleatorios = () => {
   const [productos, setProductos] = useState([]); // Estado para almacenar los productos
+  const [busqueda, setBusqueda] = useState(""); // Estado para almacenar el término de búsqueda
   const navigate = useNavigate();
 
   const fetchData = async () => {
@@ -21,29 +23,61 @@ const ProductosAleatorios = () => {
     fetchData();
   }, []);
 
+  // Filtrar productos basados en el término de búsqueda
+  const productosFiltrados = productos.filter((producto) => {
+    const terminoBusqueda = busqueda.toLowerCase();
+    return (
+      producto.nombre.toLowerCase().includes(terminoBusqueda) ||
+      producto.precio.toString().includes(terminoBusqueda) ||
+      producto.descripcion.toLowerCase().includes(terminoBusqueda) ||
+      producto.categoria?.toLowerCase().includes(terminoBusqueda)
+    );
+  });
 
+  // Manejar la navegación al detalle del producto
   const verDetalleProducto = (id) => {
     navigate(`/producto/${id}`);
-    window.location.reload(); // Fuerza la recarga de la página
   };
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 p-2">
-      {productos.map((producto) => (
-        <div 
-          key={producto.id} 
-          className="border rounded-lg p-2 shadow-md hover:shadow-lg cursor-pointer"
-          onClick={() => verDetalleProducto(producto.id)}
-        >
-          <img 
-            src={`http://localhost:3000/public/ImgProductos/${producto.imagenes[0]?.nomImagen}`}
-            alt={producto.nombre} 
-            className="w-full h-32 object-contain rounded-md"
-          />
-          <h3 className="text-sm font-semibold mt-1">{producto.nombre}</h3>
-          <p className="text-gray-700 text-sm">₡{producto.precio}</p>
-        </div>
-      ))}
+    <div className="productos-wrapper">
+      <div className="logo-container">
+        <img 
+          src="/assets/logoBlanco.jpg" 
+          alt="Logo de la tienda" 
+          className="logo-imagen"
+        />
+      </div>
+
+      {/* Barra de búsqueda */}
+      <div className="search-bar-container">
+        <input
+          type="text"
+          placeholder="Buscar productos..."
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          className="search-bar"
+        />
+      </div>
+
+      <div className="productos-container">
+        {productosFiltrados.map((producto) => (
+          <div 
+            key={producto.id} 
+            className="producto-card"
+            onClick={() => verDetalleProducto(producto.id)} // Navegar al detalle del producto
+          >
+            <div className="producto-imagen">
+              <img 
+                src={`http://localhost:3000/public/ImgProductos/${producto.imagenes[0]?.nomImagen}`}
+                alt={producto.nombre} 
+              />
+            </div>
+            <div className="producto-nombre">{producto.nombre}</div>
+            <div className="producto-precio">₡{producto.precio}</div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

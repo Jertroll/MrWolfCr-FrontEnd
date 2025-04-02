@@ -9,6 +9,7 @@
 
 /* Contenedor del logo */
 .logo-container {
+    padding: 10px;
     text-align: center;
     margin-bottom: 20px;
 }
@@ -86,3 +87,27 @@
         grid-template-columns: repeat(1, 1fr); /* 1 producto por fila en móviles */
     }
 }
+/* Contenedor de la barra de búsqueda */
+.search-bar-container {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  /* Estilo para la barra de búsqueda */
+  .search-bar {
+    width: 80%;
+    max-width: 400px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .search-bar:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+  }
