@@ -155,7 +155,7 @@ function TableReact() {
   });
 
   return (
-    <div className="p-4">
+    <div className="table-responsive-container">
       <input
         type="text"
         className="mb-4 p-2 border border-gray-300 rounded-md shadow-sm"
@@ -318,7 +318,8 @@ function TableReact() {
         </div>
       </ReactModal>
 
-      <table className="min-w-full border border-gray-200 shadow-md rounded-lg overflow-hidden">
+      <div style={{ overflowX: 'auto' }}>
+ <table className="min-w-full border border-gray-200 shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-800 text-white">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -357,6 +358,8 @@ function TableReact() {
         </tbody>
       </table>
 
+      </div>
+     
       {/* Paginación */}
       <div className="flex justify-between items-center mt-4">
         {/* Botón para ir a la primera página */}

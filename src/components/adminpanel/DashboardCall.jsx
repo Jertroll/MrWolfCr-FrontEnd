@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Navbar from "./Navbar";
 import Sidebar from './Sidebar';
 import RegistroUsuario from '../usuario/RegistroUsuario';
-import TableReact from "../tableUsuario/TableReact";
+import TableReact from  '../usuario/tableUsuario/TableReact'
 import { useState } from 'react';
 import AgregarCategoria from "../categoria/AgregarCategoria";
 import CategoriaTable from "../categoria/CategoriaTable";

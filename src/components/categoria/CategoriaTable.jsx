@@ -81,19 +81,17 @@ const CategoriaTable = () => {
   };
 
   //Funcion para menjar la carga de una imagen en el formulario de actualizar
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCategoriaForm((prevForm) => ({
-          ...prevForm,
-          imagen: reader.result, // Guarda la imagen en base64
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+const handleImageChange = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    // Guardamos el archivo directamente para enviarlo luego
+    setCategoriaForm({
+      ...categoriaForm,
+      imagenFile: file,  // Archivo para enviar al backend
+      imagen: URL.createObjectURL(file)  // URL para vista previa
+    });
+  }
+};
 
   // Función para guardar los cambios de la categoria
   const saveChanges = async (e) => {
@@ -116,8 +114,8 @@ const CategoriaTable = () => {
       );
 
       // Agregar imagen solo si es un nuevo archivo (evita enviar la URL como imagen)
-      if (categoriaForm.imagen && categoriaForm.imagen instanceof File) {
-        formData.append("imagen", categoriaForm.imagen);
+      if (categoriaForm.imagenFile) {
+        formData.append("imagen", categoriaForm.imagenFile); // Archivo binario
       }
 
       const response = await fetch(
