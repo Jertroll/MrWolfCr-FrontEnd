@@ -76,6 +76,10 @@ const Carrito = () => {
         alert("Procesando la compra de los productos seleccionados...");
     };
 
+    const totalAPagar = carrito.reduce((total, producto) => {
+        return seleccionados.includes(producto.id) ? total + (producto.precio * producto.quantity) : total;
+    }, 0);
+
     if (loading) return <p>Cargando carrito...</p>;
     if (error) return <p>{error}</p>;
 
@@ -140,10 +144,13 @@ const Carrito = () => {
                     </table>
                 </div>
             )}
-            <div className="acciones-carrito">
-                <button className="vaciar-carrito">Vaciar Carrito</button>
-                <button className="comprar" onClick={comprarProductos}>Comprar</button>
+            <div className="Total">
+            <h3 className="total-pagar">Total a pagar: ₡ {totalAPagar.toLocaleString()}</h3>
             </div>
+           <div className="acciones-carrito">
+              <button className="vaciar-carrito">Vaciar Carrito</button>
+              <button className="comprar" onClick={comprarProductos}>Comprar</button>
+           </div>
         </div>
     );
 };

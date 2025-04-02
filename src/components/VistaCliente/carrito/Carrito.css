@@ -141,6 +141,7 @@ td:nth-child(4) {
     justify-content: space-between;
     margin-top: 20px;
 }
+
 .vaciar-carrito,
 .comprar {
     width: 150px; /* Mismo ancho */
@@ -158,6 +159,7 @@ td:nth-child(4) {
     font-size: 16px;
     font-family: 'Baskerville Display PT, serif';
 }
+
 
 .comprar:hover {
     background-color: #333; /* Un negro más claro al pasar el mouse */
@@ -177,4 +179,14 @@ td:nth-child(4) {
 
 .seguir-comprando:hover {
     background-color: #f8f8f8; /* Un ligero gris al pasar el mouse */
+}
+.Total {
+    display: flex;
+    justify-content: flex-end; /* Alinea el total a la derecha */
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+.total-pagar {
+    margin-right: 20px; /* Agrega un margen para separar el total del botón */
 }
