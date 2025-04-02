@@ -1,5 +1,5 @@
 export const obtenerUsuarioDesdeToken = () => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     if (!token) return null;
     
     try {

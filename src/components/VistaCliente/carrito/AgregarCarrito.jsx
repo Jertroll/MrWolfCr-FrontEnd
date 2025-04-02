@@ -1,19 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { obtenerUsuarioDesdeToken } from "../../utils/auth"; // Importamos la función desde utils/auth.js
+import { useNavigate } from "react-router-dom"; 
+import { obtenerUsuarioDesdeToken } from "../../utils/auth"; 
 
 const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
     const [cantidad, setCantidad] = useState(1);
+    const [usuario, setUsuario] = useState(null);
+    const navigate = useNavigate(); 
+
+    useEffect(() => {
+        const user = obtenerUsuarioDesdeToken();
+        setUsuario(user); 
+    }, []);
+
+    const disponible = producto.estado === "Disponible"; 
+    const usuarioAutenticado = usuario !== null; 
 
     const handleAgregar = async () => {
-        if (!tallaSeleccionada) {
-            alert("Por favor selecciona una talla antes de agregar al carrito");
+        if (!usuarioAutenticado) {
+            alert("Debes iniciar sesión para agregar productos al carrito.");
+            navigate("/login");
             return;
         }
 
-        const user = obtenerUsuarioDesdeToken();
-        if (!user) {
-            alert("Debes iniciar sesión para agregar productos al carrito");
+        if (!disponible) {
+            alert("Este producto no está disponible en este momento.");
+            return;
+        }
+
+        if (!tallaSeleccionada) {
+            alert("Por favor selecciona una talla antes de agregar al carrito.");
             return;
         }
 
@@ -22,7 +38,7 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${user.token}`
+                    "Authorization": `Bearer ${usuario.token}`
                 },
                 credentials: "include",
                 body: JSON.stringify({ productId: producto.id, tallaId: tallaSeleccionada, quantity: cantidad })
@@ -31,10 +47,10 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
             const data = await response.json();
             if (!response.ok) throw new Error(data.message || "Error al agregar el producto");
 
-            alert("Producto agregado al carrito");
+            alert("Producto agregado al carrito.");
         } catch (error) {
             console.error("Error al agregar producto:", error);
-            alert("No se pudo agregar el producto");
+            alert("No se pudo agregar el producto.");
         }
     };
 
@@ -49,8 +65,10 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
                 className="border rounded-lg p-2 w-20 text-center"
             />
             <button
-                onClick={handleAgregar}
-                className="mt-2 w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800"
+                onClick={handleAgregar} 
+                className={`mt-2 w-full py-2 rounded-lg font-medium text-white transition-opacity duration-300 ${
+                    disponible ? "bg-black hover:bg-gray-800" : "bg-gray-400 opacity-50 cursor-not-allowed"
+                }`}
             >
                 Agregar al Carrito
             </button>

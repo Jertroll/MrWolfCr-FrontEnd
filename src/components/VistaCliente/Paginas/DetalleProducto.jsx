@@ -84,6 +84,7 @@ const DetalleProducto = () => {
           <h1 className="text-2xl font-bold">{producto.nombre}</h1>
           <p className="mt-2 text-gray-700">{producto.descripcion}</p>
           <p className="mt-2 text-lg font-semibold">₡{producto.precio}</p>
+          <p className="mt-2 text-md font-medium">Estado: {producto.estado}</p>
 
           {/* Selección de Tallas */}
           {producto.tallas && producto.tallas.length > 0 && (
