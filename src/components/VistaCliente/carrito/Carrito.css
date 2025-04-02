@@ -122,3 +122,23 @@
         text-align: center;
     }
 }
+.acciones-carrito {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.comprar {
+    margin-left: auto;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    font-family: 'Baskerville Display PT, serif';
+}
+
+.comprar:hover {
+    background-color: #218838;
+}
