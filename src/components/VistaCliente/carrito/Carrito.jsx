@@ -1,86 +1,80 @@
-import { createContext, useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 
-const CartContext = createContext();
-
-export const CarritoProvider = ({ children }) => {
-    const [cart, setCart] = useState([]);
+const Carrito = () => {
+    const [carrito, setCarrito] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchCart = async () => {
-            try {
-                const response = await fetch("http://localhost:3000/api/v1/cart", {
-                    method: "GET",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json"
-                    }
-                });
-
-                const data = await response.json();
-                if (!data.cart || !Array.isArray(data.cart)) throw new Error("Datos inválidos del servidor");
-                console.log(data.cart);
-                setCart(data.cart); // Ahora accedemos correctamente a `cart`
-            } catch (error) {
-                console.error("Error al obtener el carrito:", error);
-            } finally {
+        fetch("http://localhost:3000/api/v1/cart", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include"
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error("Error al obtener el carrito");
+                return res.json();
+            })
+            .then((data) => {
+                console.log("Datos del carrito:", data);
+                setCarrito(data.cart);
                 setLoading(false);
-            }
-        };
-
-        fetchCart();
-    }, []); // Se ejecuta solo una vez al montar el componente
-
-    const removeFromCart = async (productId, tallaId) => {
-        try {
-            const response = await fetch("http://localhost:3000/api/v1/cart/remove", {
-                method: "DELETE",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ productId, tallaId }),
-                credentials: "include", // Necesario para la sesión
+            })
+            .catch((err) => {
+                setError(err.message);
+                setLoading(false);
             });
+    }, []);
 
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.message || "Error al eliminar el producto");
-
-            setCart(prevCart => prevCart.filter(item => !(item.id === productId && item.tallaId === tallaId)));
-            alert("Producto eliminado del carrito");
-        } catch (error) {
-            console.error("Error:", error);
-            alert("No se pudo eliminar el producto");
-        }
+    const eliminarDelCarrito = (productId, tallaId) => {
+        fetch("http://localhost:3000/api/v1/cart/remove", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ productId, tallaId }),
+            credentials: "include"
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.message === "Producto eliminado") {
+                    setCarrito(prevCarrito => prevCarrito.filter(p => !(p.id === productId && p.tallaId === tallaId)));
+                }
+            })
+            .catch(() => setError("Error al eliminar el producto"));
     };
 
-    const clearCart = async () => {
-        try {
-            const response = await fetch("http://localhost:3000/api/v1/cart/clear", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-            });
-
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.message || "Error al vaciar el carrito");
-
-            setCart([]);
-            alert("Carrito vaciado");
-        } catch (error) {
-            console.error("Error:", error);
-            alert("No se pudo vaciar el carrito");
-        }
-    };
+    if (loading) return <p>Cargando carrito...</p>;
+    if (error) return <p>{error}</p>;
 
     return (
-        <CartContext.Provider value={{ cart, removeFromCart, clearCart, loading }}>
-            {children}
-        </CartContext.Provider>
+        <div>
+            <h2>Carrito de Compras</h2>
+            {carrito.length === 0 ? (
+                <p>El carrito está vacío</p>
+            ) : (
+                <ul>
+                    {carrito.map((producto) => (
+                        <li key={`${producto.id}-${producto.tallaId}`}>
+                            <img 
+                                src={`http://localhost:3000/public/ImgProductos/${producto.imagenes?.[0]?.nomImagen}`} 
+                                alt={producto.nombre} 
+                                width={50} height={50}
+                            />
+                            <p>{producto.nombre} - Talla: {producto.tallaNombre}</p>
+                            <p>Precio: ${producto.precio}</p>
+                            <p>Cantidad: {producto.quantity}</p>
+                            <button onClick={() => eliminarDelCarrito(producto.id, producto.tallaId)}>
+                                Eliminar
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
     );
 };
 
-CarritoProvider.propTypes = {
-    children: PropTypes.node.isRequired,
-};
-
-export default CartContext;
+export default Carrito;

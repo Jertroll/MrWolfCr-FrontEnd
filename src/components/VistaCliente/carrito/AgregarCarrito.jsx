@@ -24,6 +24,7 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${user.token}`
                 },
+                credentials: "include",
                 body: JSON.stringify({ productId: producto.id, tallaId: tallaSeleccionada, quantity: cantidad })
             });
 
