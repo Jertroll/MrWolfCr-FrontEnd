@@ -18,7 +18,7 @@ const Footer = () => {
           </Box>
           <Box mt={1.5}>
             <Typography variant="body2">
-              <Mail fontSize="small" /> contacto@mrwolf.com
+              <Mail fontSize="small" /> mrcaddiewolf@gmail.com
             </Typography>
           </Box>
           <Box mt={1.5}>
@@ -62,10 +62,10 @@ const Footer = () => {
             Síguenos en
           </Typography>
           <Box mt={1.5}>
-            <IconButton href="https://instagram.com/mrwolf.cr" target="_blank" color="inherit">
+            <IconButton href="https://tr.ee/ZrtwYzikmC" target="_blank" color="inherit">
               <Instagram />
             </IconButton>
-            <IconButton href="https://facebook.com/Mr.wolf" target="_blank" color="inherit">
+            <IconButton href="https://www.facebook.com/share/Ft1ZEnf3eZqZeW2y/?mibextid=LQQJ4d" target="_blank" color="inherit">
               <Facebook />
             </IconButton>
             <IconButton href="https://tiktok.com/mrwolf.cr" target="_blank" color="inherit">

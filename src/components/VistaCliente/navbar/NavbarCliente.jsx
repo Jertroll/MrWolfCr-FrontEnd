@@ -18,6 +18,7 @@ import {
   Person as PersonIcon,
 } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
+import { MdHelp } from "react-icons/md";
 
 // Menú de categorías
 const MenuCategorias = () => {
@@ -199,6 +200,17 @@ function NavbarCliente() {
             <IconButton onClick={() => navigate("/carrito")} color="inherit">
               <ShoppingCartIcon fontSize="medium" />
             </IconButton>
+
+            {/* Botón de Ayuda */}
+            <Tooltip title="Ayuda">
+              <IconButton
+                onClick={() => navigate("/ayudaCliente")}
+                color="inherit"
+              >
+                <MdHelp size={24} />
+              </IconButton>
+            </Tooltip>
+
             <Tooltip title="Opciones">
               <IconButton
                 onClick={(e) => setAnchorElUser(e.currentTarget)}
