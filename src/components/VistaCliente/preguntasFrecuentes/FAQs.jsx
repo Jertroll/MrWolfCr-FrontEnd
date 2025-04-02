@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa"; // Íconos de flecha
+import { FaChevronDown, FaChevronUp, FaQuestionCircle } from "react-icons/fa";
 import "./FAQs.css";
 
 const FAQs = () => {
   const [faqsData, setFaqsData] = useState([]);
-  const [expandedId, setExpandedId] = useState(null); // Guarda el ID de la pregunta expandida
+  const [expandedId, setExpandedId] = useState(null);
 
   useEffect(() => {
     fetch("/data/faqs.json")
@@ -14,30 +14,39 @@ const FAQs = () => {
   }, []);
 
   const toggleFaq = (id) => {
-    setExpandedId(expandedId === id ? null : id); // Alterna entre abrir y cerrar
+    setExpandedId(expandedId === id ? null : id);
   };
 
   return (
     <div className="faqs-container">
-      <h2 className="text-2xl font-bold text-center mb-4">Preguntas Frecuentes</h2>
+      <div className="faqs-header">
+        <FaQuestionCircle className="header-icon" />
+        <h2 className="faqs-title">Preguntas Frecuentes</h2>
+        <p className="faqs-subtitle">Encuentra respuestas a las dudas más comunes</p>
+      </div>
 
-      {faqsData.map((faq) => (
-        <div key={faq.id} className="faq-item border-b p-4">
+      <div className="faqs-list">
+        {faqsData.map((faq) => (
           <div 
-            className="flex justify-between items-center cursor-pointer" 
+            key={faq.id} 
+            className={`faq-item ${expandedId === faq.id ? 'active' : ''}`}
             onClick={() => toggleFaq(faq.id)}
           >
-            <h3 className="font-semibold text-lg">{faq.pregunta}</h3>
-            <button className="text-gray-600">
-              {expandedId === faq.id ? <FaChevronUp /> : <FaChevronDown />}
-            </button>
+            <div className="faq-question">
+              <h3>{faq.pregunta}</h3>
+              <button className="faq-toggle">
+                {expandedId === faq.id ? <FaChevronUp /> : <FaChevronDown />}
+              </button>
+            </div>
+            
+            {expandedId === faq.id && (
+              <div className="faq-answer">
+                <p>{faq.respuesta}</p>
+              </div>
+            )}
           </div>
-
-          {expandedId === faq.id && (
-            <p className="mt-2 text-gray-700">{faq.respuesta}</p>
-          )}
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
