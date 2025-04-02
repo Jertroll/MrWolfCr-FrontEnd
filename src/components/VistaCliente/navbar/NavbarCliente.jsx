@@ -47,7 +47,7 @@ const MenuCategorias = () => {
       onMouseEnter={() => setMenuVisible(true)}
       onMouseLeave={() => setMenuVisible(false)}
     >
-      <Button sx={{ color: "white" }}>Productos ▾</Button>
+      <Button sx={{ color: "white", fontFamily: "'Baskerville Display PT', serif" }}>Productos ▾</Button>
       {menuVisible && (
         <Box
           sx={{
@@ -98,7 +98,7 @@ const MenuFiltro = () => {
       onMouseEnter={() => setMenuVisible(true)}
       onMouseLeave={() => setMenuVisible(false)}
     >
-      <Button sx={{ color: "white" }}>Filtrar por ▾</Button>
+      <Button sx={{ color: "white", fontFamily: "'Baskerville Display PT', serif" }}>Filtrar por ▾</Button>
       {menuVisible && (
         <Box
           sx={{
@@ -198,7 +198,7 @@ function NavbarCliente() {
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
+              fontFamily:'Baskerville Display PT',
               fontWeight: 700,
               letterSpacing: ".1rem",
               color: "inherit",

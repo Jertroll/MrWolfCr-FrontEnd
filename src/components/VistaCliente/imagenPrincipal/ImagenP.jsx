@@ -19,8 +19,8 @@ const ImagenP = () => {
         transition={{ duration: 1 }}
         className="relative text-center px-6">
         
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-wide">BIENVENIDOS</h1>
-        <p className="text-lg mb-6">¡Descubre un mundo de estilo al alcance de un click!</p>
+        <h1 className="text-4xl font mb-4" style={{ fontFamily: 'Baskerville Display PT, serif' }}>BIENVENIDOS</h1>
+        <p className="text-2xl font mb-4" style={{ fontFamily: 'Baskerville Display PT, serif' }}>¡Descubre un mundo de estilo al alcance de un click!</p>
         
         <motion.a 
           whileHover={{ scale: 1.1 }} 

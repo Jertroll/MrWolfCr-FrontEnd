@@ -42,10 +42,9 @@
 }
 
 .brand-logo {
-  width: 120px;
+  width: 200px;
   height: auto;
   margin-bottom: 1.5rem;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
 
 .welcome-title {
@@ -58,11 +57,13 @@
   justify-content: center;
   flex-wrap: wrap;
   gap: 0.5rem;
+  font-family: 'Baskerville Display PT, serif';
 }
 
 .brand-name {
   color: var(--brand-primary);
   font-weight: 800;
+  font-family: 'Baskerville Display PT, serif';
 }
 
 .brand-symbol {
@@ -74,6 +75,7 @@
 .section-title {
   font-weight: 600;
   color: var(--text-primary);
+  font-family: 'Baskerville Display PT, serif';
 }
 
 .welcome-text {
@@ -82,6 +84,7 @@
   line-height: 1.7;
   max-width: 700px;
   margin: 0 auto 2rem;
+  font-family: 'Baskerville Display PT, serif';
 }
 
 .contact-cta {
@@ -98,6 +101,7 @@
   font-weight: 600;
   transition: all 0.3s ease;
   border: 2px solid var(--brand-primary);
+  font-family: 'Baskerville Display PT, serif';
 }
 
 .contact-button:hover {

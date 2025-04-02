@@ -66,13 +66,15 @@
     font-size: 16px;
     font-weight: 600;
     margin-top: 10px;
+    font-family: 'Baskerville Display PT, serif';
 }
 
 /* Precio del producto */
 .producto-precio {
     font-size: 14px;
-    color: #555;
+    color: #222222;
     font-weight: 500;
+    font-family: 'Baskerville Display PT, serif';
 }
 
 /* Responsivo para pantallas más pequeñas */
@@ -92,6 +94,7 @@
     width: 100%;
     text-align: center;
     margin-bottom: 20px;
+    font-family: 'Baskerville Display PT, serif';
   }
   
   /* Estilo para la barra de búsqueda */
