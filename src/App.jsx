@@ -11,6 +11,8 @@ import ProductosAleatorios from "./components/VistaCliente/proAleactorios/Produc
 import ProductosPorCategorias from "./components/VistaCliente/Paginas/ProductosPorCategoria";
 import DetalleProducto from "./components/VistaCliente/Paginas/DetalleProducto";
 import NavFooterCliente from "./components/VistaCliente/Paginas/NavFooterCliente";
+import AyudaUsuario from "./components/VistaCliente/Paginas/AyudaUsuario";
+import ProductosPorGenero from "./components/VistaCliente/ProductoGenero/ProductosPorGenero";
 
 function App() {
   return (
@@ -19,6 +21,7 @@ function App() {
         {/* Rutas PÚBLICAS sin layout */}
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<RegistroUsuarioCliente />} />
+
 
         {/* Rutas con layout común */}
         <Route element={<LayoutWrapper />}>
@@ -29,6 +32,8 @@ function App() {
           <Route path="/productos/aleatorios" element={<ProductosAleatorios />} />
           <Route path="/productos/categoria/:id" element={<ProductosPorCategorias />} />
           <Route path="/producto/:id" element={<DetalleProducto />} />
+          <Route path="/ayudaCliente" element={<AyudaUsuario />} />
+          <Route path="/productos/genero/:genero" element={<ProductosPorGenero />} />
         </Route>
 
         {/* Ruta de admin (sin layout) */}
