@@ -16,6 +16,7 @@ const Carrito = () => {
         })
             .then((res) => res.json())
             .then((data) => {
+                console.log("Datos del carrito:", data);
                 setCarrito(data.cart);
                 setLoading(false);
             })
@@ -101,7 +102,6 @@ const Carrito = () => {
                         </thead>
                         <tbody>
                             {carrito.map((producto) => (
-                               
                                 <tr key={producto.id}>
                                     <td>
                                         <input
