@@ -25,6 +25,7 @@ const settings = ["Perfil", "Account", "Salir"];
 const MenuCategorias = () => {
   const [categorias, setCategorias] = useState([]);
   const [menuVisible, setMenuVisible] = useState(false);
+ //const [cart, setCart] = useState([]);
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -108,11 +109,32 @@ function NavbarCliente() {
     }
   }, []);
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("token");
-    setIsLoggedIn(false);
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/v1/logout", {
+        method: "POST",
+        credentials: "include", // Asegúrate de incluir las cookies para que la sesión se pueda cerrar
+      });
+  
+      if (!response.ok) {
+        throw new Error("Error al cerrar sesión");
+      }
+  
+      // Si la sesión se cierra correctamente, eliminamos el token de la sesión del cliente
+      sessionStorage.removeItem("token");
+  
+      // Actualizamos el estado para reflejar que el usuario ya no está logueado
+      setIsLoggedIn(false);
+  
+      // Redirigimos al usuario a la página de inicio o alguna página de tu elección
+      navigate("/");
+  
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
   };
+  
+  
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#203500" }}>
