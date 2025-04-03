@@ -64,7 +64,8 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
 
     return (
         <div className="mt-4">
-              <div className="mt-2">      
+              <div className="mt-2">
+      
                 {/* selector de tallas */}
                 {mensajeTalla && <p className="text-red-500 text-sm mt-1">{mensajeTalla}</p>}
             </div>
