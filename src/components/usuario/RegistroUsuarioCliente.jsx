@@ -1,4 +1,7 @@
 import { useState } from "react";
+import logo from "../../assets/logoNegro.jpg";
+import "../loginForm/Login.css";
+import "./registro.css";
 
 function RegistroUsuarioCliente() {
   const [formData, setFormData] = useState({
@@ -10,8 +13,8 @@ function RegistroUsuarioCliente() {
     telefono: "",
     direccion_envio: "",
     email_facturacion: "",
-    imagen: null,  // Mantenemos null como valor por defecto
-    rol: "Cliente", // Aseguramos que el rol sea "Cliente"
+    imagen: null,
+    rol: "Cliente",
   });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -29,18 +32,11 @@ function RegistroUsuarioCliente() {
     setSuccessMessage("");
 
     try {
-      // Preparamos los datos para enviar
-      const dataToSend = {
-        ...formData,
-        // Si imagen es null, no la incluimos o la enviamos como string vacío
-        imagen: formData.imagen || ""
-      };
+      const dataToSend = { ...formData, imagen: formData.imagen || "" };
 
       const response = await fetch("http://localhost:3000/api/v1/usuarios", {
         method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dataToSend),
       });
 
@@ -51,7 +47,6 @@ function RegistroUsuarioCliente() {
       }
 
       setSuccessMessage("Usuario registrado con éxito");
-      // Opcional: resetear el formulario después de éxito
       setFormData({
         cedula: "",
         nombre_usuario: "",
@@ -64,9 +59,7 @@ function RegistroUsuarioCliente() {
         imagen: null,
         rol: "Cliente",
       });
-
     } catch (error) {
-      console.error("Error:", error);
       setError(error.message || "Error al registrar usuario");
     } finally {
       setLoading(false);
@@ -74,124 +67,43 @@ function RegistroUsuarioCliente() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md h-[90vh] overflow-y-auto">
-        <h2 className="text-2xl font-bold text-center mb-6">Crear cuenta</h2>
-        
-        {error && (
-          <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
-            {error}
-          </div>
-        )}
-
-        {successMessage && (
-          <div className="mb-4 p-2 bg-green-100 text-green-700 rounded">
-            {successMessage}
-          </div>
-        )}
-
+    <div className="registro-container">
+      <div className="logo-container">
+        <img src={logo} alt="Logo Mr Wolf Cr" className="logo" />
+      </div>
+      <div className="form-container">
+        <h3 className="text-xl font-bold text-center text-white mb-6">Registro</h3>
+        {error && <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{error}</div>}
+        {successMessage && <div className="mb-4 p-2 bg-green-100 text-green-700 rounded">{successMessage}</div>}
         <form onSubmit={handleSubmit}>
-          {/* Campos del formulario (igual que antes pero sin el input de imagen) */}
-          <label className="block mb-2 font-semibold">Cédula</label>
-          <input
-            type="text"
-            name="cedula"
-            value={formData.cedula}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
-
-          <label className="block mb-2 font-semibold">Nombre de usuario</label>
-          <input
-            type="text"
-            name="nombre_usuario"
-            value={formData.nombre_usuario}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
-
-          <label className="block mb-2 font-semibold">Nombre completo</label>
-          <input
-            type="text"
-            name="nombre_completo"
-            value={formData.nombre_completo}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
-
-          <label className="block mb-2 font-semibold">Correo electrónico</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
-
-          <label className="block mb-2 font-semibold">Contraseña</label>
-          <input
-            type="password"
-            name="contrasena"
-            value={formData.contrasena}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-            minLength="6"
-          />
-
-          <label className="block mb-2 font-semibold">Teléfono</label>
-          <input
-            type="tel"
-            name="telefono"
-            value={formData.telefono}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
-
-          <label className="block mb-2 font-semibold">Dirección de envío</label>
-          <input
-            type="text"
-            name="direccion_envio"
-            value={formData.direccion_envio}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
-
-          <label className="block mb-2 font-semibold">
-            Correo electrónico para facturación
-          </label>
-          <input
-            type="email"
-            name="email_facturacion"
-            value={formData.email_facturacion}
-            onChange={handleChange}
-            className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none"
-            required
-          />
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full py-2 rounded-lg font-semibold ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-black text-white hover:bg-gray-800"
-            }`}
-          >
+          {[
+            { label: "Cédula", name: "cedula", type: "text" },
+            { label: "Nombre de usuario", name: "nombre_usuario", type: "text" },
+            { label: "Nombre completo", name: "nombre_completo", type: "text" },
+            { label: "Correo electrónico", name: "email", type: "email" },
+            { label: "Contraseña", name: "contrasena", type: "password", minLength: 6 },
+            { label: "Teléfono", name: "telefono", type: "tel" },
+            { label: "Dirección de envío", name: "direccion_envio", type: "text" },
+            { label: "Correo electrónico para facturación", name: "email_facturacion", type: "email" },
+          ].map(({ label, name, type, minLength }) => (
+            <div key={name}>
+              <label className="block mb-2 font-semibold">{label}</label>
+              <input
+                type={type}
+                name={name}
+                value={formData[name]}
+                onChange={handleChange}
+                className="input"
+                required
+                minLength={minLength}
+              />
+            </div>
+          ))}
+          <button type="submit" disabled={loading} className={`submit-btn ${loading ? "bg-gray-400 cursor-not-allowed" : ""}`}>
             {loading ? "PROCESANDO..." : "CREAR CUENTA"}
           </button>
-
           <p className="text-center text-gray-600 mt-4">
-            ¿Ya tiene una cuenta?{" "}
-            <a href="/login" className="text-red-500">
-              Inicie sesión aquí
-            </a>
+            ¿Ya tiene una cuenta? <a href="/login" className="text-red-500">Inicie sesión aquí</a>
           </p>
         </form>
       </div>
@@ -200,3 +112,4 @@ function RegistroUsuarioCliente() {
 }
 
 export default RegistroUsuarioCliente;
+
