@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Para redireccionar al usuario
-import { jwtDecode } from 'jwt-decode'; // Corregido: usa { jwtDecode }
+import { jwtDecode } from "jwt-decode"; // Corregido: usa { jwtDecode }
 import logo from "../../assets/logoNegro.jpg";
-import './Login.css'
+import "./Login.css";
 function Login() {
   const [email, setEmail] = useState("");
   const [contrasena, setContrasena] = useState("");
@@ -31,7 +31,6 @@ function Login() {
         const decodedToken = jwtDecode(data.token);
         console.log("Token decodificado:", decodedToken);
 
-        alert("Inicio de sesión exitoso");
         navigate("/home"); // Redirige al usuario a /dashboard
       } else {
         setError(data.message || "Error en la autenticación");
@@ -42,65 +41,69 @@ function Login() {
     }
   };
 
-    // Función para redirigir al usuario a la página de registro
-    const handleRegistro = () => {
-      navigate("/registro"); // Redirige al usuario a /registro
-    };
+  // Función para redirigir al usuario a la página de registro
+  const handleRegistro = () => {
+    navigate("/registro"); // Redirige al usuario a /registro
+  };
 
-    const handleHome = () => {
-      navigate("/"); // Redirige al usuario a /registro
-    };
+  const handleHome = () => {
+    navigate("/"); // Redirige al usuario a /registro
+  };
 
   return (
     <div className="login-container">
-    <div className="logo-container">
-      <img src={logo} alt="Logo Mr Wolf Cr" className="logo" />
+      <div className="logo-container">
+        <img src={logo} alt="Logo Mr Wolf Cr" className="logo" />
+      </div>
+
+      <div className="form-container">
+        <h3 className="text-xl font-bold text-center text-white mb-6">
+          Inicio de Sesión
+        </h3>
+
+        <form onSubmit={handleLogin} className="login-form">
+          <label className="block mb-2 text-white">Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="mrwolfcr@ejemplo.com"
+            className="input"
+            required
+          />
+
+          <label className="block mb-2 text-white">Contraseña</label>
+          <input
+            type="password"
+            value={contrasena}
+            onChange={(e) => setContrasena(e.target.value)}
+            placeholder="Pon tu contraseña aquí"
+            className="input"
+            required
+          />
+
+          {error && <p className="error">{error}</p>}
+          <div className="button-group">
+            <button type="submit" className="submit-btn">
+              Iniciar Sesión
+            </button>
+            <div className="button-group-secondary">
+              <button
+                type="button"
+                onClick={handleRegistro}
+                className="register-btn"
+              >
+                Regístrate
+              </button>
+
+              <button type="button" onClick={handleHome} className="back-btn">
+                Regresar al Inicio
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
-
-    <div className="form-container">
-    <h3 className="text-xl font-bold text-center text-white mb-6">
-      Inicio de Sesión
-    </h3>
-
-    <form onSubmit={handleLogin} className="login-form">
-      <label className="block mb-2 text-white">Email</label>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="mrwolfcr@ejemplo.com"
-        className="input"
-        required
-      />
-
-      <label className="block mb-2 text-white">Contraseña</label>
-      <input
-        type="password"
-        value={contrasena}
-        onChange={(e) => setContrasena(e.target.value)}
-        placeholder="Pon tu contraseña aquí"
-        className="input"
-        required
-      />
-
-      {error && <p className="error">{error}</p>}
-      <div className="button-group">
-      <button type="submit" className="submit-btn">
-        Iniciar Sesión
-      </button>
-      <div className="button-group-secondary">
-      <button type="button" onClick={handleRegistro} className="register-btn">
-        Regístrate
-      </button>
-
-      <button type="button" onClick={handleHome} className="back-btn">
-        Regresar al Inicio
-      </button>
-      </div>
-      </div>
-    </form>
-  </div>
-</div>
   );
 }
 
