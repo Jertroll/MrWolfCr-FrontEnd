@@ -20,11 +20,15 @@ import {
 } from "@mui/icons-material";
 import { jwtDecode } from "jwt-decode";
 import { MdHelp } from "react-icons/md";
+import { useCarrito } from "../../VistaCliente/carrito/CarritoContext";
+ // Ajusta la ruta si es distinta
+
 
 // Menú de categorías
 const MenuCategorias = () => {
   const [categorias, setCategorias] = useState([]);
   const [menuVisible, setMenuVisible] = useState(false);
+ 
  //const [cart, setCart] = useState([]);
 
   useEffect(() => {
@@ -141,6 +145,7 @@ function NavbarCliente() {
   const [userRole, setUserRole] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const { cantidadCarrito } = useCarrito();
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
@@ -217,8 +222,28 @@ function NavbarCliente() {
 
           <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
             <LocalMallIcon fontSize="medium" sx={{ mr: 1 }} />
-            <IconButton onClick={() => navigate("/carrito")} color="inherit">
+            <IconButton onClick={() => navigate("/carrito")} color="inherit" sx={{ position: "relative" }}>
               <ShoppingCartIcon fontSize="medium" />
+              {cantidadCarrito > 0 && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: -5,
+                    right: -5,
+                    bgcolor: "red",
+                    color: "white",
+                    borderRadius: "50%",
+                    width: 16,
+                    height: 16,
+                    fontSize: "0.75rem",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {cantidadCarrito}
+                </Box>
+              )}
             </IconButton>
 
             {/* Botón de Ayuda */}
