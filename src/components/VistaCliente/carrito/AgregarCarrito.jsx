@@ -10,7 +10,8 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
     const [mostrarModal, setMostrarModal] = useState(false);
     const [mensajeModal, setMensajeModal] = useState("");
     const [mensajeTalla, setMensajeTalla] = useState("");
-    const { agregarAlCarrito } = useCarrito(); // Obtener la función del contexto
+    const [mensajeCantidad] = useState("");
+    const { agregarAlCarrito, obtenerCantidadProducto } = useCarrito(); // Obtener el carrito
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,6 +21,7 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
 
     const disponible = producto.estado === "Disponible";
     const usuarioAutenticado = usuario !== null;
+
 
     const handleAgregar = async () => {
         if (!usuarioAutenticado) {
@@ -40,6 +42,15 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
         } else {
             setMensajeTalla("");
         }
+  // Obtener la cantidad actual del producto en el carrito usando la función del contexto
+  const cantidadProductoEnCarrito = obtenerCantidadProducto(producto.id, tallaSeleccionada);
+
+  // Verificar si la cantidad total no supera el límite de 5
+  if (cantidadProductoEnCarrito + cantidad > 5) {
+      setMensajeModal("No puedes agregar más de 5 unidades del mismo producto con la misma talla.");
+      setMostrarModal(true);
+      return;
+  }
 
         try {
             const response = await fetch("http://localhost:3000/api/v1/cart/add", {
@@ -69,9 +80,8 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
     return (
         <div className="mt-4">
             <div className="mt-2">
-      
-                  {/* selector de tallas */}
                 {mensajeTalla && <p className="text-red-500 text-sm mt-1">{mensajeTalla}</p>}
+                {mensajeCantidad && <p className="text-red-500 text-sm mt-1">{mensajeCantidad}</p>}
             </div>
             <h3 className="text-md font-semibold">Cantidad:</h3>
             <input

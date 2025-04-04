@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
+import { useCarrito } from "../../VistaCliente/carrito/CarritoContext";
 import "./Carrito.css";
 
 const Carrito = () => {
@@ -7,6 +8,8 @@ const Carrito = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [seleccionados, setSeleccionados] = useState([]);
+    const { eliminarDelCarrito } = useCarrito();
+    
 
     useEffect(() => {
         fetch("http://localhost:3000/api/v1/cart", {
@@ -35,7 +38,9 @@ const Carrito = () => {
                 if (data.message === "Producto eliminado") {
                     setCarrito(data.cart);
                     setSeleccionados(seleccionados.filter(id => id !== productId));
+                    eliminarDelCarrito();
                 }
+                
             })
             .catch(() => setError("Error al eliminar el producto"));
     };
