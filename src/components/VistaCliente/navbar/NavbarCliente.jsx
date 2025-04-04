@@ -253,7 +253,7 @@ function NavbarCliente() {
                     <Typography>Salir</Typography>
                   </MenuItem>
                   {userRole === "Administrador" && (
-                    <MenuItem onClick={() => navigate("/dashboard")}>
+                    <MenuItem onClick={() => navigate("/dashboard/home")}>
                       <Typography>Dashboard</Typography>
                     </MenuItem>
                   )}

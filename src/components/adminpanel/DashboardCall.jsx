@@ -8,7 +8,7 @@ import AgregarCategoria from "../categoria/AgregarCategoria";
 import CategoriaTable from "../categoria/CategoriaTable";
 import ProductoTable from "../productos/ProductoTable";
 import AgregarProductos from "../productos/AgregarProductos";
-
+import InicioAdmin from "./inicioAdmin/InicioAdmin";
 function DashboardCall() {
   const [activeTab, setActiveTab] = useState('');
 
@@ -25,7 +25,7 @@ function DashboardCall() {
         {/* Área de contenido con scroll */}
         <div className="flex-1 overflow-y-auto p-4 bg-gray-100">
           <Routes>
-            <Route path="/" element={<></>} />
+            <Route path="/home" element={<InicioAdmin/>} />
             <Route path="/usuario" element={<TableReact />} />
             <Route path="/categoria" element={<CategoriaTable />} />
             <Route path="/producto" element={<ProductoTable />} />
