@@ -30,7 +30,7 @@ const AlgunasCategorias = () => {
 
   return (
     <div className="categorias-container">
-      <h1 className="text-4xl font mb-4" style={{ fontFamily: 'Baskerville Display PT, serif' }}>
+      <h1 className="text-3xl font mb-4" style={{ fontFamily: 'Baskerville Display PT, serif' }}>
         Categorias Populares
       </h1>
 

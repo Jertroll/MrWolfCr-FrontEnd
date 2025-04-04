@@ -189,10 +189,10 @@ function NavbarCliente() {
       <Container maxWidth="false">
         <Toolbar disableGutters>
           <img
-            style={{ marginRight: "10px", cursor: "pointer" }} 
+            style={{ marginRight: "10px", cursor: "pointer", borderRadius: "50%" }} 
             width="50"
             height="50"
-            src="/img/Logo Circular Mr Wolf-Photoroom.png"
+            src="/img/Favicon.ico"
             alt="Logo de Mr Wolf"
             onClick={() => navigate("/")} 
           />
