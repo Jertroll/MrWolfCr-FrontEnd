@@ -1,7 +1,4 @@
 import { useState } from "react";
-import logo from "../../assets/logoNegro.jpg";
-import "../loginForm/Login.css";
-import "./registro.css";
 
 function RegistroUsuarioCliente() {
   const [formData, setFormData] = useState({
@@ -21,8 +18,11 @@ function RegistroUsuarioCliente() {
   const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value, files } = e.target;
+    setFormData({
+      ...formData,
+      [name]: name === "imagen" ? files[0] : value,
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -33,7 +33,6 @@ function RegistroUsuarioCliente() {
 
     try {
       const dataToSend = { ...formData, imagen: formData.imagen || "" };
-
       const response = await fetch("http://localhost:3000/api/v1/usuarios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -41,10 +40,7 @@ function RegistroUsuarioCliente() {
       });
 
       const responseData = await response.json();
-
-      if (!response.ok) {
-        throw new Error(responseData.message || "Error al registrar usuario");
-      }
+      if (!response.ok) throw new Error(responseData.message || "Error al registrar usuario");
 
       setSuccessMessage("Usuario registrado con éxito");
       setFormData({
@@ -67,44 +63,42 @@ function RegistroUsuarioCliente() {
   };
 
   return (
-    <div className="registro-container">
-      <div className="logo-container">
-        <img src={logo} alt="Logo Mr Wolf Cr" className="logo" />
-      </div>
-      <div className="form-container">
-        <h3 className="text-xl font-bold text-center text-white mb-6">Registro</h3>
+    <div className="flex justify-center items-center min-h-screen bg-black">
+      <div style={{ backgroundColor: "rgba(34, 33, 33, 0.8)" }} className="p-8 rounded-lg shadow-md w-full max-w-md h-[90vh] overflow-y-auto">
+        <h2 className="text-2xl font-bold text-center mb-6 text-white">Crear cuenta</h2>
         {error && <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{error}</div>}
         {successMessage && <div className="mb-4 p-2 bg-green-100 text-green-700 rounded">{successMessage}</div>}
+
         <form onSubmit={handleSubmit}>
-          {[
-            { label: "Cédula", name: "cedula", type: "text" },
-            { label: "Nombre de usuario", name: "nombre_usuario", type: "text" },
-            { label: "Nombre completo", name: "nombre_completo", type: "text" },
-            { label: "Correo electrónico", name: "email", type: "email" },
-            { label: "Contraseña", name: "contrasena", type: "password", minLength: 6 },
-            { label: "Teléfono", name: "telefono", type: "tel" },
-            { label: "Dirección de envío", name: "direccion_envio", type: "text" },
-            { label: "Correo electrónico para facturación", name: "email_facturacion", type: "email" },
-          ].map(({ label, name, type, minLength }) => (
-            <div key={name}>
-              <label className="block mb-2 font-semibold">{label}</label>
-              <input
-                type={type}
-                name={name}
-                value={formData[name]}
-                onChange={handleChange}
-                className="input"
-                required
-                minLength={minLength}
-              />
-            </div>
-          ))}
-          <button type="submit" disabled={loading} className={`submit-btn ${loading ? "bg-gray-400 cursor-not-allowed" : ""}`}>
+          <label className="block mb-2 font-semibold text-white">Cédula</label>
+          <input type="text" name="cedula" value={formData.cedula} onChange={handleChange} className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none" required />
+
+          <label className="block mb-2 font-semibold text-white">Nombre de usuario</label>
+          <input type="text" name="nombre_usuario" value={formData.nombre_usuario} onChange={handleChange} className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none" required />
+
+          <label className="block mb-2 font-semibold text-white">Nombre completo</label>
+          <input type="text" name="nombre_completo" value={formData.nombre_completo} onChange={handleChange} className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none" required />
+
+          <label className="block mb-2 font-semibold text-white">Correo electrónico</label>
+          <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none" required />
+
+          <label className="block mb-2 font-semibold text-white">Contraseña</label>
+          <input type="password" name="contrasena" value={formData.contrasena} onChange={handleChange} className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none" required minLength="6" />
+
+          <label className="block mb-2 font-semibold text-white">Teléfono</label>
+          <input type="text" name="telefono" value={formData.telefono} onChange={handleChange} className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none" required />
+
+          <label className="block mb-2 font-semibold text-white">Dirección de envío</label>
+          <input type="text" name="direccion_envio" value={formData.direccion_envio} onChange={handleChange} className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none" required />
+
+          <label className="block mb-2 font-semibold text-white">Correo electrónico para facturación</label>
+          <input type="email" name="email_facturacion" value={formData.email_facturacion} onChange={handleChange} className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none" required />
+
+          <button type="submit" disabled={loading} className={`w-full py-2 rounded-lg font-semibold ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#1E3A07] text-white hover:bg-gray-800"}`}>
             {loading ? "PROCESANDO..." : "CREAR CUENTA"}
           </button>
-          <p className="text-center text-gray-600 mt-4">
-            ¿Ya tiene una cuenta? <a href="/login" className="text-red-500">Inicie sesión aquí</a>
-          </p>
+
+          <p className="text-center text-white mt-4">¿Ya tiene una cuenta? <a href="/login" className="text-red-500">Inicie sesión aquí</a></p>
         </form>
       </div>
     </div>
@@ -112,4 +106,3 @@ function RegistroUsuarioCliente() {
 }
 
 export default RegistroUsuarioCliente;
-
