@@ -11,7 +11,7 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
     const [mensajeModal, setMensajeModal] = useState("");
     const [mensajeTalla, setMensajeTalla] = useState("");
     const [mensajeCantidad] = useState("");
-    const { agregarAlCarrito, obtenerCantidadProducto } = useCarrito(); // Obtener el carrito
+    const { agregarAlCarrito, obtenerCantidadProducto } = useCarrito();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -21,7 +21,6 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
 
     const disponible = producto.estado === "Disponible";
     const usuarioAutenticado = usuario !== null;
-
 
     const handleAgregar = async () => {
         if (!usuarioAutenticado) {
@@ -42,15 +41,14 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
         } else {
             setMensajeTalla("");
         }
-  // Obtener la cantidad actual del producto en el carrito usando la función del contexto
-  const cantidadProductoEnCarrito = obtenerCantidadProducto(producto.id, tallaSeleccionada);
 
-  // Verificar si la cantidad total no supera el límite de 5
-  if (cantidadProductoEnCarrito + cantidad > 5) {
-      setMensajeModal("No puedes agregar más de 5 unidades del mismo producto con la misma talla.");
-      setMostrarModal(true);
-      return;
-  }
+        const cantidadProductoEnCarrito = obtenerCantidadProducto(producto.id, tallaSeleccionada);
+
+        if (cantidadProductoEnCarrito + cantidad > 5) {
+            setMensajeModal("No puedes agregar más de 5 unidades del mismo producto con la misma talla.");
+            setMostrarModal(true);
+            return;
+        }
 
         try {
             const response = await fetch("http://localhost:3000/api/v1/cart/add", {
@@ -68,7 +66,7 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
                 throw new Error(data.message || "Error al agregar el producto");
             }
 
-            agregarAlCarrito(); // Aumentar contador del carrito
+            agregarAlCarrito(producto.id, tallaSeleccionada, cantidad);
 
         } catch (error) {
             console.error("Error al agregar producto:", error);
