@@ -29,10 +29,6 @@ const InicioAdmin = () => {
               <p className="feature-description">Organiza tu catálogo de productos.</p>
             </div>
             
-            <div className="feature-item">
-              <h3 className="feature-title">Monitorear operaciones</h3>
-              <p className="feature-description">Accede a datos clave de tu negocio.</p>
-            </div>
           </div>
           
           <p className="getting-started">

@@ -1,18 +1,18 @@
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./router/ProtectedRoute";
 import DashboardCall from "./components/adminpanel/DashboardCall";
 import Login from "./components/loginForm/Login";
 import RegistroUsuarioCliente from "./components/usuario/RegistroUsuarioCliente";
-import Carrito from "./components/VistaCliente/carrito/Carrito";
-import Home from "./components/VistaCliente/Paginas/Home";
+import Carrito  from "./components/VistaCliente/carrito/Carrito";
+//import { CarritoProvider } from "./components/VistaCliente/carrito/Carrito";
+import Home from "./components/VistaCliente/Paginas/Home/Home";
 import Productos from "./components/productos/VerProductos";
-import ProductosAleatorios from "./components/VistaCliente/proAleactorios/ProductosAleatorios";
-import ProductosPorCategorias from "./components/VistaCliente/Paginas/ProductosPorCategoria";
-import DetalleProducto from "./components/VistaCliente/Paginas/DetalleProducto";
+import ProductosAleatorios from "./components/VistaCliente/Paginas/productos/proAleactorios/ProductosAleatorios";
+import ProductosPorCategorias from "./components/VistaCliente/Paginas/productos/ProductosPorCategoria";
+import DetalleProducto from "./components/VistaCliente/Paginas/productos/DetalleProducto";
 import NavFooterCliente from "./components/VistaCliente/Paginas/NavFooterCliente";
-import AyudaUsuario from "./components/VistaCliente/Paginas/AyudaUsuario";
-import ProductosPorGenero from "./components/VistaCliente/ProductoGenero/ProductosPorGenero";
-import { CarritoProvider } from "./components/VistaCliente/carrito/CarritoContext"; // Importamos el contexto del carrito
+import AyudaUsuario from "./components/VistaCliente/Paginas/AyudaUsuario/AyudaUsuario";
+import ProductosPorGenero from "./components/VistaCliente/Paginas/productos/ProductoGenero/ProductosPorGenero";
 
 function App() {
   return (

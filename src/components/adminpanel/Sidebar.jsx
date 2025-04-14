@@ -3,6 +3,7 @@ import { FaHome, FaUsers, FaChartPie, FaTshirt } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
+  
   const location = useLocation();
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
