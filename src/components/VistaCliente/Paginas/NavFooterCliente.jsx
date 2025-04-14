@@ -1,16 +1,23 @@
 import PropTypes from 'prop-types';
 import NavbarCliente from "../navbar/NavbarCliente";
 import FooterCliente from "../footer/FooterCliente";
+import { Box } from '@mui/material';
 
 function NavFooterCliente({ children }) {
   return (
-    <div className="app-container">
+    <Box
+      display="flex"
+      flexDirection="column"
+      minHeight="100vh"
+    >
       <NavbarCliente />
-      <main className="main-content">
+      
+      <Box component="main" flexGrow={1}>
         {children}
-      </main>
+      </Box>
+
       <FooterCliente />
-    </div>
+    </Box>
   );
 }
 

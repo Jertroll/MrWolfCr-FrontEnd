@@ -5,26 +5,56 @@ const CarritoContext = createContext();
 
 export const CarritoProvider = ({ children }) => {
     const [cantidadCarrito, setCantidadCarrito] = useState(0);
-    const [carrito] = useState([]); 
+    const [carrito, setCarrito] = useState([]);
+    const [mostrarContadorTemporal, setMostrarContadorTemporal] = useState(false);
 
-    const agregarAlCarrito = () => {
-        setCantidadCarrito((prev) => prev + 1);
+    const agregarAlCarrito = (productoId, tallaId, cantidad) => {
+        setCarrito((prevCarrito) => {
+            const existeItem = prevCarrito.some(
+                (item) => item.productoId === productoId && item.tallaId === tallaId
+            );
+
+            if (!existeItem) {
+                setCantidadCarrito((prev) => prev + 1);
+                activarContadorTemporal();// mostrar el contador
+                return [...prevCarrito, { productoId, tallaId, cantidad }];
+            } else {
+                return prevCarrito.map((item) => {
+                    if (item.productoId === productoId && item.tallaId === tallaId) {
+                        return { ...item, cantidad: item.cantidad + cantidad };
+                    }
+                    return item;
+                });
+            }
+        });
+    };
+
+    const activarContadorTemporal = () => {
+        setMostrarContadorTemporal(true);
+        setTimeout(() => setMostrarContadorTemporal(false), 5000); // 5 segundos
     };
 
     const eliminarDelCarrito = () => {
-        setCantidadCarrito((prev) => (prev > 0 ? prev - 1 : 0)); // Evita que baje de 0
+        setCantidadCarrito((prev) => (prev > 0 ? prev - 1 : 0));
     };
-       // Función para obtener la cantidad de un producto en el carrito por ID y talla
+
     const obtenerCantidadProducto = (productoId, tallaId) => {
         const item = carrito.find(
             (item) => item.productoId === productoId && item.tallaId === tallaId
         );
-        return item ? item.cantidad : 0;  // Si no existe el producto con esa talla, devuelve 0
+        return item ? item.cantidad : 0;
     };
 
-
     return (
-        <CarritoContext.Provider value={{ cantidadCarrito, agregarAlCarrito, eliminarDelCarrito, obtenerCantidadProducto}}>
+        <CarritoContext.Provider
+            value={{
+                cantidadCarrito,
+                agregarAlCarrito,
+                eliminarDelCarrito,
+                obtenerCantidadProducto,
+                mostrarContadorTemporal,
+            }}
+        >
             {children}
         </CarritoContext.Provider>
     );
