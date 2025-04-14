@@ -25,7 +25,11 @@ p{
    font-family: 'Baskerville Display PT', serif;
   }
 
-  .content {
-    flex: 1; /* Esto empuja el footer hacia abajo */
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
   }
+  
+
   

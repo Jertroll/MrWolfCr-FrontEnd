@@ -9,7 +9,7 @@ const AlgunasCategorias = () => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/v1/categorias/algunas");
+        const response = await fetch("http://localhost:3000/api/v1/categorias/productos");
         if (!response.ok) throw new Error("Error al obtener los datos");
         const data = await response.json();
         setCategorias(data);
@@ -35,7 +35,7 @@ const AlgunasCategorias = () => {
       </h1>
 
       <div className="categorias-grid">
-        {categorias.map((categoria) => (
+        {categorias.slice(0, 5).map((categoria) => (
           <div key={categoria.num_categoria} className="categoria-card"
            onClick={() => handleCategoriaClick(categoria.num_categoria)}>
             <img src={categoria.imagen} alt={categoria.nombre} />
