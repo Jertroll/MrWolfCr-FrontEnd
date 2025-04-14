@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import ProductosAleatorios from "../proAleactorios/ProductosAleatorios";
-import AgregarCarrito from "../carrito/AgregarCarrito"; // Importa el componente
+import ProductosAleatorios from "./proAleactorios/ProductosAleatorios";
+import AgregarCarrito from "../../carrito/AgregarCarrito"; // Importa el componente
 
 const DetalleProducto = () => {
   const { id } = useParams();

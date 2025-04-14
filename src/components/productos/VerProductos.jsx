@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../VistaCliente/proAleactorios/ProductosAleatorios.css"; // Asegúrate de incluir tu archivo CSS
+import "../VistaCliente/Paginas/productos/proAleactorios/ProductosAleatorios.css"; // Asegúrate de incluir tu archivo CSS
 
 const ProductosAleatorios = () => {
   const [productos, setProductos] = useState([]); // Estado para almacenar los productos

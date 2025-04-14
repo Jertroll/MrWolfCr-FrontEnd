@@ -1,7 +1,6 @@
-import Contacto from "../contacto/Contacto";
-import FAQs from "../preguntasFrecuentes/FAQs";
-import "./AyudaUsuario.css";
-
+import Contacto from "../../centroAyuda/contacto/Contacto"
+import FAQs from "../../preguntasFrecuentes/FAQs"
+import "../AyudaUsuario/AyudaUsuario.css"
 function AyudaUsuario() {
   return (
     <div className="ayuda-container">
