@@ -2,13 +2,16 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { obtenerUsuarioDesdeToken } from "../../utils/auth";
+import { useCarrito } from "../../VistaCliente/carrito/CarritoContext"; // Importar el contexto
 
 const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
     const [cantidad, setCantidad] = useState(1);
     const [usuario, setUsuario] = useState(null);
     const [mostrarModal, setMostrarModal] = useState(false);
     const [mensajeModal, setMensajeModal] = useState("");
-    const [mensajeTalla, setMensajeTalla] = useState(""); // Mensaje de advertencia para la talla
+    const [mensajeTalla, setMensajeTalla] = useState("");
+    const [mensajeCantidad] = useState("");
+    const { agregarAlCarrito, obtenerCantidadProducto } = useCarrito();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -36,7 +39,15 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
             setMensajeTalla("Por favor selecciona una talla antes de agregar al carrito.");
             return;
         } else {
-            setMensajeTalla(""); // Limpiar mensaje si ya seleccionó una talla
+            setMensajeTalla("");
+        }
+
+        const cantidadProductoEnCarrito = obtenerCantidadProducto(producto.id, tallaSeleccionada);
+
+        if (cantidadProductoEnCarrito + cantidad > 5) {
+            setMensajeModal("No puedes agregar más de 5 unidades del mismo producto con la misma talla.");
+            setMostrarModal(true);
+            return;
         }
 
         try {
@@ -55,6 +66,8 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
                 throw new Error(data.message || "Error al agregar el producto");
             }
 
+            agregarAlCarrito(producto.id, tallaSeleccionada, cantidad);
+
         } catch (error) {
             console.error("Error al agregar producto:", error);
             setMensajeModal("No se pudo agregar el producto.");
@@ -64,12 +77,10 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
 
     return (
         <div className="mt-4">
-              <div className="mt-2">
-      
-                {/* selector de tallas */}
+            <div className="mt-2">
                 {mensajeTalla && <p className="text-red-500 text-sm mt-1">{mensajeTalla}</p>}
+                {mensajeCantidad && <p className="text-red-500 text-sm mt-1">{mensajeCantidad}</p>}
             </div>
-
             <h3 className="text-md font-semibold">Cantidad:</h3>
             <input
                 type="number"
@@ -88,7 +99,6 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
                 Agregar al Carrito
             </button>
 
-            {/* Modal para otros mensajes */}
             {mostrarModal && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm text-center">

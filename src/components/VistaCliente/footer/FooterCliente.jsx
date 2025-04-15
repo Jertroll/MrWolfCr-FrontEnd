@@ -3,7 +3,7 @@ import { Facebook, Instagram, MusicNote, LocationOn, Mail, Phone, WhatsApp } fro
 
 const Footer = () => {
   return (
-    <Box sx={{ backgroundColor: "#203500", color: "white", py: 4, px: 2 }}>
+    <Box sx={{ backgroundColor: "#203500", color: "white", py: 4, px: 2, border: "2px solid red" }}>
       <Grid2  container spacing={3} justifyContent="center">
         
         {/* Sección de Contacto */}

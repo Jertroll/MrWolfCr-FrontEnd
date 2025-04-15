@@ -13,48 +13,50 @@ import DetalleProducto from "./components/VistaCliente/Paginas/productos/Detalle
 import NavFooterCliente from "./components/VistaCliente/Paginas/NavFooterCliente";
 import AyudaUsuario from "./components/VistaCliente/Paginas/AyudaUsuario/AyudaUsuario";
 import ProductosPorGenero from "./components/VistaCliente/Paginas/productos/ProductoGenero/ProductosPorGenero";
+import { CarritoProvider } from "./components/VistaCliente/carrito/CarritoContext";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Rutas PÚBLICAS sin layout */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/registro" element={<RegistroUsuarioCliente />} />
+    <CarritoProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Rutas PÚBLICAS sin layout */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/registro" element={<RegistroUsuarioCliente />} />
 
+          {/* Rutas con layout común */}
+          <Route element={<LayoutWrapper />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/carrito" element={<Carrito />} />
+            <Route path="/productos" element={<Productos />} />
+            <Route path="/productos/aleatorios" element={<ProductosAleatorios />} />
+            <Route path="/productos/categoria/:id" element={<ProductosPorCategorias />} />
+            <Route path="/producto/:id" element={<DetalleProducto />} />
+            <Route path="/ayudaCliente" element={<AyudaUsuario />} />
+            <Route path="/productos/genero/:genero" element={<ProductosPorGenero />} />
+          </Route>
 
-        {/* Rutas con layout común */}
-        <Route element={<LayoutWrapper />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/carrito" element={<Carrito />} />
-          <Route path="/productos" element={<Productos />} />
-          <Route path="/productos/aleatorios" element={<ProductosAleatorios />} />
-          <Route path="/productos/categoria/:id" element={<ProductosPorCategorias />} />
-          <Route path="/producto/:id" element={<DetalleProducto />} />
-          <Route path="/ayudaCliente" element={<AyudaUsuario />} />
-          <Route path="/productos/genero/:genero" element={<ProductosPorGenero />} />
-        </Route>
-
-        {/* Ruta de admin (sin layout) */}
-        <Route
-          path="/dashboard/*"
-          element={
-            <ProtectedRoute requiredRole="Administrador">
-              <DashboardCall />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+          {/* Ruta de admin (sin layout) */}
+          <Route
+            path="/dashboard/*"
+            element={
+              <ProtectedRoute requiredRole="Administrador">
+                <DashboardCall />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </CarritoProvider>
   );
 }
 
-// Componente wrapper para el layout
+// Componente wrapper para el layout con NavFooterCliente
 function LayoutWrapper() {
   return (
     <NavFooterCliente>
-      <Outlet /> {/* Esto renderiza los hijos de la ruta */}
+      <Outlet /> {/* Renderiza las rutas hijas aquí */}
     </NavFooterCliente>
   );
 }
