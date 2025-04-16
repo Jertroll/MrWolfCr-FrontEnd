@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
 import Select from "react-select";
 
 // Opciones de tallas
@@ -24,20 +23,48 @@ const AgregarProductos = () => {
     genero_dirigido: "",
     id_categoria: 0,
   });
+  const [categorias, setCategorias] = useState([]); // Estado para almacenar las categorías
+  const [mensaje, setMensaje] = useState(""); // Mensaje de éxito o error
+  const navigate = useNavigate(); // Para redirigir al usuario
+
+  useEffect(() => {
+    // Suponiendo que tu API tenga un endpoint para obtener las categorías
+    const fetchCategorias = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/v1/categorias");
+        const data = await response.json();
+
+        // Ahora mapeamos correctamente las categorías
+        const categoriasOptions = data.map((categoria) => ({
+          value: categoria.num_categoria,
+          label: categoria.nombre_categoria,
+        }));
+        
+        setCategorias(categoriasOptions);
+      } catch (error) {
+        console.error("Error al obtener categorías:", error);
+      }
+    };
+    
+
+    fetchCategorias();
+  }, []);
+
+  const handleCategoriaChange = (selectedOption) => {
+    setFormData({ ...formData, id_categoria: selectedOption.value });
+  };
   // Manejar cambio en las tallas
   const handleTallasChange = (selectedOptions) => {
     const tallasValues = selectedOptions.map((option) => option.value);
     setFormData({ ...formData, tallas: tallasValues });
   };
 
-  const [mensaje, setMensaje] = useState(""); // Mensaje de éxito o error
-  const navigate = useNavigate(); // Para redirigir al usuario
-
-  // Para tomar los datos del cambio del formulario en el momento
+  // Manejar el cambio de los datos del formulario
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Manejar el cambio de archivo
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files); // Convertir FileList en un array
     setFormData({ ...formData, imagen: files }); // Guardar todos los archivos
@@ -71,11 +98,6 @@ const AgregarProductos = () => {
       });
     }
 
-    console.log(
-      "Datos enviados al backend:",
-      Object.fromEntries(data.entries())
-    );
-
     try {
       const response = await fetch("http://localhost:3000/api/v1/productos", {
         method: "POST",
@@ -89,7 +111,7 @@ const AgregarProductos = () => {
           nombre: "",
           precio: 0,
           descripcion: "",
-          tallas: [], // Reiniciar el array de tallas
+          tallas: [],
           estado: "",
           imagen: [],
           genero_dirigido: "",
@@ -117,7 +139,6 @@ const AgregarProductos = () => {
           Registrar Producto
         </h2>
         <form onSubmit={handleSubmit} encType="multipart/form-data">
-          {/* Cuadrícula de 2 columnas */}
           <div className="grid grid-cols-2 gap-4">
             {/* Columna 1 */}
             <div>
@@ -174,7 +195,7 @@ const AgregarProductos = () => {
                 )}
                 onChange={handleTallasChange}
                 className="w-full"
-                inputId="tallas" // Agrega un ID para el input
+                inputId="tallas"
               />
             </div>
             <div>
@@ -213,16 +234,16 @@ const AgregarProductos = () => {
             </div>
             <div>
               <label htmlFor="id_categoria" className="block font-semibold">
-                ID Categoría
+                Categoría
               </label>
-              <input
-                type="number"
-                id="id_categoria"
-                name="id_categoria"
-                value={formData.id_categoria}
-                onChange={handleChange}
-                className="w-full p-2 border border-gray-300 rounded-lg"
-                required
+              <Select
+                options={categorias}
+                value={categorias.find(
+                  (categoria) => categoria.value === formData.id_categoria
+                )}
+                onChange={handleCategoriaChange}
+                className="w-full"
+                placeholder="Selecciona una categoría"
               />
             </div>
             <div>
@@ -241,7 +262,6 @@ const AgregarProductos = () => {
             </div>
           </div>
 
-          {/* Descripción (ocupa 2 columnas) */}
           <div className="mt-4">
             <label htmlFor="descripcion" className="block font-semibold">
               Descripción
@@ -257,7 +277,6 @@ const AgregarProductos = () => {
             ></textarea>
           </div>
 
-          {/* Botones */}
           <div className="flex flex-col space-y-4 mt-6">
             <button
               type="submit"
