@@ -9,7 +9,7 @@ import AgregarCategoria from "../categoria/AgregarCategoria";
 import CategoriaTable from "../categoria/CategoriaTable";
 import ProductoTable from "../productos/ProductoTable";
 import AgregarProductos from "../productos/AgregarProductos";
-
+import InicioAdmin from "./inicioAdmin/InicioAdmin";
 function DashboardCall() {
   const [activeTab, setActiveTab] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

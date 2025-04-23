@@ -1,7 +1,15 @@
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Tooltip from "@mui/material/Tooltip";
 import { FaBell, FaSearch, FaUserCircle } from "react-icons/fa";
 import { Link } from "react-router-dom"; // Asegúrate de importar Link
 
-function Navbar() {
   return (
     <nav
       className="px-4 py-3 flex justify-between items-center"

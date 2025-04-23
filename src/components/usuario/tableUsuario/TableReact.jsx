@@ -133,16 +133,20 @@ function TableReact() {
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: getPaginationRowModel(), // Habilitar paginación
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    state: { sorting, globalFilter: filtering },
+    state: {
+      sorting,
+      globalFilter: filtering,
+      pagination: { pageIndex: 0, pageSize: 10 }, // Limitar a 10 usuarios por página
+    },
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
   });
 
   return (
-    <div className="p-4">
+    <div className="table-responsive-container">
       <input
         type="text"
         className="mb-4 p-2 border border-gray-300 rounded-md shadow-sm"
@@ -242,6 +246,8 @@ function TableReact() {
         >
           Inicio
         </button>
+
+        {/* Botón para ir a la página anterior */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.previousPage()}
@@ -249,6 +255,14 @@ function TableReact() {
         >
           Anterior
         </button>
+
+        {/* Indicador de página actual y total de páginas */}
+        <span className="text-gray-700">
+          Página {table.getState().pagination.pageIndex + 1} de{" "}
+          {table.getPageCount()}
+        </span>
+
+        {/* Botón para ir a la página siguiente */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.nextPage()}
@@ -256,6 +270,8 @@ function TableReact() {
         >
           Siguiente
         </button>
+
+        {/* Botón para ir a la última página */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.setPageIndex(table.getPageCount() - 1)}

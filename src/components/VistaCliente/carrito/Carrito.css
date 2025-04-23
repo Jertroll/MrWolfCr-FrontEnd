@@ -1,0 +1,192 @@
+.carrito-container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.titulo {
+    font-size: 24px;
+    font-weight: bold;
+    font-family: 'Baskerville Display PT, serif';
+}
+
+.seguir-comprando {
+    float: right;
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+    font-family: 'Baskerville Display PT, serif';
+    background-color: rgb(230, 228, 228);
+}
+
+.tabla-carrito {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    min-width: 120px;
+}
+
+.tabla-carrito th {
+    text-align: left;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ddd;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: rgb(49, 49, 49);
+    min-width: 120px;
+    font-family: 'Baskerville Display PT, serif';
+}
+
+.tabla-carrito td {
+    padding: 15px 10px;
+    vertical-align: middle;
+    border-bottom: 1px solid #ddd;
+    min-width: 120px;
+}
+
+.producto-info {
+    display: flex;
+    align-items: center;
+    font-family: 'Baskerville Display PT, serif';
+}
+
+.producto-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 15px;
+}
+
+th:nth-child(4) {
+    text-align: center;
+}
+
+/* Alinear el input de cantidad dentro de su celda */
+td:nth-child(4) {
+    text-align: center;
+    vertical-align: middle; /* Asegura que se alinee verticalmente */
+}
+
+.cantidad {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centrar el contenido */
+    gap: 10px;
+}
+
+.cantidad button {
+    border: none;
+    background-color: #f0f0f0;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.cantidad input {
+    width: 50px; /* Ajuste del tamaño del input */
+    height: 35px; /* Ajuste de altura */
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    display:  inline-block; /* Asegura que el input no se desplace */
+    margin: 0 auto; /* Centra el input */
+}
+
+.eliminar {
+    border: none;
+    background: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #000;
+}
+
+.total {
+    font-weight: bold;
+    font-family: 'Baskerville Display PT, serif';
+}
+
+.vaciar-carrito {
+    background-color: #000;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    font-family: 'Baskerville Display PT, serif';
+}
+
+.vaciar-carrito:hover {
+    background-color: #333 ;
+}
+@media screen and (max-width: 768px) {
+    .tabla-responsive {
+        overflow-x: auto;
+    }
+
+    .tabla-carrito {
+        width: 100%;
+        min-width: 600px;
+    }
+
+    .vaciar-carrito {
+        width: 100%;
+        text-align: center;
+    }
+}
+.acciones-carrito {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.vaciar-carrito,
+.comprar {
+    width: 150px; /* Mismo ancho */
+    height: 45px; /* Mismo alto */
+    font-size: 16px;
+    text-align: center;
+}
+.comprar {
+    margin-left: auto;
+    background-color: #000;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    font-family: 'Baskerville Display PT, serif';
+}
+
+
+.comprar:hover {
+    background-color: #333; /* Un negro más claro al pasar el mouse */
+}
+
+.seguir-comprando {
+    float: right;
+    text-decoration: none;
+    color: black; /* Texto negro */
+    font-size: 16px;
+    font-family: 'Baskerville Display PT, serif';
+    background-color: white; /* Fondo blanco */
+    border: 2px solid black; /* Borde negro */
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.seguir-comprando:hover {
+    background-color: #f8f8f8; /* Un ligero gris al pasar el mouse */
+}
+.Total {
+    display: flex;
+    justify-content: flex-end; /* Alinea el total a la derecha */
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+.total-pagar {
+    margin-right: 20px; /* Agrega un margen para separar el total del botón */
+}

@@ -1,170 +1,295 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  IconButton,
+  Typography,
+  Menu,
+  Container,
+  Button,
+  Tooltip,
+  MenuItem,
+} from "@mui/material";
+import {
+  ShoppingCart as ShoppingCartIcon,
+  LocalMall as LocalMallIcon,
+  Person as PersonIcon,
+  Bolt,
+} from "@mui/icons-material";
+import { jwtDecode } from "jwt-decode";
+import { MdHelp } from "react-icons/md";
+import { useCarrito } from "../../VistaCliente/carrito/CarritoContext";
+ // Ajusta la ruta si es distinta
 
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import LocalMallIcon from '@mui/icons-material/LocalMall';
-import { createTheme } from '@mui/material/styles';
-import { green } from '@mui/material/colors';
-import PersonIcon from '@mui/icons-material/Person';
 
-const pages = ['Mujer', 'Hombre',];
-const settings = ['Perfil', 'Account', 'Dashboard', 'Salir'];
+// Menú de categorías
+const MenuCategorias = () => {
+  const [categorias, setCategorias] = useState([]);
+  const [menuVisible, setMenuVisible] = useState(false);
+ 
+ //const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    const fetchCategorias = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/v1/categorias/productos");
+        if (!response.ok) throw new Error("Error al obtener los datos");
+        const data = await response.json();
+        setCategorias(data);
+      } catch (error) {
+        console.error("Error al obtener las categorías:", error);
+      }
+    };
+
+    fetchCategorias();
+  }, []);
+
+  return (
+    <Box
+      sx={{ position: "relative", display: "inline-block", ml: 2 }}
+      onMouseEnter={() => setMenuVisible(true)}
+      onMouseLeave={() => setMenuVisible(false)}
+    >
+      <Button sx={{ color: "white", fontFamily: "'Baskerville Display PT', serif" }}>Productos ▾</Button>
+      {menuVisible && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: "100%",
+            left: 0,
+            backgroundColor: "#203500",
+            boxShadow: 3,
+            borderRadius: 1,
+            zIndex: 10,
+            minWidth: "200px",
+            p: 1,
+          }}
+        >
+          <MenuItem
+            component={Link}
+            to="/productos"
+            sx={{
+              color: "white", fontFamily: "'Baskerville Display PT', serif",
+              "&:hover": { backgroundColor: "#305500" },
+            }}
+          >
+            Ver Todos
+          </MenuItem>
+          {categorias.map((categoria) => (
+            <MenuItem
+              key={categoria.num_categoria}
+              component={Link}
+              to={`/productos/categoria/${categoria.num_categoria}`}
+              sx={{ color: "white", fontFamily: "'Baskerville Display PT', serif", "&:hover": { backgroundColor: "#305500" } }}
+            >
+              {categoria.nombre_categoria}
+            </MenuItem>
+          ))}
+        </Box>
+      )}
+    </Box>
+  );
+};
+
+// Menú de filtro por género
+const MenuFiltro = () => {
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  return (
+    <Box
+      sx={{ position: "relative", display: "inline-block", ml: 2 }}
+      onMouseEnter={() => setMenuVisible(true)}
+      onMouseLeave={() => setMenuVisible(false)}
+    >
+      <Button sx={{ color: "white", fontFamily: "'Baskerville Display PT', serif" }}>Filtrar por ▾</Button>
+      {menuVisible && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: "100%",
+            left: 0,
+            backgroundColor: "#203500",
+            boxShadow: 3,
+            borderRadius: 1,
+            zIndex: 10,
+            minWidth: "200px",
+            p: 1,
+          }}
+        >
+         <MenuItem
+            component={Link}
+            to="/productos/genero/masculino"  // Usar minúsculas en la ruta
+            sx={{ color: "white", fontFamily: "'Baskerville Display PT', serif", "&:hover": { backgroundColor: "#305500" } }}
+          >
+            Masculino
+          </MenuItem>
+          <MenuItem
+            component={Link}
+            to="/productos/genero/femenino"  // Usar minúsculas en la ruta
+            sx={{ color: "white",  fontFamily: "'Baskerville Display PT', serif", "&:hover": { backgroundColor: "#305500" } }}
+          >
+            Femenino
+          </MenuItem>
+        </Box>
+      )}
+    </Box>
+  );
+};
 
 
 
 function NavbarCliente() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [userRole, setUserRole] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+  const { cantidadCarrito, mostrarContadorTemporal} = useCarrito();
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        setUserRole(decodedToken.rol);
+        setIsLoggedIn(true);
+      } catch (error) {
+        console.error("Error al decodificar el token:", error);
+      }
+    }
+  }, []);
 
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/v1/logout", {
+        method: "POST",
+        credentials: "include", 
+      });
+  
+      if (!response.ok) {
+        throw new Error("Error al cerrar sesión");
+      }
+  
+      // Si la sesión se cierra correctamente, eliminamos el token de la sesión del cliente
+      sessionStorage.removeItem("token");
+  
+      setIsLoggedIn(false);
+      navigate("/");
+  
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
   };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
+  
+  
 
   return (
-    <AppBar position="static" sx={{backgroundColor: '#203500'}} >
-      <Container maxWidth="flase">
+    <AppBar position="static" sx={{ backgroundColor: "#203500" }}>
+      <Container maxWidth="false">
         <Toolbar disableGutters>
-          <img style={{ marginRight: '10px' }} width="50" height="50"  src="src\assets\Logo Circular Mr Wolf-Photoroom.png" alt="Logo de Mr Wolf Sin fondo" />
-
+          <img
+            style={{ marginRight: "10px", cursor: "pointer" }} 
+            width="50"
+            height="50"
+            src="/img/Logo Circular Mr Wolf-Photoroom.png"
+            alt="Logo de Mr Wolf"
+            onClick={() => navigate("/")} 
+          />
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+            component={Link}  
+            to="/"  
             sx={{
               mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
+              display: { xs: "none", md: "flex" },
+              fontFamily:'Baskerville Display PT',
               fontWeight: 700,
-              letterSpacing: '.1rem',
-              color: 'inherit',
-              textDecoration: 'none',
+              letterSpacing: ".1rem",
+              color: "inherit",
+              textDecoration: "none",
+              cursor: "pointer", 
             }}
           >
             Mr.Wolf
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{ display: { xs: 'block', md: 'none' } }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
+          <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
+            <MenuCategorias />
+            <MenuFiltro />
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+
+          <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
+            <LocalMallIcon fontSize="medium" sx={{ mr: 1 }} />
+            <IconButton onClick={() => navigate("/carrito")} color="inherit" sx={{ position: "relative" }}>
+      <ShoppingCartIcon fontSize="medium" />
+      {mostrarContadorTemporal && cantidadCarrito > 0 && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: -5,
+            right: -5,
+            bgcolor: "red",
+            color: "white",
+            borderRadius: "50%",
+            width: 16,
+            height: 16,
+            fontSize: "0.75rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "opacity 0.3s ease-in-out",
+            opacity: mostrarContadorTemporal ? 1 : 0,
+          }}
+        >
+          {cantidadCarrito}
+        </Box>
+      )}
+    </IconButton>
+
+            {/* Botón de Ayuda */}
+            <Tooltip title="Ayuda">
+              <IconButton
+                onClick={() => navigate("/ayudaCliente")}
+                color="inherit"
               >
-                {page}
-              </Button>
-            ))}
-          </Box>
-
-
-          <Box sx={{ flexGrow: 0 }}>
-         
-          <LocalMallIcon fontSize='medium' sx={{mr: 1}}></LocalMallIcon>
-          <ShoppingCartIcon fontSize='medium' sx={{mr: 1}}></ShoppingCartIcon>
+                <MdHelp size={24} />
+              </IconButton>
+            </Tooltip>
 
             <Tooltip title="Opciones">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <PersonIcon fontSize='medium' sx={{color: 'white' }}></PersonIcon>
+              <IconButton
+                onClick={(e) => setAnchorElUser(e.currentTarget)}
+                sx={{ p: 0 }}
+              >
+                <PersonIcon fontSize="medium" sx={{ color: "white", fontFamily: "'Baskerville Display PT', serif" }} />
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
+              sx={{ mt: "45px" }}
               anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
               open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+              onClose={() => setAnchorElUser(null)}
+              anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+              {isLoggedIn ? (
+                <>
+                  <MenuItem onClick={handleLogout}>
+                    <Typography>Salir</Typography>
+                  </MenuItem>
+                  {userRole === "Administrador" && (
+                    <MenuItem onClick={() => navigate("/dashboard/home")}>
+                      <Typography>Dashboard</Typography>
+                    </MenuItem>
+                  )}
+                </>
+              ) : (
+                <MenuItem onClick={() => navigate("/login")}>
+                  <Typography>Iniciar Sesión</Typography>
                 </MenuItem>
-              ))}
+              )}
             </Menu>
           </Box>
         </Toolbar>
@@ -172,4 +297,5 @@ function NavbarCliente() {
     </AppBar>
   );
 }
+
 export default NavbarCliente;

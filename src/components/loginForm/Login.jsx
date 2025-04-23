@@ -29,6 +29,15 @@ function Login() {
     }
   };
 
+  // Función para redirigir al usuario a la página de registro
+  const handleRegistro = () => {
+    navigate("/registro"); // Redirige al usuario a /registro
+  };
+
+  const handleHome = () => {
+    navigate("/"); // Redirige al usuario a /registro
+  };
+
   return (
     <div className="flex h-screen">
       {/* Sección Izquierda */}

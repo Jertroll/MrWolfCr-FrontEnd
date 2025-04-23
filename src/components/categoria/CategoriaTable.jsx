@@ -20,6 +20,7 @@ const CategoriaTable = () => {
   const [sorting, setSorting] = useState([]);
   const [editingCategoria, setEditingCategoria] = useState(null);
   const [categoriaForm, setCategoriaForm] = useState({});
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
 
   // Función para iniciar la edición de un categoria
   const startEditing = (categoria) => {
@@ -80,40 +81,43 @@ const CategoriaTable = () => {
   };
 
   //Funcion para menjar la carga de una imagen en el formulario de actualizar
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCategoriaForm((prevForm) => ({
-          ...prevForm,
-          imagen: reader.result, // Guarda la imagen en base64
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  
+const handleImageChange = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    // Guardamos el archivo directamente para enviarlo luego
+    setCategoriaForm({
+      ...categoriaForm,
+      imagenFile: file,  // Archivo para enviar al backend
+      imagen: URL.createObjectURL(file)  // URL para vista previa
+    });
+  }
+};
 
   // Función para guardar los cambios de la categoria
   const saveChanges = async (e) => {
     e.preventDefault();
-  
-    if (!categoriaForm.nombre_categoria || !categoriaForm.descripcion_categoria) {
+
+    if (
+      !categoriaForm.nombre_categoria ||
+      !categoriaForm.descripcion_categoria
+    ) {
       alert("Todos los campos son obligatorios.");
       return;
     }
-  
+
     try {
       const formData = new FormData();
       formData.append("nombre_categoria", categoriaForm.nombre_categoria);
-      formData.append("descripcion_categoria", categoriaForm.descripcion_categoria);
-  
+      formData.append(
+        "descripcion_categoria",
+        categoriaForm.descripcion_categoria
+      );
+
       // Agregar imagen solo si es un nuevo archivo (evita enviar la URL como imagen)
-      if (categoriaForm.imagen && categoriaForm.imagen instanceof File) {
-        formData.append("imagen", categoriaForm.imagen);
+      if (categoriaForm.imagenFile) {
+        formData.append("imagen", categoriaForm.imagenFile); // Archivo binario
       }
-  
+
       const response = await fetch(
         `http://localhost:3000/api/v1/categorias/${categoriaForm.num_categoria}`,
         {
@@ -121,13 +125,13 @@ const CategoriaTable = () => {
           body: formData, // No agregamos headers, ya que `FormData` los maneja automáticamente.
         }
       );
-  
+
       if (!response.ok) {
         throw new Error("Error al actualizar la categoría");
       }
-  
+
       const updatedCategoria = await response.json();
-  
+
       setData((prevData) =>
         prevData.map((categoria) =>
           categoria.num_categoria === categoriaForm.num_categoria
@@ -135,14 +139,12 @@ const CategoriaTable = () => {
             : categoria
         )
       );
-  
+
       setIsModalOpen(false);
     } catch (error) {
       console.error("Error al actualizar la categoría:", error);
     }
   };
-  
-  
 
   useEffect(() => {
     fetchData(); // Llama a la función al montar el componente
@@ -193,12 +195,17 @@ const CategoriaTable = () => {
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: getPaginationRowModel(), // Habilitar paginación
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    state: { sorting, globalFilter: filtering },
+    state: {
+      sorting,
+      globalFilter: filtering,
+      pagination: { pageIndex: 0, pageSize: 5 }, // Limitar a 5 categorías por página
+    },
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
+    onPaginationChange: setPagination, // Actualizar el estado de paginación
   });
 
   return (
@@ -337,23 +344,24 @@ const CategoriaTable = () => {
             >
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="p-3 border-t">
-                  {cell.column.id === "imagen" ? ( // Aquí verificamos si la columna es la de la imagen
+                  {cell.column.id === "imagen" ? (
+                    // Renderizar la imagen si existe
                     row.original.imagen ? (
                       <img
                         src={row.original.imagen}
                         alt="Imagen de categoría"
                         className="w-20 h-20 object-cover rounded-full"
+                        onError={(e) => {
+                          e.target.src = "/assets/No imagen.jpg"; // Imagen por defecto
+                        }}
                       />
                     ) : (
-                      <div>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </div>
+                      // Mostrar un mensaje si no hay imagen
+                      <div className="text-gray-500">Sin imagen</div>
                     )
                   ) : (
-                    flexRender(cell.column.columnDef.cell, cell.getContext()) // Para las demás columnas
+                    // Renderizar el contenido normal de la celda
+                    flexRender(cell.column.columnDef.cell, cell.getContext())
                   )}
                 </td>
               ))}
@@ -363,7 +371,8 @@ const CategoriaTable = () => {
       </table>
 
       {/* Paginación */}
-      <div className="flex justify-between mt-4">
+      <div className="flex justify-between items-center mt-4">
+        {/* Botón para ir a la primera página */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.setPageIndex(0)}
@@ -371,6 +380,8 @@ const CategoriaTable = () => {
         >
           Inicio
         </button>
+
+        {/* Botón para ir a la página anterior */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.previousPage()}
@@ -378,6 +389,14 @@ const CategoriaTable = () => {
         >
           Anterior
         </button>
+
+        {/* Indicador de página actual y total de páginas */}
+        <span className="text-gray-700">
+          Página {table.getState().pagination.pageIndex + 1} de{" "}
+          {table.getPageCount()}
+        </span>
+
+        {/* Botón para ir a la página siguiente */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.nextPage()}
@@ -385,6 +404,8 @@ const CategoriaTable = () => {
         >
           Siguiente
         </button>
+
+        {/* Botón para ir a la última página */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.setPageIndex(table.getPageCount() - 1)}
@@ -396,5 +417,4 @@ const CategoriaTable = () => {
     </div>
   );
 };
-
 export default CategoriaTable;

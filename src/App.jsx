@@ -25,4 +25,13 @@ function App() {
   )
 }
 
-export default App
+// Componente wrapper para el layout con NavFooterCliente
+function LayoutWrapper() {
+  return (
+    <NavFooterCliente>
+      <Outlet /> {/* Renderiza las rutas hijas aquí */}
+    </NavFooterCliente>
+  );
+}
+
+export default App;

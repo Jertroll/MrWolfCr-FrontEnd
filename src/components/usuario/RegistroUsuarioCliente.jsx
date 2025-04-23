@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import { useState } from "react";
+import logo from "../../assets/logoNegro.jpg";
+import "../loginForm/Login.css";
+import "./registro.css";
 
 function RegistroUsuarioCliente() {
   const [formData, setFormData] = useState({
@@ -11,15 +14,55 @@ function RegistroUsuarioCliente() {
     direccion: '',
     email_facturacion: 'noAplica@.com',
     imagen: null,
-    rol: 'usuario',
+    rol: "Cliente",
   });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === 'imagen') {
-      setFormData({ ...formData, [name]: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccessMessage("");
+
+    try {
+      const dataToSend = { ...formData, imagen: formData.imagen || "" };
+
+      const response = await fetch("http://localhost:3000/api/v1/usuarios", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dataToSend),
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        throw new Error(responseData.message || "Error al registrar usuario");
+      }
+
+      setSuccessMessage("Usuario registrado con éxito");
+      setFormData({
+        cedula: "",
+        nombre_usuario: "",
+        nombre_completo: "",
+        email: "",
+        contrasena: "",
+        telefono: "",
+        direccion_envio: "",
+        email_facturacion: "",
+        imagen: null,
+        rol: "Cliente",
+      });
+    } catch (error) {
+      setError(error.message || "Error al registrar usuario");
+    } finally {
+      setLoading(false);
     }
   };
 

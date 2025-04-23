@@ -1,5 +1,7 @@
+import { useState, useEffect } from "react"; // Importa useState y useEffect
 import ReactModal from "react-modal";
 import PropTypes from "prop-types";
+import Select from "react-select"; // Importa react-select para el selector de tallas
 
 const EditarProductoModal = ({
   isOpen,
@@ -8,6 +10,48 @@ const EditarProductoModal = ({
   handleInputChange,
   saveChanges,
 }) => {
+  // Estado para almacenar los archivos seleccionados
+  const [selectedFiles, setSelectedFiles] = useState([]);
+
+  // Estado para almacenar las tallas seleccionadas
+  const [tallasSeleccionadas, setTallasSeleccionadas] = useState([]);
+
+  // Opciones de tallas (deben coincidir con las tallas en la base de datos)
+  const tallasOptions = [
+    { value: "1", label: "XS" },
+    { value: "2", label: "S" },
+    { value: "3", label: "M" },
+    { value: "4", label: "L" },
+    { value: "5", label: "XL" },
+  ];
+
+  // Cargar las tallas seleccionadas al abrir el modal
+  useEffect(() => {
+    if (productoForm.tallas) {
+      const tallasIniciales = productoForm.tallas.map((talla) => ({
+        value: talla.id,
+        label: talla.nombre,
+      }));
+      setTallasSeleccionadas(tallasIniciales);
+    }
+  }, [productoForm]);
+
+  // Función para manejar la selección de archivos
+  const handleFileChange = (e) => {
+    setSelectedFiles(Array.from(e.target.files)); // Convierte FileList a un array
+  };
+
+  // Función para manejar cambios en las tallas seleccionadas
+  const handleTallasChange = (selectedOptions) => {
+    setTallasSeleccionadas(selectedOptions);
+  };
+
+  // Función para guardar los cambios
+  const handleSave = (e) => {
+    const tallasIds = tallasSeleccionadas.map((talla) => talla.value); // Extraer los IDs de las tallas
+    saveChanges(e, tallasIds, selectedFiles); // Enviar los IDs de las tallas y los archivos al backend
+  };
+
   return (
     <ReactModal
       isOpen={isOpen}
@@ -20,7 +64,7 @@ const EditarProductoModal = ({
         <h2 className="text-2xl font-bold text-center mb-6">
           Editor de Producto
         </h2>
-        <form onSubmit={saveChanges}>
+        <form onSubmit={handleSave}>
           <div className="grid grid-cols-2 gap-4">
             {/* Columna 1 */}
             <div>
@@ -49,30 +93,22 @@ const EditarProductoModal = ({
                 />
               </div>
               <div className="mb-4">
-                <label className="block mb-2 font-semibold">Talla</label>
-                <select
-                  name="talla"
-                  value={productoForm.talla || ""} // Valor por defecto
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                  required
-                >
-                  <option value="" disabled>
-                    Seleccione una talla
-                  </option>
-                  <option value="S">S</option>
-                  <option value="M">M</option>
-                  <option value="L">L</option>
-                  <option value="XL">XL</option>
-                </select>
+                <label className="block mb-2 font-semibold">Tallas</label>
+                <Select
+                  isMulti
+                  options={tallasOptions}
+                  value={tallasSeleccionadas}
+                  onChange={handleTallasChange}
+                  className="w-full"
+                />
               </div>
               <div className="mb-4">
                 <label className="block mb-2 font-semibold">Imagen</label>
                 <input
-                  type="text"
+                  type="file"
                   name="imagen"
-                  value={productoForm.imagen || ""} // Valor por defecto
-                  onChange={handleInputChange}
+                  multiple
+                  onChange={handleFileChange}
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none"
                 />
               </div>
@@ -175,6 +211,12 @@ EditarProductoModal.propTypes = {
     codigo: PropTypes.string,
     precio: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     talla: PropTypes.string,
+    tallas: PropTypes.arrayOf( // Validación para el array de tallas
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        nombre: PropTypes.string.isRequired,
+      })
+    ),
     imagen: PropTypes.string,
     nombre: PropTypes.string,
     descripcion: PropTypes.string,
