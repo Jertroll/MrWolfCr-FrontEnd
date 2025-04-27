@@ -14,6 +14,8 @@ import NavFooterCliente from "./components/VistaCliente/Paginas/NavFooterCliente
 import AyudaUsuario from "./components/VistaCliente/Paginas/AyudaUsuario/AyudaUsuario";
 import ProductosPorGenero from "./components/VistaCliente/Paginas/productos/ProductoGenero/ProductosPorGenero";
 import { CarritoProvider } from "./components/VistaCliente/carrito/CarritoContext";
+import EnviarCodigo from "./components/recuperacionContrasena/EnviarCodigo";
+import VerificarYRestablecer from "./components/recuperacionContrasena/VerificarYRestablecer";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
           {/* Rutas PÚBLICAS sin layout */}
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<RegistroUsuarioCliente />} />
+          <Route path="/enviarCodigo" element={<EnviarCodigo />} />
+          <Route path="/verificarCodigo" element={<VerificarYRestablecer />} />
 
           {/* Rutas con layout común */}
           <Route element={<LayoutWrapper />}>
