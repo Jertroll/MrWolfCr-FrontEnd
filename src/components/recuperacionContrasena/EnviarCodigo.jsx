@@ -47,6 +47,9 @@ const EnviarCodigo = () => {
       <Typography variant="h5" mb={2} textAlign="center">
         Recuperar Contraseña
       </Typography>
+      <Typography variant="h7" mb={2} textAlign="center">
+        En este apartado debes colocar el email de tu cuenta asociada a Mr Wolf Store
+      </Typography>
       <form onSubmit={handleEnviarCodigo}>
         <TextField
           fullWidth

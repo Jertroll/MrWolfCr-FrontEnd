@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom"; // 👈 importas esto
+import { useLocation, useNavigate } from "react-router-dom";
 import { Box, Button, TextField, Typography, Alert } from "@mui/material";
 
 const VerificarYRestablecer = () => {
@@ -52,7 +52,6 @@ const VerificarYRestablecer = () => {
       setTimeout(() => {
         navigate("/login");
       }, 2000);
-
     } catch (err) {
       setError(err.message);
       setMensaje("");
@@ -83,6 +82,19 @@ const VerificarYRestablecer = () => {
           required
           margin="normal"
         />
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{
+            fontSize: { xs: '0.7rem', sm: '0.8rem' },
+            mt: 0,
+            mb: 1,
+            fontStyle: "italic",
+            textAlign: "left",
+          }}
+        >
+          ¿No te llegó el código? Revisa en emails no deseados/spam
+        </Typography>
         <TextField
           fullWidth
           label="Nueva contraseña"
