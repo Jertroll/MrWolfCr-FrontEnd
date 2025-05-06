@@ -24,21 +24,52 @@ const ProductoTable = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para el modal de edición
   const [isImageModalOpen, setIsImageModalOpen] = useState(false); // Estado para el modal de imágenes
   const [selectedProductImages, setSelectedProductImages] = useState([]); // Estado para las imágenes seleccionadas
+  const [categorias, setCategorias] = useState([]);
+
 
   // Función para obtener datos del backend
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/v1/productos");
-      if (!response.ok) throw new Error("Error al obtener los datos");
-      const productos = await response.json();
-      setData(productos);
+      const [productosRes, categoriasRes] = await Promise.all([
+        fetch("http://localhost:3000/api/v1/productos"),
+        fetch("http://localhost:3000/api/v1/categorias"),
+      ]);
+      
+      if (!productosRes.ok || !categoriasRes.ok) {
+        throw new Error("Error al obtener datos");
+      }
+  
+      const productos = await productosRes.json();
+      const categorias = await categoriasRes.json();
+
+  
+      setCategorias(categorias);
+  
+      const productosConCategoria = productos.map((producto) => {
+        const categoria = categorias.find(
+          (cat) => Number(cat.num_categoria) === Number(producto.id_categoria)
+        );
+        if (!categoria) {
+          console.warn(
+            `No se encontró categoría para el producto ${producto.nombre} con id_categoria ${producto.id_categoria}`
+          );
+        }
+        return {
+          ...producto,
+          nombre_categoria: categoria ? categoria.nombre_categoria : "Sin categoría",
+        };
+      });
+      
+  
+      setData(productosConCategoria);
+      //console.log("Productos con categoría:", productosConCategoria);
     } catch (error) {
-      console.error("Error al obtener los productos:", error);
-      alert(
-        "Hubo un error al obtener los productos. Por favor, intenta nuevamente."
-      );
+      console.error("Error al obtener los datos:", error);
+      alert("Hubo un error al obtener los datos. Por favor, intenta nuevamente.");
     }
   };
+  
+  
 
   // Función para eliminar un producto
   const deleteProducto = async (id) => {
@@ -151,7 +182,7 @@ const ProductoTable = () => {
   }, []);
 
   useEffect(() => {
-    console.log(data); // Verifica que los datos se están recibiendo correctamente
+
   }, [data]);
 
   // Columnas de la tabla
@@ -203,7 +234,16 @@ const ProductoTable = () => {
       ),
     },
     { header: "Género Dirigido", accessorKey: "genero_dirigido" },
-    { header: "Categoría", accessorKey: "id_categoria" },
+    {
+      header: "Categoría",
+      accessorKey: "nombre_categoria",
+      cell: ({ row }) => (
+        <div>
+          {row.original.nombre_categoria ?? "Sin categoría"}
+        </div>
+      ),
+    },
+    
     {
       header: "Acciones",
       accessorKey: "acciones",

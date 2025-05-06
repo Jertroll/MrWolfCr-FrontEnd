@@ -1,20 +1,20 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Para redireccionar al usuario
-import { jwtDecode } from "jwt-decode"; // Corregido: usa { jwtDecode }
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import logo from "../../assets/logoNegro.jpg";
 import "./Login.css";
+
 function Login() {
   const [email, setEmail] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Para redireccionar al usuario
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(null);
 
     try {
-      // Hacer la solicitud al backend
       const response = await fetch("http://localhost:3000/api/v1/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -24,14 +24,10 @@ function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        // Almacena el token en sessionStorage
         sessionStorage.setItem("token", data.token);
-
-        // Decodificar el token para verificar su contenido
         const decodedToken = jwtDecode(data.token);
         console.log("Token decodificado:", decodedToken);
-
-        navigate("/home"); // Redirige al usuario a /dashboard
+        navigate("/home");
       } else {
         setError(data.message || "Error en la autenticación");
       }
@@ -41,14 +37,9 @@ function Login() {
     }
   };
 
-  // Función para redirigir al usuario a la página de registro
-  const handleRegistro = () => {
-    navigate("/registro"); // Redirige al usuario a /registro
-  };
-
-  const handleHome = () => {
-    navigate("/"); // Redirige al usuario a /registro
-  };
+  const handleRegistro = () => navigate("/registro");
+  const handleHome = () => navigate("/");
+  const handleRecuperarContrasena = () => navigate("/enviarCodigo");
 
   return (
     <div className="login-container">
@@ -82,11 +73,22 @@ function Login() {
             required
           />
 
+          {/* Botón para recuperar contraseña */}
+          <button
+            type="button"
+            onClick={handleRecuperarContrasena}
+            className="text-sm text-blue-300 hover:underline mb-4"
+          >
+            ¿Olvidaste tu contraseña?
+          </button>
+
           {error && <p className="error">{error}</p>}
+
           <div className="button-group">
             <button type="submit" className="submit-btn">
               Iniciar Sesión
             </button>
+
             <div className="button-group-secondary">
               <button
                 type="button"
