@@ -9,7 +9,6 @@ const Carrito = () => {
     const [error, setError] = useState(null);
     const [seleccionados, setSeleccionados] = useState([]);
     const { eliminarDelCarrito } = useCarrito();
-    
 
     useEffect(() => {
         fetch("http://localhost:3000/api/v1/cart", {
@@ -19,7 +18,6 @@ const Carrito = () => {
         })
             .then((res) => res.json())
             .then((data) => {
-                console.log("Datos del carrito:", data);
                 setCarrito(data.cart);
                 setLoading(false);
             })
@@ -40,7 +38,6 @@ const Carrito = () => {
                     setSeleccionados(seleccionados.filter(id => id !== productId));
                     eliminarDelCarrito();
                 }
-                
             })
             .catch(() => setError("Error al eliminar el producto"));
     };
@@ -73,12 +70,48 @@ const Carrito = () => {
         );
     };
 
-    const comprarProductos = () => {
+    const comprarProductos = async () => {
+        const token = sessionStorage.getItem("token");
         if (seleccionados.length === 0) {
             alert("Selecciona al menos un producto para comprar.");
             return;
         }
-        alert("Procesando la compra de los productos seleccionados...");
+
+        const productosSeleccionados = carrito
+            .filter(producto => seleccionados.includes(producto.id))
+            .map(producto => ({
+                id: producto.id,
+                precio: producto.precio,
+                quantity: producto.quantity,
+                tallaId: producto.tallaId
+            }));
+
+        try {
+            const response = await fetch("http://localhost:3000/api/v1/crear/Factura", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                     Authorization: `Bearer ${token}`
+                },
+                credentials: "include",
+                body: JSON.stringify({ productos: productosSeleccionados })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert("¡Compra realizada con éxito!");
+                console.log("Factura generada:", data.factura);
+
+                // Redirigir a una vista de factura si quieres:
+                // window.location.href = `/factura/${data.factura.id}`;
+            } else {
+                alert(data.message || "Error al procesar la compra");
+            }
+        } catch (error) {
+            console.error("Error al comprar productos:", error);
+            alert("Hubo un error al realizar la compra.");
+        }
     };
 
     const totalAPagar = carrito.reduce((total, producto) => {
@@ -150,12 +183,12 @@ const Carrito = () => {
                 </div>
             )}
             <div className="Total">
-            <h3 className="total-pagar">Total a pagar: ₡ {totalAPagar.toLocaleString()}</h3>
+                <h3 className="total-pagar">Total a pagar: ₡ {totalAPagar.toLocaleString()}</h3>
             </div>
-           <div className="acciones-carrito">
-              <button className="vaciar-carrito">Vaciar Carrito</button>
-              <button className="comprar" onClick={comprarProductos}>Comprar</button>
-           </div>
+            <div className="acciones-carrito">
+                <button className="vaciar-carrito">Vaciar Carrito</button>
+                <button className="comprar" onClick={comprarProductos}>Comprar</button>
+            </div>
         </div>
     );
 };
