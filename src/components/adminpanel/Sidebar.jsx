@@ -31,7 +31,7 @@ const Sidebar = () => {
       >
         {/* Botón de toggle */}
         <img
-          src="./img/control.png"
+          src="/assets/control.png" 
           alt="Toggle Sidebar"
           className={`absolute cursor-pointer -right-3 top-9 w-7 border-gray-800 border-2 rounded-full ${
             !open && "rotate-180"

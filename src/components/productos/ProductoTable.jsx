@@ -56,7 +56,11 @@ const ProductoTable = () => {
         }
         return {
           ...producto,
-          nombre_categoria: categoria ? categoria.nombre_categoria : "Sin categoría",
+          nombre_categoria: categoria?.nombre_categoria ?? "Sin categoría",
+         
+          tallasTexto: producto.tallas && producto.tallas.length
+            ? producto.tallas.map((t) => t.nombre).join(", ")
+            : "",
         };
       });
       
@@ -194,7 +198,7 @@ const ProductoTable = () => {
     { header: "Descripción", accessorKey: "descripcion" },
     {
       header: "Talla",
-      accessorKey: "tallas",
+      accessorKey: "tallasTexto",
       cell: ({ row }) => (
         <div>
           {row.original.tallas && row.original.tallas.length > 0
