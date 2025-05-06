@@ -3,8 +3,8 @@ import { Facebook, Instagram, MusicNote, LocationOn, Mail, Phone, WhatsApp } fro
 
 const Footer = () => {
   return (
-    <Box sx={{ backgroundColor: "#203500", color: "white", py: 4, px: 2, border: "2px solid red" }}>
-      <Grid2  container spacing={3} justifyContent="center">
+    <Box sx={{ backgroundColor: "#203500", color: "white", py: 4, px: 2}}>
+    <Grid2  container spacing={3} justifyContent="center">
         
         {/* Sección de Contacto */}
         <Grid2 item xs={12} sm={4} sx={{ textAlign: 'left' }}>
@@ -45,8 +45,8 @@ const Footer = () => {
         </Grid2 >
 
         {/* Sección de Información */}
-        <Grid2 item xs={12} sm={4} sx={{ textAlign: 'center' }}>
-          <Typography variant="h6" gutterBottom sx={{ color: '#745f19', textAlign: 'left' }}>
+        <Grid2 item xs={12} sm={4} sx={{ textAlign: 'rith'}}>
+          <Typography variant="h6" gutterBottom sx={{ color: '#745f19', textAlign: 'center' }}>
             Acerca de
           </Typography>
           <Box mt={1.5} sx={{ maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', margin: '0 auto',  textAlign: 'left' }}>

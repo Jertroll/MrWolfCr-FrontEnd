@@ -279,6 +279,9 @@ function NavbarCliente() {
                   <MenuItem onClick={handleLogout}>
                     <Typography>Salir</Typography>
                   </MenuItem>
+                  <MenuItem onClick={() => navigate("/perfil")}>
+                    <Typography>Perfil</Typography>
+                  </MenuItem>
                   {userRole === "Administrador" && (
                     <MenuItem onClick={() => navigate("/dashboard/home")}>
                       <Typography>Dashboard</Typography>
@@ -289,7 +292,8 @@ function NavbarCliente() {
                 <MenuItem onClick={() => navigate("/login")}>
                   <Typography>Iniciar Sesión</Typography>
                 </MenuItem>
-              )}
+              )
+              }
             </Menu>
           </Box>
         </Toolbar>
