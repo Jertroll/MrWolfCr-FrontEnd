@@ -81,6 +81,7 @@ const Carrito = () => {
             .filter(producto => seleccionados.includes(producto.id))
             .map(producto => ({
                 id: producto.id,
+                nombre: producto.nombre,
                 precio: producto.precio,
                 quantity: producto.quantity,
                 tallaId: producto.tallaId
@@ -102,9 +103,10 @@ const Carrito = () => {
             if (response.ok) {
                 alert("¡Compra realizada con éxito!");
                 console.log("Factura generada:", data.factura);
-
-                // Redirigir a una vista de factura si quieres:
-                // window.location.href = `/factura/${data.factura.id}`;
+            
+                // ✅ Redirigir a una vista de factura
+                window.location.href = `/factura/${data.factura.id}`;
+            
             } else {
                 alert(data.message || "Error al procesar la compra");
             }

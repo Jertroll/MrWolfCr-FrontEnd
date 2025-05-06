@@ -4,6 +4,7 @@ import DashboardCall from "./components/adminpanel/DashboardCall";
 import Login from "./components/loginForm/Login";
 import RegistroUsuarioCliente from "./components/usuario/RegistroUsuarioCliente";
 import Carrito from "./components/VistaCliente/carrito/Carrito";
+import FacturaDetalle from "./components/Facturas/FacturaDetalle";
 import Home from "./components/VistaCliente/Paginas/Home";
 import Productos from "./components/productos/VerProductos";
 import ProductosAleatorios from "./components/VistaCliente/proAleactorios/ProductosAleatorios";
@@ -28,6 +29,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
             <Route path="/carrito" element={<Carrito />} />
+            <Route path="/factura/:id" element={<FacturaDetalle/>}/>
             <Route path="/productos" element={<Productos />} />
             <Route path="/productos/aleatorios" element={<ProductosAleatorios />} />
             <Route path="/productos/categoria/:id" element={<ProductosPorCategorias />} />
