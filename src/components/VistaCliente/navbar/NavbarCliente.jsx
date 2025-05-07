@@ -275,7 +275,10 @@ function NavbarCliente() {
               transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
               {isLoggedIn ? (
-                <>
+                <> 
+                  <MenuItem onClick={() => navigate("/facturasCliente")}>
+                  <Typography>Ver Facturas</Typography>
+                  </MenuItem>
                   <MenuItem onClick={handleLogout}>
                     <Typography>Salir</Typography>
                   </MenuItem>

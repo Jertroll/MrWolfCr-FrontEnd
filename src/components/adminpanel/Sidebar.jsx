@@ -3,6 +3,7 @@ import { FaHome, FaUsers, FaChartPie } from "react-icons/fa";
 import { FaTshirt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { FaFileInvoiceDollar } from "react-icons/fa";
 
 const Sidebar = () => {
   const location = useLocation(); // Obtén la ruta actual
@@ -14,6 +15,8 @@ const Sidebar = () => {
     { title: "Usuarios", icon: <FaUsers />, gap: true, path: '/dashboard/usuario' },
     { title: "Categoria", icon: <FaChartPie />, path: '/dashboard/categoria' },
     { title: "Productos", icon: <FaTshirt />, path: '/dashboard/producto' },
+    { title: "Facturas", icon: <FaFileInvoiceDollar />, path: '/dashboard/facturas' },
+
   ];
 
   return (
