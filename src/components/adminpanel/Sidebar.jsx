@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaHome, FaUsers, FaChartPie, FaTshirt } from "react-icons/fa";
+import { FaHome, FaUsers, FaChartPie, FaTshirt, FaFileInvoiceDollar } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
@@ -19,6 +19,7 @@ const Sidebar = () => {
     },
     { title: "Categoria", icon: <FaChartPie />, path: "/dashboard/categoria" },
     { title: "Productos", icon: <FaTshirt />, path: "/dashboard/producto" },
+    { title: "Facturas", icon: <FaFileInvoiceDollar />, path: '/dashboard/facturas' },
   ];
 
   return (
