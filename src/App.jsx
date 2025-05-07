@@ -3,9 +3,10 @@ import ProtectedRoute from "./router/ProtectedRoute";
 import DashboardCall from "./components/adminpanel/DashboardCall";
 import Login from "./components/loginForm/Login";
 import RegistroUsuarioCliente from "./components/usuario/RegistroUsuarioCliente";
-import Carrito  from "./components/VistaCliente/carrito/Carrito";
-import { CarritoProvider } from '/src/components/VistaCliente/carrito/CarritoContext.jsx'; // ✅ CORRECTO
-import Home from "./components/VistaCliente/Paginas/Home/Home";
+import Carrito from "./components/VistaCliente/carrito/Carrito";
+import FacturaDetalle from "./components/Facturas/FacturaDetalle";
+import FacturasCliente from "./components/Facturas/FacturasCliente";
+import Home from "./components/VistaCliente/Paginas/Home";
 import Productos from "./components/productos/VerProductos";
 import ProductosAleatorios from "./components/VistaCliente/Paginas/productos/proAleactorios/ProductosAleatorios";
 import ProductosPorCategorias from "./components/VistaCliente/Paginas/productos/ProductosPorCategoria";
@@ -33,6 +34,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
             <Route path="/carrito" element={<Carrito />} />
+            <Route path="/factura/:id" element={<FacturaDetalle/>}/>
+            <Route path="/facturasCliente" element={<FacturasCliente/>}/>
             <Route path="/productos" element={<Productos />} />
             <Route path="/productos/aleatorios" element={<ProductosAleatorios />} />
             <Route path="/productos/categoria/:id" element={<ProductosPorCategorias />} />

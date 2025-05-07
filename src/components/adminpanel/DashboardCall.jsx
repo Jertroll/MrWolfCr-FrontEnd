@@ -9,6 +9,7 @@ import CategoriaTable from "../categoria/CategoriaTable";
 import ProductoTable from "../productos/ProductoTable";
 import AgregarProductos from "../productos/AgregarProductos";
 import InicioAdmin from "./inicioAdmin/InicioAdmin";
+import Facturas from "../Facturas/Facturas";
 function DashboardCall() {
   const [activeTab, setActiveTab] = useState('');
 
@@ -32,6 +33,7 @@ function DashboardCall() {
             <Route path="/agregarUsuario" element={<RegistroUsuario />} />
             <Route path="/agregarCategoria" element={<AgregarCategoria />} />
             <Route path="/agregarProducto" element={<AgregarProductos />} />
+            <Route path="/facturas" element={<Facturas />} />
           </Routes>
         </div>
       </div>
