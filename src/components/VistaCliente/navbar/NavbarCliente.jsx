@@ -188,14 +188,17 @@ function NavbarCliente() {
     <AppBar position="static" sx={{ backgroundColor: "#203500" }}>
       <Container maxWidth="false">
         <Toolbar disableGutters>
-          <img
-            style={{ marginRight: "10px", cursor: "pointer", borderRadius: "50%" }} 
-            width="50"
-            height="50"
-            src="/img/Favicon.ico"
-            alt="Logo de Mr Wolf"
-            onClick={() => navigate("/")} 
-          />
+        <Tooltip title="Home">
+            <img
+              style={{ marginRight: "10px", cursor: "pointer", borderRadius: "50%" }} 
+              width="50"
+              height="50"
+              src="/img/Favicon.ico"
+              alt="Logo de Mr Wolf"
+              onClick={() => navigate("/")} 
+            />
+          </Tooltip>
+          <Tooltip title="Home">
           <Typography
             variant="h6"
             noWrap
@@ -204,7 +207,7 @@ function NavbarCliente() {
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
-              fontFamily:'Baskerville Display PT',
+              fontFamily: 'Baskerville Display PT',
               fontWeight: 700,
               letterSpacing: ".1rem",
               color: "inherit",
@@ -214,7 +217,7 @@ function NavbarCliente() {
           >
             Mr.Wolf
           </Typography>
-
+        </Tooltip>
           <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
             <MenuCategorias />
             <MenuFiltro />

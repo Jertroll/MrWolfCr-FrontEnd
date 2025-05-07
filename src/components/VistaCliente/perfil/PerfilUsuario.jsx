@@ -50,19 +50,24 @@ const PerfilUsuario = () => {
     try {
       const response = await fetch("http://localhost:3000/api/v1/logout", {
         method: "POST",
-        credentials: "include",
+        credentials: "include", 
       });
-
+  
       if (!response.ok) {
         throw new Error("Error al cerrar sesión");
       }
-
+  
+      // Si la sesión se cierra correctamente, eliminamos el token de la sesión del cliente
       sessionStorage.removeItem("token");
-      navigate("/");
+
+      navigate("/home");
+  
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
     }
   };
+  
+  
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -70,15 +75,14 @@ const PerfilUsuario = () => {
 
   return (
     <Box sx={{ p: 4 }}>
-      <Paper elevation={3} sx={{ p: 3, maxWidth: 500, margin: "0 auto", textAlign: "center" }}>
-        <Typography variant="h5" gutterBottom>Perfil del Usuario</Typography>
+      <Paper elevation={3} sx={{ p: 3, maxWidth: 500, margin: "0 auto", textAlign: "center", fontFamily: "'Baskerville Display PT', serif" }}>
+        <Typography variant="h5" gutterBottom>Perfil</Typography>
 
         <Avatar
           alt={usuario?.nombre}
           src={usuario?.foto_perfil || "/img/default-user.jpg"}
           sx={{ width: 100, height: 100, margin: "0 auto", mb: 2 }}
         />
-
         {usuario ? (
           <>
             <Typography><strong>Nombre:</strong> {usuario.nombre_usuario}</Typography>
@@ -91,7 +95,7 @@ const PerfilUsuario = () => {
               </Button>
             </Box>
           </>
-        ) : (
+        ): (
           <Typography>No se pudo cargar el perfil.</Typography>
         )}
       </Paper>
