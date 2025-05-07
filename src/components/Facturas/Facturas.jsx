@@ -16,21 +16,44 @@ const Facturas = () => {
             },
             credentials: "include",
         })
-        .then((res) => {
-            if (!res.ok) {
-                throw new Error("No se pudieron cargar las facturas.");
-            }
-            return res.json();
-        })
-        .then((data) => {
-            setFacturas(data);
-            setLoading(false);
-        })
-        .catch((err) => {
-            setError(err.message);
-            setLoading(false);
-        });
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error("No se pudieron cargar las facturas.");
+                }
+                return res.json();
+            })
+            .then((data) => {
+                setFacturas(data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                setError(err.message);
+                setLoading(false);
+            });
     }, [token]);
+
+    const eliminarFactura = async (id) => {
+        if (window.confirm("¿Estás seguro de que deseas eliminar esta factura?")) {
+            try {
+                const response = await fetch(`http://localhost:3000/api/v1/delete/${id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error("No se pudo eliminar la factura.");
+                }
+
+                // Elimina la factura del estado local
+                setFacturas(facturas.filter((factura) => factura.id !== id));
+            } catch (error) {
+                setError(error.message);
+            }
+        }
+    };
 
     const styles = {
         container: {
@@ -67,6 +90,13 @@ const Facturas = () => {
         pdfLink: {
             color: "#28a745",
             textDecoration: "none",
+        },
+        deleteButton: {
+            marginLeft: "1rem",
+            color: "red",
+            background: "none",
+            border: "none",
+            cursor: "pointer"
         }
     };
 
@@ -105,6 +135,12 @@ const Facturas = () => {
                                     >
                                         Descargar PDF
                                     </a>
+                                    <button
+                                        onClick={() => eliminarFactura(factura.id)}
+                                        style={styles.deleteButton}
+                                    >
+                                        Eliminar
+                                    </button>
                                 </td>
                             </tr>
                         ))}
