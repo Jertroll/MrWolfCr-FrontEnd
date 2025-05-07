@@ -4,7 +4,7 @@ import DashboardCall from "./components/adminpanel/DashboardCall";
 import Login from "./components/loginForm/Login";
 import RegistroUsuarioCliente from "./components/usuario/RegistroUsuarioCliente";
 import Carrito  from "./components/VistaCliente/carrito/Carrito";
-//import { CarritoProvider } from "./components/VistaCliente/carrito/Carrito";
+import { CarritoProvider } from '/src/components/VistaCliente/carrito/CarritoContext.jsx'; // ✅ CORRECTO
 import Home from "./components/VistaCliente/Paginas/Home/Home";
 import Productos from "./components/productos/VerProductos";
 import ProductosAleatorios from "./components/VistaCliente/Paginas/productos/proAleactorios/ProductosAleatorios";
@@ -13,7 +13,7 @@ import DetalleProducto from "./components/VistaCliente/Paginas/productos/Detalle
 import NavFooterCliente from "./components/VistaCliente/Paginas/NavFooterCliente";
 import AyudaUsuario from "./components/VistaCliente/Paginas/AyudaUsuario/AyudaUsuario";
 import ProductosPorGenero from "./components/VistaCliente/Paginas/productos/ProductoGenero/ProductosPorGenero";
-import { CarritoProvider } from "./components/VistaCliente/carrito/CarritoContext";
+import PerfilUsuario from "./components/VistaCliente/perfil/PerfilUsuario";
 import EnviarCodigo from "./components/recuperacionContrasena/EnviarCodigo";
 import VerificarYRestablecer from "./components/recuperacionContrasena/VerificarYRestablecer";
 
@@ -39,6 +39,8 @@ function App() {
             <Route path="/producto/:id" element={<DetalleProducto />} />
             <Route path="/ayudaCliente" element={<AyudaUsuario />} />
             <Route path="/productos/genero/:genero" element={<ProductosPorGenero />} />
+            <Route path="/perfil" element={<PerfilUsuario />} />
+
           </Route>
 
           {/* Ruta de admin (sin layout) */}

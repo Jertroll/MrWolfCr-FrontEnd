@@ -77,8 +77,11 @@ function NavbarAdmin() {
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
           >
+            
             <MenuItem onClick={() => navigate("/")}>Ir inicio</MenuItem>
-            <MenuItem onClick={() => navigate("/profile")}>Perfil</MenuItem>
+            <MenuItem onClick={() => navigate("/perfil")}>
+             <Typography>Perfil</Typography>
+             </MenuItem>
             <MenuItem onClick={handleLogout}>Salir</MenuItem>
           </Menu>
         </Box>

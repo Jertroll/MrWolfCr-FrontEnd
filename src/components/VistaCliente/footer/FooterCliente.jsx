@@ -3,12 +3,12 @@ import { Facebook, Instagram, MusicNote, LocationOn, Mail, Phone, WhatsApp } fro
 
 const Footer = () => {
   return (
-    <Box sx={{ backgroundColor: "#203500", color: "white", py: 4, px: 2, border: "2px solid red" }}>
-      <Grid2  container spacing={3} justifyContent="center">
+    <Box sx={{ backgroundColor: "#203500", color: "white", py: 4, px: 2}}>
+    <Grid2  container spacing={3} justifyContent="center">
         
         {/* Sección de Contacto */}
-        <Grid2  item xs={12} sm={4}>
-          <Typography variant="h6" gutterBottom>
+        <Grid2 item xs={12} sm={4} sx={{ textAlign: 'left' }}>
+          <Typography variant="h6" gutterBottom sx={{ color: '#745f19' }}> 
             Contacto
           </Typography>
           <Box mt={1.5}>
@@ -45,20 +45,20 @@ const Footer = () => {
         </Grid2 >
 
         {/* Sección de Información */}
-        <Grid2  item xs={12} sm={4}>
-          <Typography variant="h6" gutterBottom>
-            Acerca de la
+        <Grid2 item xs={12} sm={4} sx={{ textAlign: 'rith'}}>
+          <Typography variant="h6" gutterBottom sx={{ color: '#745f19', textAlign: 'center' }}>
+            Acerca de
           </Typography>
-          <Box mt={1.5}>
+          <Box mt={1.5} sx={{ maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis', margin: '0 auto',  textAlign: 'left' }}>
             <Typography variant="body2">
               Mr. Wolf nació con la idea de ofrecer ropa de calidad y estilo único para el hombre moderno con marcas 100 % costarricenses.
             </Typography>
           </Box>
-        </Grid2 >
+        </Grid2>
 
         {/* Redes Sociales */}
-        <Grid2  item xs={12} sm={4}>
-          <Typography variant="h6" gutterBottom>
+        <Grid2 item xs={12} sm={4} sx={{ textAlign: 'right' }}>
+          <Typography variant="h6" gutterBottom sx={{ color: '#745f19', textAlign: 'left' }}>
             Síguenos en
           </Typography>
           <Box mt={1.5}>
@@ -78,7 +78,7 @@ const Footer = () => {
 
       {/* Copyright */}
       <Box textAlign="center" mt={3}>
-        <Typography variant="body2">
+        <Typography variant="body2" sx={{ color: '#745f19' }}>
           © {new Date().getFullYear()} Mr. Wolf - Todos los derechos reservados.
         </Typography>
       </Box>

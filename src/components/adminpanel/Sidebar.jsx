@@ -49,10 +49,10 @@ const Sidebar = () => {
         </div>
         <div className={`flex justify-center mb-4 ${!open && "hidden"}`}>
           <img
-            src="/img/Logo Circular Mr Wolf-Photoroom.png"
+            src="/img/Favicon.ico"
             alt="Logo Mr Wolf"
-            className="rounded-full border-2 border-yellow-500 p-1"
-            style={{ width: "80px", height: "80px", cursor: "pointer" }}
+            className="rounded-full border-2 border-black p-1"
+            style={{ width: "80px", height: "80px", cursor: "pointer",borderRadius: "50%" }}
             onClick={() => navigate("/")}
           />
         </div>
@@ -60,13 +60,14 @@ const Sidebar = () => {
         {/* Logo cuando el sidebar está COLAPSADO (versión mini) */}
         <div className={`absolute top-5 left-4 ${open && "hidden"}`}>
           <img
-            src="/img/Logo Circular Mr Wolf-Photoroom.png"
+            src="/img/Favicon.ico"
             alt="Logo Mr Wolf"
             className="rounded-full border-2 border-yellow-500 p-1"
             style={{
               width: "40px", // Tamaño reducido
               height: "40px",
               cursor: "pointer",
+              borderRadius: "50%",
             }}
             onClick={() => navigate("/")}
           />
