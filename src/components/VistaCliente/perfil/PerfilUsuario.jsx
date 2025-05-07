@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -23,93 +22,138 @@ const PerfilUsuario = () => {
     const fetchPerfil = async () => {
       const token = sessionStorage.getItem("token");
       if (!token) return;
-  
+
       try {
         const res = await fetch("http://localhost:3000/api/v1/perfil", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-  
-        if (!res.ok) {
-          throw new Error("Error al obtener el perfil");
-        }
-  
+
+        if (!res.ok) throw new Error("Error al obtener el perfil");
+
         const data = await res.json();
-        setUsuario(data); // acá actualizas el estado con todos los datos
+        setUsuario(data);
       } catch (err) {
         console.error("Error al cargar el perfil:", err);
       }
     };
-  
+
     fetchPerfil();
   }, []);
-  
 
   const handleLogout = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/v1/logout", {
         method: "POST",
-        credentials: "include", 
+        credentials: "include",
       });
-  
-      if (!response.ok) {
-        throw new Error("Error al cerrar sesión");
-      }
-  
-      // Si la sesión se cierra correctamente, eliminamos el token de la sesión del cliente
-      sessionStorage.removeItem("token");
 
+      if (!response.ok) throw new Error("Error al cerrar sesión");
+
+      sessionStorage.removeItem("token");
       navigate("/home");
-  
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
     }
   };
-  
-  
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
+  const handleCloseDialog = () => setOpenDialog(false);
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Paper elevation={3} sx={{ p: 3, maxWidth: 500, margin: "0 auto", textAlign: "center", fontFamily: "'Baskerville Display PT', serif" }}>
-        <Typography variant="h5" gutterBottom>Perfil</Typography>
+    <Box sx={{ p: 4, backgroundColor: "#FFFFFF", minHeight: "100vh" }}>
+      <Paper
+        elevation={3}
+        sx={{
+          p: 4,
+          maxWidth: 500,
+          mx: "auto",
+          borderRadius: 4,
+          backgroundColor: "#FFFFFF",
+          border: "1px solid #556B2F", // verde musgo oscuro
+          fontFamily: "'Baskerville Display PT', serif",
+        }}
+      >
+        <Typography
+          variant="h4"
+          sx={{
+            color: "#000000",
+            mb: 3,
+            fontFamily: 'Baskerville Display PT',
+            fontWeight: "bold",
+            textAlign: "center",
+          }}
+        >
+          Perfil de Usuario
+        </Typography>
 
-        <Avatar
-          alt={usuario?.nombre}
-          src={usuario?.foto_perfil || "/img/default-user.jpg"}
-          sx={{ width: 100, height: 100, margin: "0 auto", mb: 2 }}
-        />
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
+          <Avatar
+            alt={usuario?.nombre}
+            src={usuario?.foto_perfil || "/img/default-user.jpg"}
+            sx={{ width: 120, height: 120 }}
+          />
+        </Box>
+
         {usuario ? (
-          <>
-            <Typography><strong>Nombre:</strong> {usuario.nombre_usuario}</Typography>
-            <Typography><strong>Correo:</strong> {usuario.email}</Typography>
-            <Typography><strong>Rol:</strong> {usuario.rol}</Typography>
+       <Box sx={{ textAlign: "left", px: 12, fontFamily: 'Baskerville Display PT', }}>
+          <Typography sx={{ color: "#000000", mb: 1,fontFamily: 'Baskerville Display PT',}}>
+            <strong>Nombre:</strong> {usuario.nombre_usuario}
+          </Typography>
+          <Typography sx={{ color: "#000000", mb: 1,fontFamily: 'Baskerville Display PT', }}>
+            <strong>Correo:</strong> {usuario.email}
+          </Typography>
+          <Typography sx={{ color: "#000000", mb: 2,fontFamily: 'Baskerville Display PT', }}>
+            <strong>Rol:</strong> {usuario.rol}
+          </Typography>
 
-            <Box mt={3} display="flex" justifyContent="space-around">
-              <Button variant="outlined" color="primary" onClick={handleLogout}>
-                Cerrar sesión
-              </Button>
-            </Box>
-          </>
-        ): (
-          <Typography>No se pudo cargar el perfil.</Typography>
+          <Box display="flex" justifyContent="center" mt={2}>
+            <Button
+              variant="contained"
+              onClick={handleLogout}
+              sx={{
+                backgroundColor: "#000000",
+                fontFamily: 'Baskerville Display PT',
+                color: "#FFFFFF",
+                "&:hover": {
+                  backgroundColor: "#556B2F", // verde musgo oscuro
+                },
+              }}
+            >
+              Cerrar sesión
+            </Button>
+          </Box>
+        </Box>
+
+        ) : (
+          <Typography sx={{ color: "#000000", textAlign: "left", px: 2,fontFamily: 'Baskerville Display PT', }}>
+            No se pudo cargar el perfil.
+          </Typography>
         )}
       </Paper>
 
-      {/* Diálogo de confirmación */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>¿Estás seguro?</DialogTitle>
+        <DialogTitle sx={{ color: "#000000", fontFamily: 'Baskerville Display PT',}}>¿Estás seguro?</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Esta acción eliminará tu cuenta de forma permanente. ¿Deseás continuar?
+          <DialogContentText sx={{ color: "#000000", fontFamily: 'Baskerville Display PT', }}>
+            Esta acción eliminará tu cuenta de forma permanente. ¿Deseás
+            continuar?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancelar</Button>
+          <Button
+            onClick={handleCloseDialog}
+            sx={{
+              color: "#000000",
+              border: "1px solidrgb(31, 44, 9)",
+              "&:hover": {
+                backgroundColor: "#556B2F",
+                color: "#FFFFFF",
+              },
+            }}
+          >
+            Cancelar
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
