@@ -8,12 +8,18 @@ const Carrito = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [seleccionados, setSeleccionados] = useState([]);
+    const [mensajeExito, setMensajeExito] = useState("");
     const { eliminarDelCarrito } = useCarrito();
+
+    const token = sessionStorage.getItem("token");
 
     useEffect(() => {
         fetch("http://localhost:3000/api/v1/cart", {
             method: "GET",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                ...(token && { Authorization: `Bearer ${token}` })
+            },
             credentials: "include"
         })
             .then((res) => res.json())
@@ -27,7 +33,10 @@ const Carrito = () => {
     const eliminarProducto = (productId, tallaId) => {
         fetch("http://localhost:3000/api/v1/cart/remove", {
             method: "DELETE",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                ...(token && { Authorization: `Bearer ${token}` })
+            },
             credentials: "include",
             body: JSON.stringify({ productId, tallaId })
         })
@@ -39,7 +48,7 @@ const Carrito = () => {
                     eliminarDelCarrito();
                 }
             })
-            .catch(() => setError("Error al eliminar el producto"));
+            .catch(() => setError("Error al eliminar el producto."));
     };
 
     const actualizarCantidad = (productId, tallaId, quantity) => {
@@ -50,7 +59,10 @@ const Carrito = () => {
 
         fetch("http://localhost:3000/api/v1/cart/update", {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                ...(token && { Authorization: `Bearer ${token}` })
+            },
             credentials: "include",
             body: JSON.stringify({ productId, tallaId, quantity })
         })
@@ -60,31 +72,41 @@ const Carrito = () => {
                     setCarrito(data.cart);
                 }
             })
-            .catch(() => setError("Error al actualizar la cantidad"));
+            .catch(() => setError("Error al actualizar la cantidad."));
     };
 
-    const manejarSeleccion = (productId) => {
-        setSeleccionados(prev => prev.includes(productId)
-            ? prev.filter(id => id !== productId)
-            : [...prev, productId]
-        );
+    const manejarSeleccion = (productId, tallaId) => {
+    const key = `${productId}-${tallaId}`;
+    setSeleccionados((prev) => {
+        const existe = prev.find(p => `${p.productId}-${p.tallaId}` === key);
+        if (existe) {
+            return prev.filter(p => `${p.productId}-${p.tallaId}` !== key);
+        } else {
+            return [...prev, { productId, tallaId }];
+        }
+    });
     };
+
 
     const comprarProductos = async () => {
-        const token = sessionStorage.getItem("token");
+        if (!token) {
+            alert("No estás autenticado.");
+            return;
+        }
+
         if (seleccionados.length === 0) {
             alert("Selecciona al menos un producto para comprar.");
             return;
         }
 
         const productosSeleccionados = carrito
-            .filter(producto => seleccionados.includes(producto.id))
-            .map(producto => ({
-                id: producto.id,
-                nombre: producto.nombre,
-                precio: producto.precio,
-                quantity: producto.quantity,
-                tallaId: producto.tallaId
+            .filter(p => seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId))
+            .map(p => ({
+                id: p.id,
+                nombre: p.nombre,
+                precio: p.precio,
+                quantity: p.quantity,
+                tallaId: p.tallaId
             }));
 
         try {
@@ -92,7 +114,7 @@ const Carrito = () => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                     Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${token}`
                 },
                 credentials: "include",
                 body: JSON.stringify({ productos: productosSeleccionados })
@@ -101,30 +123,78 @@ const Carrito = () => {
             const data = await response.json();
 
             if (response.ok) {
-                alert("¡Compra realizada con éxito!");
-                console.log("Factura generada:", data.factura);
-            
-                // ✅ Redirigir a una vista de factura
+                setMensajeExito("¡Compra realizada con éxito!");
+
+                await fetch("http://localhost:3000/api/v1/cart/remove-multiple", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                        productos: productosSeleccionados.map(p => ({
+                            id: p.id,
+                            tallaId: p.tallaId
+                        }))
+                    })
+                });
+
                 window.location.href = `/factura/${data.factura.id}`;
-            
             } else {
                 alert(data.message || "Error al procesar la compra");
             }
-        } catch (error) {
-            console.error("Error al comprar productos:", error);
+        } catch (err) {
+            console.error("Error al comprar productos:", err);
             alert("Hubo un error al realizar la compra.");
         }
     };
 
-    const totalAPagar = carrito.reduce((total, producto) => {
-        return seleccionados.includes(producto.id) ? total + (producto.precio * producto.quantity) : total;
-    }, 0);
+    const vaciarCarrito = async () => {
+        if (!token) {
+            alert("No estás autenticado.");
+            return;
+        }
+
+        const productosAEliminar = carrito.map(p => ({
+            productId: p.id,
+            tallaId: p.tallaId
+        }));
+
+        try {
+            await fetch("http://localhost:3000/api/v1/cart/remove-multiple", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                credentials: "include",
+                body: JSON.stringify({ productos: productosAEliminar })
+            });
+
+            setCarrito([]);
+            setSeleccionados([]);
+        } catch (err) {
+            alert("Error al vaciar el carrito.");
+        }
+    };
+
+ const totalAPagar = carrito.reduce((total, p) => {
+    const estaSeleccionado = seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId);
+    return estaSeleccionado ? total + (p.precio * p.quantity) : total;
+ }, 0);
 
     if (loading) return <p>Cargando carrito...</p>;
     if (error) return <p>{error}</p>;
 
     return (
         <div className="carrito-container">
+            {mensajeExito && (
+                <div className="mensaje-modal">
+                    <div className="mensaje-contenido">
+                        <h3>{mensajeExito}</h3>
+                    </div>
+                </div>
+            )}
             <h2 className="titulo">Carrito de Compras</h2>
             <button className="seguir-comprando" onClick={() => window.location.href = "/productos"}>
                 Seguir Comprando
@@ -139,42 +209,44 @@ const Carrito = () => {
                                 <th>Seleccionar</th>
                                 <th>Producto</th>
                                 <th>Precio</th>
+                                <th>Talla</th>
                                 <th>Cantidad</th>
                                 <th>Total</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {carrito.map((producto) => (
-                                <tr key={producto.id}>
+                            {carrito.map((p) => (
+                                <tr key={p.id}>
                                     <td>
                                         <input
                                             type="checkbox"
-                                            checked={seleccionados.includes(producto.id)}
-                                            onChange={() => manejarSeleccion(producto.id)}
+                                            checked={seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId)}
+                                            onChange={() => manejarSeleccion(p.id, p.tallaId)}
                                         />
                                     </td>
                                     <td className="producto-info">
                                         <img
-                                            src={producto.imagen ? `http://localhost:3000/public/ImgProductos/${producto.imagen}` : "/path/to/placeholder-image.jpg"}
-                                            alt={producto.nombre}
+                                            src={p.imagen ? `http://localhost:3000/public/ImgProductos/${p.imagen}` : "/placeholder.jpg"}
+                                            alt={p.nombre}
                                             className="producto-img"
                                         />
-                                        {producto.nombre}
+                                        {p.nombre}
                                     </td>
-                                    <td>₡ {producto.precio.toLocaleString()}</td>
+                                    <td>₡ {p.precio.toLocaleString()}</td>
+                                     <td>{p.tallaNombre}</td>
                                     <td className="cantidad">
-                                        <input 
-                                            type="number" 
-                                            min="1" 
-                                            max="5" 
-                                            value={producto.quantity} 
-                                            onChange={(e) => actualizarCantidad(producto.id, producto.tallaId, parseInt(e.target.value, 10))} 
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            max="5"
+                                            value={p.quantity}
+                                            onChange={(e) => actualizarCantidad(p.id, p.tallaId, parseInt(e.target.value, 10))}
                                         />
                                     </td>
-                                    <td className="total">₡ {(producto.precio * producto.quantity).toLocaleString()}</td>
+                                     <td className="total">₡ {(p.precio * p.quantity).toLocaleString()}</td>
                                     <td>
-                                        <button className="eliminar" onClick={() => eliminarProducto(producto.id, producto.tallaId)}>
+                                        <button className="eliminar" onClick={() => eliminarProducto(p.id, p.tallaId)}>
                                             <FaTrash />
                                         </button>
                                     </td>
@@ -188,7 +260,7 @@ const Carrito = () => {
                 <h3 className="total-pagar">Total a pagar: ₡ {totalAPagar.toLocaleString()}</h3>
             </div>
             <div className="acciones-carrito">
-                <button className="vaciar-carrito">Vaciar Carrito</button>
+                <button className="vaciar-carrito" onClick={vaciarCarrito}>Vaciar Carrito</button>
                 <button className="comprar" onClick={comprarProductos}>Comprar</button>
             </div>
         </div>
