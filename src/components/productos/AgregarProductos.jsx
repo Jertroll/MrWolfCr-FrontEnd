@@ -2,15 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 
-// Opciones de tallas
-const tallasOptions = [
-  { value: "1", label: "XS" },
-  { value: "2", label: "S" },
-  { value: "3", label: "M" },
-  { value: "4", label: "L" },
-  { value: "5", label: "XL" },
-];
-
 const AgregarProductos = () => {
   const [formData, setFormData] = useState({
     codigo: "",
@@ -23,31 +14,44 @@ const AgregarProductos = () => {
     genero_dirigido: "",
     id_categoria: 0,
   });
-  const [categorias, setCategorias] = useState([]); // Estado para almacenar las categorías
+  const [categorias, setCategorias] = useState([]); // Estado para
+  // almacenar las categorías
+  const [tallasOptions, setTallasOptions] = useState([]);
+
   const [mensaje, setMensaje] = useState(""); // Mensaje de éxito o error
   const navigate = useNavigate(); // Para redirigir al usuario
 
   useEffect(() => {
-    // Suponiendo que tu API tenga un endpoint para obtener las categorías
     const fetchCategorias = async () => {
       try {
         const response = await fetch("http://localhost:3000/api/v1/categorias");
-        const data = await response.json();
-
-        // Ahora mapeamos correctamente las categorías
+        const data = await response.json(); //Parsear la respuesta JSON
         const categoriasOptions = data.map((categoria) => ({
           value: categoria.num_categoria,
           label: categoria.nombre_categoria,
         }));
-        
         setCategorias(categoriasOptions);
       } catch (error) {
         console.error("Error al obtener categorías:", error);
       }
     };
-    
+
+    const fetchTallas = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/v1/tallas");
+        const data = await response.json();
+        const tallasMapped = data.map((talla) => ({
+          value: talla.id.toString(),
+          label: talla.nombre,
+        }));
+        setTallasOptions(tallasMapped);
+      } catch (error) {
+        console.error("Error al obtener tallas:", error);
+      }
+    };
 
     fetchCategorias();
+    fetchTallas();
   }, []);
 
   const handleCategoriaChange = (selectedOption) => {
