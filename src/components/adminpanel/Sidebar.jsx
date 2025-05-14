@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaHome, FaUsers, FaChartPie } from "react-icons/fa";
 import { FaTshirt } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { FaFileInvoiceDollar } from "react-icons/fa";
 
