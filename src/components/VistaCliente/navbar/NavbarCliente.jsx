@@ -280,7 +280,7 @@ function NavbarCliente() {
               {isLoggedIn ? (
                 <> 
                   <MenuItem onClick={() => navigate("/facturasCliente")}>
-                  <Typography>Ver Facturas</Typography>
+                  <Typography>Mis Facturas</Typography>
                   </MenuItem>
                   <MenuItem onClick={handleLogout}>
                     <Typography>Salir</Typography>

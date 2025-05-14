@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { FaFilePdf,FaArrowDown } from "react-icons/fa";
 
 const FacturasCliente = () => {
     const [facturas, setFacturas] = useState([]);
@@ -58,63 +59,80 @@ const FacturasCliente = () => {
         }
     };
 
-    const styles = {
-        container: {
-            padding: "2rem",
-            fontFamily: "Arial, sans-serif",
-        },
-        titulo: {
-            fontSize: "1.5rem",
-            marginBottom: "1rem",
-        },
-        inputBusqueda: {
-            marginBottom: "1rem",
-            padding: "0.5rem",
-            width: "300px",
-        },
-        tableWrapper: {
-            overflowX: "auto",
-            marginTop: "1rem",
-        },
-        table: {
-            width: "100%",
-            borderCollapse: "collapse",
-        },
-        th: {
-            backgroundColor: "#f4f4f4",
-            textAlign: "left",
-            padding: "0.5rem",
-            borderBottom: "1px solid #ddd",
-        },
-        td: {
-            padding: "0.5rem",
-            borderBottom: "1px solid #ddd",
-        },
-        link: {
-            marginRight: "1rem",
-            textDecoration: "none",
-            color: "#007bff",
-        },
-        pdfLink: {
-            color: "#28a745",
-            textDecoration: "none",
-        },
-        paginacion: {
-            marginTop: "1rem",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "1rem",
-        },
-        botonPagina: {
-            padding: "0.5rem 1rem",
-            border: "1px solid #ccc",
-            backgroundColor: "#fff",
-            cursor: "pointer",
-        },
-        paginaActual: {
-            fontWeight: "bold",
-        }
+ const styles = {
+    container: {
+        padding: "2rem",
+        fontFamily: "Arial, sans-serif",
+        backgroundColor: "#fff",
+        color: "#333",
+    },
+    titulo: {
+        textAlign:"left",
+        fontSize: "1.5rem",
+        marginBottom: "1rem",
+        color: "#0a0a0a",
+        borderBottom: "1px solid #1b5837",
+        paddingBottom: "0.5rem",
+        fontFamily: "'Baskerville Display PT', serif",
+    },
+    inputBusqueda: {
+        marginBottom: "1rem",
+        padding: "0.5rem",
+        width: "500px",
+        border: "1px solid #2a3a2e",
+        borderRadius: "4px",
+    },
+    tableWrapper: {
+        overflowX: "auto",
+        marginTop: "1rem",
+    },
+    table: {
+        width: "100%",
+        borderCollapse: "collapse",
+    },
+    th: {
+        backgroundColor: "#2a3a2e",
+        color: "#fff",
+        textAlign: "left",
+        padding: "0.5rem",
+    },
+    td: {
+        padding: "0.5rem",
+        borderBottom: "1px solid #ecf0f1",
+    },
+    link: {
+        marginRight: "1rem",
+        textDecoration: "none",
+        color: "#2a3a2e",
+    },
+    pdfLink: {
+        color: "#2a3a2e",
+        textDecoration: "none",
+        backgroundColor: "#ffff",
+        padding: "0.5rem 1rem",
+        borderRadius: "4px",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "0.25rem",
+    },
+    paginacion: {
+        marginTop: "1rem",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: "1rem",
+    },
+    botonPagina: {
+        padding: "0.5rem 1rem",
+        border: "1px solid #ccc",
+        backgroundColor: "#fff",
+        cursor: "pointer",
+        color: "#2a3a2e",
+    },
+    paginaActual: {
+        fontWeight: "bold",
+        color: "#2a3a2e",
+    }
     };
 
     if (loading) return <p>Cargando facturas...</p>;
@@ -123,7 +141,7 @@ const FacturasCliente = () => {
 
     return (
         <div style={styles.container}>
-            <h2 style={styles.titulo}>Listado de Facturas</h2>
+            <h2 style={styles.titulo}>Mis Facturas</h2>
 
             <input
                 type="text"
@@ -159,44 +177,47 @@ const FacturasCliente = () => {
                                         <td style={styles.td}>{formatearFecha(factura.fecha_emision)}</td>
                                         <td style={styles.td}>₡ {factura.total.toLocaleString()}</td>
                                         <td style={styles.td}>
-                                            <Link to={`/factura/${factura.id}`} style={styles.link}>
-                                                Ver detalle
+                                            <Link to={`/factura/${factura.id}`} style={styles.link} title="Detalle Factura">
+                                                Mas...
                                             </Link>
                                             <a
                                                 href={`http://localhost:3000/api/v1/pdf/${factura.id}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 style={styles.pdfLink}
+                                                title="Descargar PDF"
                                             >
-                                                Descargar PDF
+                                                  <FaFilePdf size={18} />
+                                                 <FaArrowDown size={14} />
                                             </a>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
+                    <div style={styles.paginacion}>
+                        <button
+                            onClick={() => cambiarPagina(paginaActual - 1)}
+                            style={styles.botonPagina}
+                            disabled={paginaActual === 1}
+                            title="Página anterior"
+                        >
+                            &lt;
+                        </button>
 
-                        <div style={styles.paginacion}>
-                            <button
-                                onClick={() => cambiarPagina(paginaActual - 1)}
-                                style={styles.botonPagina}
-                                disabled={paginaActual === 1}
-                            >
-                                Anterior
-                            </button>
+                        <span style={styles.paginaActual}>
+                            {paginaActual} de {totalPaginas}
+                        </span>
 
-                            <span style={styles.paginaActual}>
-                                Página {paginaActual} de {totalPaginas}
-                            </span>
-
-                            <button
-                                onClick={() => cambiarPagina(paginaActual + 1)}
-                                style={styles.botonPagina}
-                                disabled={paginaActual === totalPaginas}
-                            >
-                                Siguiente
-                            </button>
-                        </div>
+                        <button
+                            onClick={() => cambiarPagina(paginaActual + 1)}
+                            style={styles.botonPagina}
+                            disabled={paginaActual === totalPaginas}
+                            title="Página siguiente"
+                        >
+                            &gt;
+                        </button>
+                    </div>
                     </>
                 )}
             </div>
