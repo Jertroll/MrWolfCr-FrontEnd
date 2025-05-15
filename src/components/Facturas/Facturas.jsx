@@ -105,6 +105,7 @@ const eliminarFactura = useCallback(async (id) => {
                             rel="noopener noreferrer"
                             className="text-red-600 hover:text-red-800"
                             title="Descargar PDF"
+                            color="#2a3a2e"
                         >
                             <FaFilePdf />
                         </a>

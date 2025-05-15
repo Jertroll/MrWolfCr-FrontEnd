@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import ProductosAleatorios from "./proAleactorios/ProductosAleatorios";
 import AgregarCarrito from "../../carrito/AgregarCarrito";
 import { jwtDecode } from "jwt-decode";
+import { EyeIcon, EyeSlashIcon, TrashIcon  } from "@heroicons/react/24/solid";
 
 const DetalleProducto = () => {
   const { id } = useParams();
@@ -100,6 +101,61 @@ const DetalleProducto = () => {
       ))}
     </div>
   );
+  
+  const eliminarResena = async (idResena) => {
+  try {
+const res = await fetch(`http://localhost:3000/api/v1/resenas/${idResena}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${usuario.token}`,
+      },
+    });
+    if (!res.ok) throw new Error("Error al eliminar reseña");
+    setResenas((prev) => prev.filter((r) => r.id !== idResena));
+  } catch (err) {
+    console.error("Error al eliminar reseña:", err);
+  }
+};
+
+const toggleVisibilidadResena = async (idResena, estadoActual) => {
+  try {
+    const res = await fetch(`http://localhost:3000/api/v1/resenas/${idResena}/visibilidad`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${usuario.token}`,
+      },
+    });
+    if (!res.ok) throw new Error("Error al cambiar visibilidad");
+
+    setResenas((prev) =>
+      prev.map((r) =>
+        r.id === idResena ? { ...r, oculta: !estadoActual } : r
+      )
+    );
+  } catch (err) {
+    console.error("Error al cambiar visibilidad:", err);
+  }
+};
+
+const calcularPromedio = () => {
+  const visibles = resenas.filter((r) => !r.oculta);
+  const total = visibles.reduce((sum, r) => sum + r.calificacion, 0);
+  return visibles.length ? (total / visibles.length).toFixed(1) : null;
+};
+
+const renderEstrellasPromedio = (promedio) => {
+  const totalEstrellas = 5;
+  const estrellasLlenas = Math.floor(promedio);
+  const estrellasVacias = totalEstrellas - estrellasLlenas;
+
+  return (
+    <div className="flex items-center gap-1 ml-2 text-2xl text-yellow-400">
+      {Array(estrellasLlenas).fill().map((_, i) => <span key={`llena-${i}`}>★</span>)}
+      {Array(estrellasVacias).fill().map((_, i) => <span key={`vacia-${i}`} className="text-gray-300">★</span>)}
+    </div>
+  );
+};
+
 
   if (!producto) return <p>Cargando producto...</p>;
 
@@ -173,56 +229,113 @@ const DetalleProducto = () => {
       {/* Reseñas del producto */}
       <div className="mt-10">
         <h2 className="text-2xl font-bold mb-4">Reseñas del producto</h2>
-        {resenas.length > 0 ? (
-          <div className="space-y-4">
-            {resenas.map((resena, index) => (
-              <div key={index} className="bg-gray-100 p-4 rounded-lg shadow">
-                <p className="font-semibold">{resena.usuario?.nombre_usuario}</p>
-                {renderEstrellas(resena.calificacion)}
-                <p className="text-gray-700 mt-1">{resena.comentario}</p>
-              </div>
-            ))}
-          </div>
+       {resenas.length > 0 ? (
+      <div className="space-y-4">
+     <div className="text-lg font-medium mb-2 flex items-center">
+         Calificación:
+        {calcularPromedio() !== null ? (
+          <>
+            {renderEstrellasPromedio(parseFloat(calcularPromedio()))}
+            <span className="ml-2 text-gray-600 text-sm">({calcularPromedio()})</span>
+          </>
         ) : (
-          <p className="text-gray-500">Este producto aún no tiene reseñas.</p>
+          <span className="ml-2 text-gray-500 Arial">Sin calificación</span>
         )}
-  
-        {/* Formulario de reseña: solo si está logueado */}
-        {usuario ? (
-          <form onSubmit={enviarResena} className="mt-6 bg-gray-50 p-4 rounded-lg shadow space-y-4">
-            <h3 className="text-lg font-semibold">Deja tu Comentario</h3>
-            <div className="flex items-center gap-2">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <button
-                  key={i}
-                  type="button"
-                  className={`text-2xl ${i <= calificacion ? "text-yellow-400" : "text-gray-300"}`}
-                  onClick={() => setCalificacion(i)}
-                >
-                  ★
-                </button>
-              ))}
-            </div>
-            <textarea
-              className="w-full p-2 border border-gray-300 rounded"
-              rows="3"
-              placeholder="Escribe tu comentario..."
-              value={comentario}
-              onChange={(e) => setComentario(e.target.value)}
-              required
-            />
-            <button
-              type="submit"
-              className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800"
-            >
-              Enviar reseña
-            </button>
-          </form>
-        ) : (
-          <p className="mt-6 text-gray-600 italic">Debes iniciar sesión para dejar una reseña.</p>
-        )}
-  
       </div>
+      {resenas
+      .filter((resena) => !resena.oculta || usuario?.rol === "Administrador")
+      .map((resena, index) => (
+        <div
+            key={index}
+            className={`p-4 rounded-lg shadow relative ${
+              resena.oculta ? "bg-gray-200 opacity-60" : "bg-gray-100"
+            }`}
+          >
+          <p className="font-semibold">{resena.usuario?.nombre_usuario}</p>
+          {renderEstrellas(resena.calificacion)}
+          <p className="text-gray-700 mt-1">{resena.comentario}</p>
+
+          {/* Botones de acción */}
+          {usuario && (
+            <div className="absolute top-2 right-2 flex gap-2">
+              {(usuario.id === resena.usuario?.id || usuario.rol === "Administrador") && (
+                <button
+                  onClick={() => eliminarResena(resena.id)}
+                  className="text-red-500 text-sm hover:underline"
+                  title="Eliminar Reseña"
+                >
+                 <TrashIcon className="h-5 w-5" />
+                </button>
+              )}
+             {usuario.rol === "Administrador" && (
+              <button
+                onClick={() => toggleVisibilidadResena(resena.id, resena.oculta)}
+                className="text-sm hover:underline flex items-center gap-1"
+                title={resena.oculta ? "Mostrar reseña" : "Ocultar reseña"}
+              >
+                {resena.oculta ? (
+                  <>
+                    <EyeSlashIcon className="w-4 h-4 text-gray-400" />
+                  </>
+                ) : (
+                  <>
+                    <EyeIcon className="w-4 h-4 text-yellow-500" />
+                  </>
+                )}
+              </button>
+            )}
+            </div>
+          )}
+        </div>
+      ))}
+  </div>
+) : (
+  <p className="text-gray-500">Este producto aún no tiene reseñas.</p>
+)}
+
+      </div>
+      {usuario ? (
+  <form
+    onSubmit={enviarResena}
+    className="mt-6 bg-gray-50 p-4 rounded-lg shadow space-y-4"
+  >
+    <h3 className="text-lg font-semibold">Deja tu Comentario</h3>
+
+    <div className="flex items-center gap-2">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <button
+          key={i}
+          type="button"
+          className={`text-2xl ${i <= calificacion ? "text-yellow-400" : "text-gray-300"}`}
+          onClick={() => setCalificacion(i)}
+        >
+          ★
+        </button>
+      ))}
+    </div>
+
+    <textarea
+      className="w-full p-2 border border-gray-300 rounded"
+      rows="3"
+      placeholder="Escribe tu comentario..."
+      value={comentario}
+      onChange={(e) => setComentario(e.target.value)}
+      required
+    />
+
+    <button
+      type="submit"
+      className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800"
+    >
+      Enviar reseña
+    </button>
+  </form>
+) : (
+  <p className="mt-6 text-gray-600 italic">
+    Debes iniciar sesión para dejar una reseña.
+  </p>
+)}
+
   
       {/* Productos Aleatorios */}
       <div>

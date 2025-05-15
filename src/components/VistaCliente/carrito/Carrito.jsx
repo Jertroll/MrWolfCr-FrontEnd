@@ -196,10 +196,15 @@ const Carrito = () => {
                     </div>
                 </div>
             )}
-            <h2 className="titulo">Carrito de Compras</h2>
-            <button className="seguir-comprando" onClick={() => window.location.href = "/productos"}>
-                Seguir Comprando
-            </button>
+           <div className="encabezado-carrito">
+           <h2 className="titulo-Carrito">Carrito de Compras</h2>
+          <button
+            className="seguir-comprando"
+            onClick={() => window.location.href = "/productos"}
+          >
+             Seguir Comprando
+          </button>
+         </div>
             {carrito.length === 0 ? (
                 <p>El carrito está vacío</p>
             ) : (
@@ -207,7 +212,7 @@ const Carrito = () => {
                     <table className="tabla-carrito">
                         <thead>
                             <tr>
-                                <th>Seleccionar</th>
+                                <th>Selec.</th>
                                 <th>Producto</th>
                                 <th>Precio</th>
                                 <th>Talla</th>

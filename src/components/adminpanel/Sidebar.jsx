@@ -10,16 +10,12 @@ const Sidebar = () => {
   const [hoverIndex, setHoverIndex] = useState(null);
 
   const Menus = [
-    { title: "Home", icon: <FaHome />, path: "/dashboard/home" },
-    {
-      title: "Usuarios",
-      icon: <FaUsers />,
-      gap: true,
-      path: "/dashboard/usuario",
-    },
-    { title: "Categoria", icon: <FaChartPie />, path: "/dashboard/categoria" },
-    { title: "Productos", icon: <FaTshirt />, path: "/dashboard/producto" },
+    { title: "Home", icon: <FaHome />, path: '/dashboard' },
+    { title: "Usuarios", icon: <FaUsers />, gap: true, path: '/dashboard/usuario' },
+    { title: "Categoria", icon: <FaChartPie />, path: '/dashboard/categoria' },
+    { title: "Productos", icon: <FaTshirt />, path: '/dashboard/producto' },
     { title: "Facturas", icon: <FaFileInvoiceDollar />, path: '/dashboard/facturas' },
+
   ];
 
   return (
@@ -32,7 +28,7 @@ const Sidebar = () => {
       >
         {/* Botón de toggle */}
         <img
-          src="/assets/control.png" 
+          src="/img/control.png"
           alt="Toggle Sidebar"
           className={`absolute cursor-pointer -right-3 top-9 w-7 border-gray-800 border-2 rounded-full ${
             !open && "rotate-180"

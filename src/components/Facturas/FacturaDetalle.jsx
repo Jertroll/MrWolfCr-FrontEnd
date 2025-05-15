@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft,FaFilePdf,FaArrowDown } from "react-icons/fa";
 import './FacturaDetalle.css'
 const FacturaDetalle = () => {
     const { id } = useParams();
@@ -41,12 +41,21 @@ const FacturaDetalle = () => {
     return (
         <div className="factura-container">
             <h2 className="titulo">Detalles de la Factura</h2>
-            <button
-                className="volver"
-                onClick={() => window.location.href = "/carrito"}
-            >
+            <div className="acciones-superiores">
+            <button className="volver" onClick={() => window.location.href = "/carrito"}>
                 <FaArrowLeft /> Volver al carrito
             </button>
+            <a
+                href={`http://localhost:3000/api/v1/pdf/${id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-success descargar-pdf"
+                title="Descargar PDF"
+            >
+                <FaFilePdf size={18} />
+                <FaArrowDown size={14} />
+            </a>
+            </div>
 
             <div className="factura-info">
                 <h4>Factura: {factura.codigo_factura}</h4>
@@ -93,17 +102,6 @@ const FacturaDetalle = () => {
                     </table>
                 </div>
             )}
-
-            <div className="acciones-factura mt-4">
-                <a
-                    href={`http://localhost:3000/api/v1/pdf/${id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-success"
-                >
-                    Descargar Factura en PDF
-                </a>
-            </div>
         </div>
     );
 };
