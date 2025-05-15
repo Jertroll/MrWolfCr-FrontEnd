@@ -100,7 +100,8 @@ const Carrito = () => {
         }
 
         const productosSeleccionados = carrito
-            .filter(p => seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId))
+            .filter(p => seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId)&&
+            p.estado !== "No disponible" )
             .map(p => ({
                 id: p.id,
                 nombre: p.nombre,
@@ -219,11 +220,17 @@ const Carrito = () => {
                             {carrito.map((p) => (
                                 <tr key={p.id}>
                                     <td>
+                                        <div className="no-disponible">
                                         <input
-                                            type="checkbox"
-                                            checked={seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId)}
-                                            onChange={() => manejarSeleccion(p.id, p.tallaId)}
-                                        />
+                                       type="checkbox"
+                                       checked={seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId)}
+                                       disabled={p.estado === "No disponible"}
+                                       onChange={() => manejarSeleccion(p.id, p.tallaId)}
+                                       />
+                                       {p.estado === "No disponible" && (
+                                       <small className="mensaje-no-disponible">No disponible</small>
+                                        )}
+                                       </div>
                                     </td>
                                     <td className="producto-info">
                                         <img
@@ -245,6 +252,7 @@ const Carrito = () => {
                                         />
                                     </td>
                                      <td className="total">₡ {(p.precio * p.quantity).toLocaleString()}</td>
+
                                     <td>
                                         <button className="eliminar" onClick={() => eliminarProducto(p.id, p.tallaId)}>
                                             <FaTrash />
