@@ -20,7 +20,7 @@ import ProductosPorGenero from "./components/VistaCliente/Paginas/productos/Prod
 import PerfilUsuario from "./components/VistaCliente/perfil/PerfilUsuario";
 import EnviarCodigo from "./components/recuperacionContrasena/EnviarCodigo";
 import VerificarYRestablecer from "./components/recuperacionContrasena/VerificarYRestablecer";
-
+import EditarPerfilUsuario from "./components/VistaCliente/perfil/EditarPerfilUsuario"
 function App() {
   return (
     <CarritoProvider>
@@ -46,7 +46,7 @@ function App() {
             <Route path="/ayudaCliente" element={<AyudaUsuario />} />
             <Route path="/productos/genero/:genero" element={<ProductosPorGenero />} />
             <Route path="/perfil" element={<PerfilUsuario />} />
-
+            <Route path="/perfil/editar" element={<EditarPerfilUsuario />} />
           </Route>
 
           {/* Ruta de admin (sin layout) */}
