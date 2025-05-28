@@ -121,41 +121,45 @@ const PerfilUsuario = () => {
             >
               <strong>Correo:</strong> {usuario.email}
             </Typography>
-            <Typography
-              sx={{
-                color: "#000000",
-                mb: 2,
-                fontFamily: "Baskerville Display PT",
-              }}
-            >
-              <strong>Rol:</strong> {usuario.rol}
-            </Typography>
-
-            <Box display="flex" justifyContent="center" mt={2}>
+             <Typography><strong>Rol:</strong> {usuario.rol}</Typography>
+             <Box display="flex" justifyContent="center" gap={2} mt={3}>
               <Button
                 variant="contained"
                 onClick={handleLogout}
                 sx={{
-                  backgroundColor: "#000000",
+                  backgroundColor: "#6E8F45",
                   fontFamily: "Baskerville Display PT",
+                  fontSize: "0.75rem",
+                  fontWeight: 300,
                   color: "#FFFFFF",
+                  px: 3,
+                  py: 1.5,
+                  minWidth: 140,
+                  whiteSpace: "nowrap",       
                   "&:hover": {
-                    backgroundColor: "#556B2F", 
+                    backgroundColor: "#2E4B0D",
+                    color: "#FFFFFF",
                   },
                 }}
               >
                 Cerrar sesión
               </Button>
+
               <Button
-                variant="outlined"
+                variant="contained"
                 onClick={() => navigate("/perfil/editar")}
                 sx={{
-                  mt: 2,
+                  backgroundColor: "#6E8F45",
                   fontFamily: "Baskerville Display PT",
-                  borderColor: "#556B2F",
-                  color: "#556B2F",
+                  fontSize: "0.75rem",
+                  fontWeight: 300,
+                  color: "#FFFFFF",
+                  px: 3,
+                  py: 1.5,
+                  minWidth: 140,
+                  whiteSpace: "nowrap",     
                   "&:hover": {
-                    backgroundColor: "#556B2F",
+                    backgroundColor: "#2E4B0D",
                     color: "#FFFFFF",
                   },
                 }}
@@ -163,6 +167,7 @@ const PerfilUsuario = () => {
                 Editar perfil
               </Button>
             </Box>
+
           </Box>
         ) : (
           <Typography

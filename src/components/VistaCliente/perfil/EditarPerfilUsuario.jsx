@@ -122,11 +122,13 @@ const EditarPerfilUsuario = () => {
                 type="submit"
                 variant="contained"
                 sx={{
-                  backgroundColor: "#556B2F",
+                  backgroundColor: "#ffff",
+                  border: "1px solid #2E4B0D",
                   fontFamily: 'Baskerville Display PT',
-                  color: "#FFFFFF",
+                  color: "#2E4B0D",
                   "&:hover": {
                     backgroundColor: "#2E4B0D",
+                    color: "#ffff",
                   },
                 }}
               >
@@ -135,11 +137,12 @@ const EditarPerfilUsuario = () => {
               <Button
                 onClick={() => navigate("/perfil")}
                 sx={{
-                  border: "1px solid #556B2F",
+                  border: "1px solid #990000",
                   fontFamily: 'Baskerville Display PT',
-                  color: "#556B2F",
+                  color: "#990000",
                   "&:hover": {
-                    backgroundColor: "#F0F0F0",
+                    backgroundColor: "#990000",
+                    color: "#fff",
                   },
                 }}
               >
