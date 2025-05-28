@@ -121,7 +121,6 @@ const PerfilUsuario = () => {
             >
               <strong>Correo:</strong> {usuario.email}
             </Typography>
-             <Typography><strong>Rol:</strong> {usuario.rol}</Typography>
              <Box display="flex" justifyContent="center" gap={2} mt={3}>
               <Button
                 variant="contained"
