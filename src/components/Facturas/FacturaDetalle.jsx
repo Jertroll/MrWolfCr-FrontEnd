@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FaArrowLeft,FaFilePdf,FaArrowDown } from "react-icons/fa";
-import { jwtDecode } from "jwt-decode";
 import './FacturaDetalle.css'
 const FacturaDetalle = () => {
     const { id } = useParams();
@@ -9,8 +8,6 @@ const FacturaDetalle = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const token = sessionStorage.getItem("token");
-    //const rol = sessionStorage.getItem("rol");
-    const [userRole, setUserRole] = useState(null);
 
     useEffect(() => {
         fetch(`http://localhost:3000/api/v1/factura/${id}`, {
@@ -36,18 +33,6 @@ const FacturaDetalle = () => {
             setLoading(false);
         });
     }, [id, token]);
-    
-      useEffect(() => {
-        const token = sessionStorage.getItem("token");
-        if (token) {
-          try {
-            const decodedToken = jwtDecode(token);
-            setUserRole(decodedToken.rol);
-          } catch (error) {
-            console.error("Error al decodificar el token:", error);
-          }
-        }
-      }, []);
 
     if (loading) return <p>Cargando detalles de la factura...</p>;
     if (error) return <p>{error}</p>;
@@ -57,11 +42,9 @@ const FacturaDetalle = () => {
         <div className="factura-container">
             <h2 className="titulo">Detalles de la Factura</h2>
             <div className="acciones-superiores">
-             {userRole === "Cliente" && (
-                    <button className="volver" onClick={() => window.location.href = "/carrito"}>
-                        <FaArrowLeft /> Volver al carrito
-                    </button>
-                )}
+            <button className="volver" onClick={() => window.location.href = "/carrito"}>
+                <FaArrowLeft /> Volver al carrito
+            </button>
             <a
                 href={`http://localhost:3000/api/v1/pdf/${id}`}
                 target="_blank"
