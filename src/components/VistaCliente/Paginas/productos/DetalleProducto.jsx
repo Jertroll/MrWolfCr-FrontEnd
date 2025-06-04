@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import ProductosAleatorios from "./proAleactorios/ProductosAleatorios";
 import AgregarCarrito from "../../carrito/AgregarCarrito";
 import { jwtDecode } from "jwt-decode";
-import { EyeIcon, EyeSlashIcon, TrashIcon  } from "@heroicons/react/24/solid";
 
 const DetalleProducto = () => {
   const { id } = useParams();
@@ -117,25 +116,7 @@ const res = await fetch(`http://localhost:3000/api/v1/resenas/${idResena}`, {
   }
 };
 
-const toggleVisibilidadResena = async (idResena, estadoActual) => {
-  try {
-    const res = await fetch(`http://localhost:3000/api/v1/resenas/${idResena}/visibilidad`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${usuario.token}`,
-      },
-    });
-    if (!res.ok) throw new Error("Error al cambiar visibilidad");
-
-    setResenas((prev) =>
-      prev.map((r) =>
-        r.id === idResena ? { ...r, oculta: !estadoActual } : r
-      )
-    );
-  } catch (err) {
-    console.error("Error al cambiar visibilidad:", err);
-  }
-};
+const [mostrarTodas, setMostrarTodas] = useState(false);
 
 const calcularPromedio = () => {
   const visibles = resenas.filter((r) => !r.oculta);
@@ -225,76 +206,74 @@ const renderEstrellasPromedio = (promedio) => {
           <AgregarCarrito producto={producto} tallaSeleccionada={tallaSeleccionada} />
         </div>
       </div>
-  
       {/* Reseñas del producto */}
       <div className="mt-10">
         <h2 className="text-2xl font-bold mb-4">Reseñas del producto</h2>
-       {resenas.length > 0 ? (
-      <div className="space-y-4">
-     <div className="text-lg font-medium mb-2 flex items-center">
-         Calificación:
-        {calcularPromedio() !== null ? (
-          <>
-            {renderEstrellasPromedio(parseFloat(calcularPromedio()))}
-            <span className="ml-2 text-gray-600 text-sm">({calcularPromedio()})</span>
-          </>
+        {resenas.length > 0 ? (
+          <div className="space-y-4">
+            <div className="text-lg font-medium mb-2 flex items-center">
+              Calificación:
+              {calcularPromedio() !== null ? (
+                <>
+                  {renderEstrellasPromedio(parseFloat(calcularPromedio()))}
+                  <span className="ml-2 text-gray-600 text-sm">({calcularPromedio()})</span>
+                </>
+              ) : (
+                <span className="ml-2 text-gray-500 Arial">Sin calificación</span>
+              )}
+            </div>
+
+            {(() => {
+              const reseñasOrdenadas = [...resenas]
+                .filter((resena) => !resena.oculta || usuario?.rol === "Administrador")
+                .sort((a, b) => b.calificacion - a.calificacion);
+
+              const reseñasAMostrar = mostrarTodas ? reseñasOrdenadas : reseñasOrdenadas.slice(0, 5);
+
+              return (
+                <>
+                  {reseñasAMostrar.map((resena, index) => (
+                    <div key={index}>
+                      <div
+                        className={`p-4 rounded-lg shadow ${
+                          resena.oculta ? "bg-gray-200 opacity-60" : "bg-gray-100"
+                        }`}
+                      >
+                        <p className="font-semibold">{resena.usuario?.nombre_usuario}</p>
+                        {renderEstrellas(resena.calificacion)}
+                        <p className="text-gray-700 mt-1">{resena.comentario}</p>
+                      </div>
+                      {usuario && (usuario.id === resena.usuario?.id || usuario.rol === "Administrador") && (
+                        <div className="text-right mt-1 mr-2">
+                          <button
+                            onClick={() => eliminarResena(resena.id)}
+                            className="text-gray-500 text-sm hover:underline"
+                            title="Eliminar Reseña"
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  {reseñasOrdenadas.length > 5 && (
+                    <button
+                      className="mt-4 text-gray-600 font-bold hover:underline"
+                      onClick={() => setMostrarTodas(!mostrarTodas)}
+                    >
+                      {mostrarTodas ? "Ver menos" : "Ver más"}
+                    </button>
+                  )}
+                </>
+              );
+            })()}
+          </div>
         ) : (
-          <span className="ml-2 text-gray-500 Arial">Sin calificación</span>
+          <p className="text-gray-500">Este producto aún no tiene reseñas.</p>
         )}
       </div>
-      {resenas
-      .filter((resena) => !resena.oculta || usuario?.rol === "Administrador")
-      .map((resena, index) => (
-        <div
-            key={index}
-            className={`p-4 rounded-lg shadow relative ${
-              resena.oculta ? "bg-gray-200 opacity-60" : "bg-gray-100"
-            }`}
-          >
-          <p className="font-semibold">{resena.usuario?.nombre_usuario}</p>
-          {renderEstrellas(resena.calificacion)}
-          <p className="text-gray-700 mt-1">{resena.comentario}</p>
 
-          {/* Botones de acción */}
-          {usuario && (
-            <div className="absolute top-2 right-2 flex gap-2">
-              {(usuario.id === resena.usuario?.id || usuario.rol === "Administrador") && (
-                <button
-                  onClick={() => eliminarResena(resena.id)}
-                  className="text-red-500 text-sm hover:underline"
-                  title="Eliminar Reseña"
-                >
-                 <TrashIcon className="h-5 w-5" />
-                </button>
-              )}
-             {usuario.rol === "Administrador" && (
-              <button
-                onClick={() => toggleVisibilidadResena(resena.id, resena.oculta)}
-                className="text-sm hover:underline flex items-center gap-1"
-                title={resena.oculta ? "Mostrar reseña" : "Ocultar reseña"}
-              >
-                {resena.oculta ? (
-                  <>
-                    <EyeSlashIcon className="w-4 h-4 text-gray-400" />
-                  </>
-                ) : (
-                  <>
-                    <EyeIcon className="w-4 h-4 text-yellow-500" />
-                  </>
-                )}
-              </button>
-            )}
-            </div>
-          )}
-        </div>
-      ))}
-  </div>
-) : (
-  <p className="text-gray-500">Este producto aún no tiene reseñas.</p>
-)}
-
-      </div>
-      {usuario ? (
+   {usuario ? (
   <form
     onSubmit={enviarResena}
     className="mt-6 bg-gray-50 p-4 rounded-lg shadow space-y-4"
