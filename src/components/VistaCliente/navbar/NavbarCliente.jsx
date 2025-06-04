@@ -191,8 +191,8 @@ function NavbarCliente() {
         <Tooltip title="Home">
             <img
               style={{ marginRight: "10px", cursor: "pointer", borderRadius: "50%" }} 
-              width="50"
-              height="50"
+              width="60"
+              height="60"
               src="/img/Favicon.ico"
               alt="Logo de Mr Wolf"
               onClick={() => navigate("/")} 
@@ -207,10 +207,10 @@ function NavbarCliente() {
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
-              fontFamily: 'Baskerville Display PT',
+              fontFamily: 'Baskerville Display PT, serif',
               fontWeight: 700,
               letterSpacing: ".1rem",
-              color: "inherit",
+              color: "white",
               textDecoration: "none",
               cursor: "pointer", 
             }}
