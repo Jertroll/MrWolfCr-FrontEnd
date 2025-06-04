@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { FaArrowLeft,FaFilePdf,FaArrowDown } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import './FacturaDetalle.css'
+import moment from 'moment-timezone';
 const FacturaDetalle = () => {
     const { id } = useParams();
     const [factura, setFactura] = useState(null);
@@ -77,7 +78,7 @@ const FacturaDetalle = () => {
             <div className="factura-info">
                 <h4>Factura: {factura.codigo_factura}</h4>
                 <p><strong>Página:</strong> {factura.nombre_pagina}</p>
-                <p><strong>Fecha de emisión:</strong> {new Date(factura.fecha_emision).toLocaleDateString()}</p>
+           <p><strong>Fecha de emisión:</strong> {moment.tz(factura.fecha_emision, "America/Costa_Rica").format('DD/MM/YYYY')}</p>
                 
                 <h3 className="mt-4">Información del Cliente</h3>
                 <p><strong>Cédula:</strong> {factura.cedula}</p>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaFilePdf,FaArrowDown } from "react-icons/fa";
+import moment from 'moment-timezone';
 
 const FacturasCliente = () => {
     const [facturas, setFacturas] = useState([]);
@@ -34,13 +35,9 @@ const FacturasCliente = () => {
         });
     }, [token]);
 
-    const formatearFecha = (fecha) => {
-        const d = new Date(fecha);
-        const dia = d.getDate();
-        const mes = d.getMonth() + 1;
-        const anio = d.getFullYear();
-        return `${dia}/${mes}/${anio}`;
-    };
+   const formatearFecha = (fecha) => {
+  return moment.tz(fecha, "America/Costa_Rica").format('DD/MM/YYYY');
+};
 
     const facturasFiltradas = facturas.filter((factura) => {
         const codigo = factura.codigo_factura.toLowerCase();
