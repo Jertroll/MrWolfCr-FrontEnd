@@ -123,4 +123,4 @@ const FacturaDetalle = () => {
     );
 };
 
-export default FacturaDetalle;
+export default FacturaDetalle; 
