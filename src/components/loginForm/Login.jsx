@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import logo from "../../assets/logoNegro.jpg";
+import { LiaEyeSlashSolid, LiaEyeSolid } from "react-icons/lia";  // Importación de los íconos
 import "./Login.css";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);  // Estado para controlar la visibilidad
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -41,6 +43,11 @@ function Login() {
   const handleHome = () => navigate("/");
   const handleRecuperarContrasena = () => navigate("/enviarCodigo");
 
+  // Función para alternar la visibilidad de la contraseña
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="login-container">
       <div className="logo-container">
@@ -61,17 +68,32 @@ function Login() {
             placeholder="mrwolfcr@ejemplo.com"
             className="input"
             required
+            autoComplete="email"
           />
 
           <label className="block mb-2 text-white">Contraseña</label>
-          <input
-            type="password"
-            value={contrasena}
-            onChange={(e) => setContrasena(e.target.value)}
-            placeholder="Pon tu contraseña aquí"
-            className="input"
-            required
-          />
+          <div className="password-container">
+            <input
+              type={showPassword ? "text" : "password"}  // Mostrar/ocultar contraseña
+              value={contrasena}
+              onChange={(e) => setContrasena(e.target.value)}
+              placeholder="Pon tu contraseña aquí"
+              className="input"
+              required
+              autoComplete="current-password"
+            />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="password-toggle-btn"
+            >
+              {showPassword ? (
+                <LiaEyeSolid size={20} color="white" />  // Ícono de ojo abierto
+              ) : (
+                <LiaEyeSlashSolid size={20} color="white" />  // Ícono de ojo cerrado
+              )}
+            </button>
+          </div>
 
           {/* Botón para recuperar contraseña */}
           <button

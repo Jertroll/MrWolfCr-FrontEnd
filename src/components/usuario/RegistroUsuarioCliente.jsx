@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { LiaEyeSlashSolid, LiaEyeSolid } from "react-icons/lia"; // Importamos los íconos para mostrar/ocultar la contraseña
+import "./RegistroCliente.css"; // Mantendremos el estilo existente y añadiremos las mejoras
 
 function RegistroUsuarioCliente() {
   const [formData, setFormData] = useState({
@@ -16,6 +18,7 @@ function RegistroUsuarioCliente() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar la contraseña
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -62,43 +65,144 @@ function RegistroUsuarioCliente() {
     }
   };
 
+  // Función para alternar la visibilidad de la contraseña
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
+    
     <div className="flex justify-center items-center min-h-screen bg-black">
-      <div style={{ backgroundColor: "rgba(34, 33, 33, 0.8)" }} className="p-8 rounded-lg shadow-md w-full max-w-md h-[90vh] overflow-y-auto">
+      <div className="form-container">
         <h2 className="text-2xl font-bold text-center mb-6 text-white">Crear cuenta</h2>
-        {error && <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{error}</div>}
-        {successMessage && <div className="mb-4 p-2 bg-green-100 text-green-700 rounded">{successMessage}</div>}
+        {error && <div className="error-message">{error}</div>}
+        {successMessage && <div className="success-message">{successMessage}</div>}
 
         <form onSubmit={handleSubmit}>
-          <label className="block mb-2 font-semibold text-white">Cédula</label>
-          <input type="text" name="cedula" value={formData.cedula} onChange={handleChange} className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none" required />
+          <label className="block mb-2 font-semibold text-white">
+            Cédula <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            name="cedula"
+            value={formData.cedula}
+            onChange={handleChange}
+            className="input-field"
+            required
+          />
 
-          <label className="block mb-2 font-semibold text-white">Nombre de usuario</label>
-          <input type="text" name="nombre_usuario" value={formData.nombre_usuario} onChange={handleChange} className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none" required />
+          <label className="block mb-2 font-semibold text-white">
+            Nombre de usuario <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            name="nombre_usuario"
+            value={formData.nombre_usuario}
+            onChange={handleChange}
+            className="input-field"
+            required
+          />
 
-          <label className="block mb-2 font-semibold text-white">Nombre completo</label>
-          <input type="text" name="nombre_completo" value={formData.nombre_completo} onChange={handleChange} className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none" required />
+          <label className="block mb-2 font-semibold text-white">
+            Nombre completo <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            name="nombre_completo"
+            value={formData.nombre_completo}
+            onChange={handleChange}
+            className="input-field"
+            required
+          />
 
-          <label className="block mb-2 font-semibold text-white">Correo electrónico</label>
-          <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none" required />
+          <label className="block mb-2 font-semibold text-white">
+            Correo electrónico <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="input-field"
+            required
+          />
 
-          <label className="block mb-2 font-semibold text-white">Contraseña</label>
-          <input type="password" name="contrasena" value={formData.contrasena} onChange={handleChange} className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none" required minLength="6" />
+          <label className="block mb-2 font-semibold text-white">
+            Contraseña <span className="text-red-500">*</span>
+          </label>
+          <div className="password-container">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="contrasena"
+              value={formData.contrasena}
+              onChange={handleChange}
+              className="input-field"
+              required
+              minLength="6"
+            />
+            <button
+              type="button"
+              onClick={togglePasswordVisibility}
+              className="password-toggle-btn"
+            >
+              {showPassword ? (
+                <LiaEyeSolid size={20} color="white" />
+              ) : (
+                <LiaEyeSlashSolid size={20} color="white" />
+              )}
+            </button>
+          </div>
 
-          <label className="block mb-2 font-semibold text-white">Teléfono</label>
-          <input type="text" name="telefono" value={formData.telefono} onChange={handleChange} className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none" required />
+          <label className="block mb-2 font-semibold text-white">
+            Teléfono <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            name="telefono"
+            value={formData.telefono}
+            onChange={handleChange}
+            className="input-field"
+            required
+          />
 
-          <label className="block mb-2 font-semibold text-white">Dirección de envío</label>
-          <input type="text" name="direccion_envio" value={formData.direccion_envio} onChange={handleChange} className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none" required />
+          <label className="block mb-2 font-semibold text-white">
+            Dirección de envío <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            name="direccion_envio"
+            value={formData.direccion_envio}
+            onChange={handleChange}
+            className="input-field"
+            required
+          />
 
-          <label className="block mb-2 font-semibold text-white">Correo electrónico para facturación</label>
-          <input type="email" name="email_facturacion" value={formData.email_facturacion} onChange={handleChange} className="w-full px-4 py-2 mb-4 border rounded-lg focus:outline-none" required />
+          <label className="block mb-2 font-semibold text-white">
+            Correo electrónico para facturación <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="email"
+            name="email_facturacion"
+            value={formData.email_facturacion}
+            onChange={handleChange}
+            className="input-field"
+            required
+          />
 
-          <button type="submit" disabled={loading} className={`w-full py-2 rounded-lg font-semibold ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#1E3A07] text-white hover:bg-gray-800"}`}>
+          <button
+            type="submit"
+            disabled={loading}
+            className={`submit-btn ${loading ? "loading" : ""}`}
+          >
             {loading ? "PROCESANDO..." : "CREAR CUENTA"}
           </button>
 
-          <p className="text-center text-white mt-4">¿Ya tiene una cuenta? <a href="/login" className="text-red-500">Inicie sesión aquí</a></p>
+          <p className="text-center text-white mt-4">
+            ¿Ya tiene una cuenta?{" "}
+            <a href="/login" className="text-red-500">
+              Inicie sesión aquí
+            </a>
+          </p>
         </form>
       </div>
     </div>

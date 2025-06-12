@@ -1,0 +1,89 @@
+/* Estilos generales del formulario */
+.form-container {
+  background-color: rgba(34, 33, 33, 0.8);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  transform: scale(0.9);  /* Aplicamos el zoom al 90% solo en este componente */
+  transform-origin: top left;
+}
+
+
+.input-field {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #444343;
+  border-radius: 6px;
+  background-color: #444343;
+  color: white;
+  font-size: 16px;
+}
+
+.password-container {
+  position: relative;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  top: 40%;
+  right: 10px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Botón de enviar */
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #2A4A10;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #1E3A07;
+}
+
+.submit-btn.loading {
+  background-color: gray;
+  cursor: not-allowed;
+}
+
+/* Mensajes de éxito y error */
+.error-message {
+  background-color: #ffebeb;
+  color: #d32f2f;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+/* Indicador de campos obligatorios */
+span.text-red-500 {
+  color: #f56565;
+}
+
+p {
+  margin-top: 20px;
+}
+
+a {
+  color: #e53e3e;
+}
