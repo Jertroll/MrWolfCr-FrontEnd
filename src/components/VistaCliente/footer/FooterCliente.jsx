@@ -1,13 +1,13 @@
-import { Grid, Box, IconButton, Typography, Link } from "@mui/material";
+import { Grid2, Box, IconButton, Typography, Link, } from "@mui/material";
 import { Facebook, Instagram, MusicNote, LocationOn, Mail, Phone, WhatsApp } from "@mui/icons-material";
 
 const Footer = () => {
   return (
     <Box sx={{ backgroundColor: "#203500", color: "white", py: 4, px: { xs: 2, sm: 8, md: 12 } }}>
-      <Grid container spacing={4} justifyContent="space-between" alignItems="flex-start">
+      <Grid2 container spacing={4} justifyContent="space-between" alignItems="flex-start">
         
         {/* Sección de Contacto */}
-        <Grid item xs={12} sm={4} sx={{ textAlign: { xs: "center", sm: "left" } }}>
+        <Grid2 item xs={12} sm={4} sx={{ textAlign: { xs: "center", sm: "left" } }}>
           <Typography variant="h6" gutterBottom sx={{ color: '#A9802A', textAlign: "left" }}>
             Contacto
           </Typography>
@@ -42,10 +42,10 @@ const Footer = () => {
               </Link>
             </Typography>
           </Box>
-        </Grid>
+        </Grid2>
 
         {/* Sección de Información */}
-        <Grid item xs={12} sm={4} sx={{ textAlign: "center", px: 2 }}>
+        <Grid2 item xs={12} sm={4} sx={{ textAlign: "center", px: 2 }}>
           <Typography variant="h6" gutterBottom sx={{ color: '#A9802A', textAlign: "left" }}>
             Acerca de
           </Typography>
@@ -54,10 +54,10 @@ const Footer = () => {
               Mr. Wolf nació con la idea de ofrecer ropa de calidad y estilo único para el hombre moderno con marcas 100 % costarricenses.
             </Typography>
           </Box>
-        </Grid>
+        </Grid2>
 
         {/* Redes Sociales */}
-        <Grid item xs={12} sm={4} sx={{ textAlign: { xs: "center", sm: "right" } }}>
+        <Grid2 item xs={12} sm={4} sx={{ textAlign: { xs: "center", sm: "right" } }}>
           <Typography variant="h6" gutterBottom sx={{ color: '#A9802A', textAlign: "left" }}>
             Síguenos en
           </Typography>
@@ -72,9 +72,9 @@ const Footer = () => {
               <MusicNote />
             </IconButton>
           </Box>
-        </Grid>
+        </Grid2>
 
-      </Grid>
+      </Grid2>
 
       {/* Copyright */}
       <div className="border-t border-[#ffffff20] mt-10 pt-5 text-center text-xs text-[#A9802A]">
