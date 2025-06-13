@@ -27,8 +27,9 @@ import { useCarrito } from "../../VistaCliente/carrito/CarritoContext";
 // Menú de categorías
 const MenuCategorias = () => {
   const [categorias, setCategorias] = useState([]);
-  const [menuVisible, setMenuVisible] = useState(false);
   const location = useLocation();
+  const [menuVisible, setMenuVisible] = useState(false);
+
 
   //const [cart, setCart] = useState([]);
 
