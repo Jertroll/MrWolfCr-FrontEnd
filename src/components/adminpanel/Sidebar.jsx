@@ -10,7 +10,7 @@ const Sidebar = () => {
   const [hoverIndex, setHoverIndex] = useState(null);
 
   const Menus = [
-    { title: "Home", icon: <FaHome />, path: '/dashboard' },
+    { title: "Home", icon: <FaHome />, path: '/dashboard/home' },
     { title: "Usuarios", icon: <FaUsers />, gap: true, path: '/dashboard/usuario' },
     { title: "Categoria", icon: <FaChartPie />, path: '/dashboard/categoria' },
     { title: "Productos", icon: <FaTshirt />, path: '/dashboard/producto' },

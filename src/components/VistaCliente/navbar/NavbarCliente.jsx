@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom"; // para saber la ruta activa
 import { Link, useNavigate } from "react-router-dom";
 import {
   AppBar,
@@ -21,20 +22,22 @@ import {
 import { jwtDecode } from "jwt-decode";
 import { MdHelp } from "react-icons/md";
 import { useCarrito } from "../../VistaCliente/carrito/CarritoContext";
- // Ajusta la ruta si es distinta
-
+// Ajusta la ruta si es distinta
 
 // Menú de categorías
 const MenuCategorias = () => {
   const [categorias, setCategorias] = useState([]);
   const [menuVisible, setMenuVisible] = useState(false);
- 
- //const [cart, setCart] = useState([]);
+  const location = useLocation();
+
+  //const [cart, setCart] = useState([]);
 
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/v1/categorias/productos");
+        const response = await fetch(
+          "http://localhost:3000/api/v1/categorias/productos"
+        );
         if (!response.ok) throw new Error("Error al obtener los datos");
         const data = await response.json();
         setCategorias(data);
@@ -52,7 +55,18 @@ const MenuCategorias = () => {
       onMouseEnter={() => setMenuVisible(true)}
       onMouseLeave={() => setMenuVisible(false)}
     >
-      <Button sx={{ color: "white", fontFamily: "'Baskerville Display PT', serif" }}>Productos ▾</Button>
+      <Button
+        sx={{
+          color: location.pathname.startsWith("/productos")
+            ? "#FFD700"
+            : "white",
+          fontFamily: "'Baskerville Display PT', serif",
+          "&:hover": { color: "#FFD700" },
+        }}
+      >
+        Productos ▾
+      </Button>
+
       {menuVisible && (
         <Box
           sx={{
@@ -71,7 +85,8 @@ const MenuCategorias = () => {
             component={Link}
             to="/productos"
             sx={{
-              color: "white", fontFamily: "'Baskerville Display PT', serif",
+              color: "white",
+              fontFamily: "'Baskerville Display PT', serif",
               "&:hover": { backgroundColor: "#305500" },
             }}
           >
@@ -82,7 +97,11 @@ const MenuCategorias = () => {
               key={categoria.num_categoria}
               component={Link}
               to={`/productos/categoria/${categoria.num_categoria}`}
-              sx={{ color: "white", fontFamily: "'Baskerville Display PT', serif", "&:hover": { backgroundColor: "#305500" } }}
+              sx={{
+                color: "white",
+                fontFamily: "'Baskerville Display PT', serif",
+                "&:hover": { backgroundColor: "#305500" },
+              }}
             >
               {categoria.nombre_categoria}
             </MenuItem>
@@ -103,7 +122,16 @@ const MenuFiltro = () => {
       onMouseEnter={() => setMenuVisible(true)}
       onMouseLeave={() => setMenuVisible(false)}
     >
-      <Button sx={{ color: "white", fontFamily: "'Baskerville Display PT', serif" }}>Filtrar por ▾</Button>
+      <Button
+        sx={{
+          color: location.pathname.includes("/genero") ? "#FFD700" : "white",
+          fontFamily: "'Baskerville Display PT', serif",
+          "&:hover": { color: "#FFD700" },
+        }}
+      >
+        Filtrar por ▾
+      </Button>
+
       {menuVisible && (
         <Box
           sx={{
@@ -111,24 +139,33 @@ const MenuFiltro = () => {
             top: "100%",
             left: 0,
             backgroundColor: "#203500",
-            boxShadow: 3,
+            boxShadow: "0px 4px 10px rgba(0,0,0,0.4)",
             borderRadius: 1,
             zIndex: 10,
-            minWidth: "200px",
+            minWidth: "220px",
             p: 1,
+            transition: "all 0.2s ease",
           }}
         >
-         <MenuItem
+          <MenuItem
             component={Link}
-            to="/productos/genero/masculino"  // Usar minúsculas en la ruta
-            sx={{ color: "white", fontFamily: "'Baskerville Display PT', serif", "&:hover": { backgroundColor: "#305500" } }}
+            to="/productos/genero/masculino" // Usar minúsculas en la ruta
+            sx={{
+              color: "white",
+              fontFamily: "'Baskerville Display PT', serif",
+              "&:hover": { backgroundColor: "#305500" },
+            }}
           >
             Masculino
           </MenuItem>
           <MenuItem
             component={Link}
-            to="/productos/genero/femenino"  // Usar minúsculas en la ruta
-            sx={{ color: "white",  fontFamily: "'Baskerville Display PT', serif", "&:hover": { backgroundColor: "#305500" } }}
+            to="/productos/genero/femenino" // Usar minúsculas en la ruta
+            sx={{
+              color: "white",
+              fontFamily: "'Baskerville Display PT', serif",
+              "&:hover": { backgroundColor: "#305500" },
+            }}
           >
             Femenino
           </MenuItem>
@@ -138,14 +175,12 @@ const MenuFiltro = () => {
   );
 };
 
-
-
 function NavbarCliente() {
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
-  const { cantidadCarrito, mostrarContadorTemporal} = useCarrito();
+  const { cantidadCarrito, mostrarContadorTemporal } = useCarrito();
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
@@ -164,92 +199,97 @@ function NavbarCliente() {
     try {
       const response = await fetch("http://localhost:3000/api/v1/logout", {
         method: "POST",
-        credentials: "include", 
+        credentials: "include",
       });
-  
+
       if (!response.ok) {
         throw new Error("Error al cerrar sesión");
       }
-  
+
       // Si la sesión se cierra correctamente, eliminamos el token de la sesión del cliente
       sessionStorage.removeItem("token");
-  
+
       setIsLoggedIn(false);
       navigate("/");
-  
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
     }
   };
-  
-  
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#203500" }}>
       <Container maxWidth="false">
         <Toolbar disableGutters>
-        <Tooltip title="Home">
+          <Tooltip title="Home">
             <img
-              style={{ marginRight: "10px", cursor: "pointer", borderRadius: "50%" }} 
+              style={{
+                marginRight: "10px",
+                cursor: "pointer",
+                borderRadius: "50%",
+              }}
               width="60"
               height="60"
               src="/img/Favicon.ico"
               alt="Logo de Mr Wolf"
-              onClick={() => navigate("/")} 
+              onClick={() => navigate("/")}
             />
           </Tooltip>
           <Tooltip title="Home">
-          <Typography
-            variant="h6"
-            noWrap
-            component={Link}  
-            to="/"  
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: 'Baskerville Display PT, serif',
-              fontWeight: 700,
-              letterSpacing: ".1rem",
-              color: "white",
-              textDecoration: "none",
-              cursor: "pointer", 
-            }}
-          >
-            Mr.Wolf
-          </Typography>
-        </Tooltip>
+            <Typography
+              variant="h6"
+              noWrap
+              component={Link}
+              to="/"
+              sx={{
+                mr: 2,
+                display: { xs: "none", md: "flex" },
+                fontFamily: "Baskerville Display PT, serif",
+                fontWeight: 700,
+                letterSpacing: ".1rem",
+                color: "white",
+                textDecoration: "none",
+                cursor: "pointer",
+              }}
+            >
+              Mr.Wolf
+            </Typography>
+          </Tooltip>
           <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
             <MenuCategorias />
             <MenuFiltro />
           </Box>
 
           <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
-            <LocalMallIcon fontSize="medium" sx={{ mr: 1 }} />
-            <IconButton onClick={() => navigate("/carrito")} color="inherit" sx={{ position: "relative" }}>
-      <ShoppingCartIcon fontSize="medium" />
-      {mostrarContadorTemporal && cantidadCarrito > 0 && (
-        <Box
-          sx={{
-            position: "absolute",
-            top: -5,
-            right: -5,
-            bgcolor: "red",
-            color: "white",
-            borderRadius: "50%",
-            width: 16,
-            height: 16,
-            fontSize: "0.75rem",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            transition: "opacity 0.3s ease-in-out",
-            opacity: mostrarContadorTemporal ? 1 : 0,
-          }}
-        >
-          {cantidadCarrito}
-        </Box>
-      )}
-    </IconButton>
+            <IconButton
+              onClick={() => navigate("/carrito")}
+              color="inherit"
+              sx={{ position: "relative" }}
+            >
+              <ShoppingCartIcon fontSize="medium" />
+              {mostrarContadorTemporal && cantidadCarrito > 0 && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: -6,
+                    right: -6,
+                    bgcolor: "red",
+                    color: "white",
+                    borderRadius: "50%",
+                    width: 20,
+                    height: 20,
+                    fontSize: "0.75rem",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 0 4px rgba(0,0,0,0.6)",
+                    transition: "opacity 0.3s ease-in-out",
+                    opacity: mostrarContadorTemporal ? 1 : 0,
+                  }}
+                >
+                  {cantidadCarrito}
+                </Box>
+              )}
+            </IconButton>
 
             {/* Botón de Ayuda */}
             <Tooltip title="Ayuda">
@@ -266,7 +306,13 @@ function NavbarCliente() {
                 onClick={(e) => setAnchorElUser(e.currentTarget)}
                 sx={{ p: 0 }}
               >
-                <PersonIcon fontSize="medium" sx={{ color: "white", fontFamily: "'Baskerville Display PT', serif" }} />
+                <PersonIcon
+                  fontSize="medium"
+                  sx={{
+                    color: "white",
+                    fontFamily: "'Baskerville Display PT', serif",
+                  }}
+                />
               </IconButton>
             </Tooltip>
             <Menu
@@ -278,11 +324,11 @@ function NavbarCliente() {
               transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
               {isLoggedIn ? (
-                <> 
-                 {userRole === "Cliente" && (
-                  <MenuItem onClick={() => navigate("/facturasCliente")}>
-                  <Typography>Mis Facturas</Typography>
-                  </MenuItem>
+                <>
+                  {userRole === "Cliente" && (
+                    <MenuItem onClick={() => navigate("/facturasCliente")}>
+                      <Typography>Mis Facturas</Typography>
+                    </MenuItem>
                   )}
                   <MenuItem onClick={handleLogout}>
                     <Typography>Salir</Typography>
@@ -300,8 +346,7 @@ function NavbarCliente() {
                 <MenuItem onClick={() => navigate("/login")}>
                   <Typography>Iniciar Sesión</Typography>
                 </MenuItem>
-              )
-              }
+              )}
             </Menu>
           </Box>
         </Toolbar>

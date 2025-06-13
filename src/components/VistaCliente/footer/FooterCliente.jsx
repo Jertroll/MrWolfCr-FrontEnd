@@ -8,7 +8,7 @@ const Footer = () => {
         
         {/* Sección de Contacto */}
         <Grid2 item xs={12} sm={4} sx={{ textAlign: { xs: "center", sm: "left" } }}>
-          <Typography variant="h6" gutterBottom sx={{ color: '#745f19', textAlign: "left" }}>
+          <Typography variant="h6" gutterBottom sx={{ color: '#A9802A', textAlign: "left" }}>
             Contacto
           </Typography>
           <Box mt={1.5}>
@@ -46,7 +46,7 @@ const Footer = () => {
 
         {/* Sección de Información */}
         <Grid2 item xs={12} sm={4} sx={{ textAlign: "center", px: 2 }}>
-          <Typography variant="h6" gutterBottom sx={{ color: '#745f19', textAlign: "left" }}>
+          <Typography variant="h6" gutterBottom sx={{ color: '#A9802A', textAlign: "left" }}>
             Acerca de
           </Typography>
           <Box mt={1.5} sx={{ maxWidth: 320, mx: "auto", textAlign: "left"}}>
@@ -58,7 +58,7 @@ const Footer = () => {
 
         {/* Redes Sociales */}
         <Grid2 item xs={12} sm={4} sx={{ textAlign: { xs: "center", sm: "right" } }}>
-          <Typography variant="h6" gutterBottom sx={{ color: '#745f19', textAlign: "left" }}>
+          <Typography variant="h6" gutterBottom sx={{ color: '#A9802A', textAlign: "left" }}>
             Síguenos en
           </Typography>
           <Box mt={1.5}>
@@ -77,11 +77,9 @@ const Footer = () => {
       </Grid2>
 
       {/* Copyright */}
-      <Box textAlign="center" mt={5}>
-        <Typography variant="body2" sx={{ color: '#745f19' }}>
-          © {new Date().getFullYear()} Mr. Wolf - Todos los derechos reservados.
-        </Typography>
-      </Box>
+      <div className="border-t border-[#ffffff20] mt-10 pt-5 text-center text-xs text-[#A9802A]">
+        © {new Date().getFullYear()} Mr. Wolf - Todos los derechos reservados.
+      </div>
     </Box>
   );
 };
