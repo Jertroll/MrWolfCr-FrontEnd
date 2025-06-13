@@ -242,9 +242,12 @@ const AgregarProductos = () => {
               </label>
               <Select
                 options={categorias}
-                value={categorias.find(
-                  (categoria) => categoria.value === formData.id_categoria
-                )}
+                value={
+                  categorias.find(
+                    (categoria) =>
+                      categoria.value === Number(formData.id_categoria)
+                  ) || null
+                }
                 onChange={handleCategoriaChange}
                 className="w-full"
                 placeholder="Selecciona una categoría"

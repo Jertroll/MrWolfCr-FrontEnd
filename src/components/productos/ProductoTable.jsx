@@ -269,6 +269,7 @@ const ProductoTable = () => {
         productoForm={productoForm}
         handleInputChange={handleInputChange}
         saveChanges={saveChanges}
+        fetchData={fetchData} // <-- le pasas el fetchData
       />
 
       <ImagenesProductoModal

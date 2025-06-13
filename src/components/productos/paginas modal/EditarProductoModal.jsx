@@ -9,12 +9,14 @@ const EditarProductoModal = ({
   productoForm,
   handleInputChange,
   saveChanges,
+  fetchData,
 }) => {
   // Estado para almacenar los archivos seleccionados
   const [selectedFiles, setSelectedFiles] = useState([]);
 
   // Estado para almacenar las tallas seleccionadas
   const [tallasSeleccionadas, setTallasSeleccionadas] = useState([]);
+  const [categorias, setCategorias] = useState([]);
 
   // Opciones de tallas (deben coincidir con las tallas en la base de datos)
   const tallasOptions = [
@@ -27,6 +29,22 @@ const EditarProductoModal = ({
 
   // Cargar las tallas seleccionadas al abrir el modal
   useEffect(() => {
+    const fetchCategorias = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/v1/categorias");
+        const data = await response.json();
+        const categoriasOptions = data.map((categoria) => ({
+          value: categoria.num_categoria,
+          label: categoria.nombre_categoria,
+        }));
+        setCategorias(categoriasOptions);
+      } catch (error) {
+        console.error("Error al obtener categorías:", error);
+      }
+    };
+
+    fetchCategorias();
+
     if (productoForm.tallas) {
       const tallasIniciales = productoForm.tallas.map((talla) => ({
         value: talla.id,
@@ -48,10 +66,12 @@ const EditarProductoModal = ({
 
   // Función para guardar los cambios
   const handleSave = (e) => {
-    const tallasIds = tallasSeleccionadas.map((talla) => talla.value); // Extraer los IDs de las tallas
-    saveChanges(e, tallasIds, selectedFiles); // Enviar los IDs de las tallas y los archivos al backend
+    const tallasIds = tallasSeleccionadas.map((talla) => talla.value);
+    saveChanges(e, tallasIds, selectedFiles).then(() => {
+      fetchData(); // ✅ refresca la tabla al terminar de guardar
+      onRequestClose(); // Cierra el modal
+    });
   };
-
   return (
     <ReactModal
       isOpen={isOpen}
@@ -169,13 +189,24 @@ const EditarProductoModal = ({
               </div>
               <div className="mb-4">
                 <label className="block mb-2 font-semibold">Categoría</label>
-                <input
-                  type="number"
-                  name="id_categoria"
-                  value={productoForm.id_categoria || ""} // Valor por defecto
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                  required
+                <Select
+                  options={categorias}
+                  value={
+                    categorias.find(
+                      (categoria) =>
+                        categoria.value === Number(productoForm.id_categoria)
+                    ) || null
+                  }
+                  onChange={(selectedOption) =>
+                    handleInputChange({
+                      target: {
+                        name: "id_categoria",
+                        value: selectedOption.value,
+                      },
+                    })
+                  }
+                  className="w-full"
+                  placeholder="Selecciona una categoría"
                 />
               </div>
             </div>
@@ -211,7 +242,8 @@ EditarProductoModal.propTypes = {
     codigo: PropTypes.string,
     precio: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     talla: PropTypes.string,
-    tallas: PropTypes.arrayOf( // Validación para el array de tallas
+    tallas: PropTypes.arrayOf(
+      // Validación para el array de tallas
       PropTypes.shape({
         id: PropTypes.number.isRequired,
         nombre: PropTypes.string.isRequired,
