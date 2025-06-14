@@ -215,7 +215,7 @@ const ProductoTable = () => {
       cell: ({ row }) => (
         <div className="flex space-x-2">
           <button
-            className="text-blue-500 hover:text-blue-700"
+            className="text-yellow-700 hover:bg-yellow-100 p-1 rounded transition-colors duration-200"
             onClick={() => startEditing(row.original)}
           >
             <FaEdit />
@@ -245,114 +245,102 @@ const ProductoTable = () => {
     autoResetPageIndex: false,
   });
 
-  return (
-    <div className="p-4">
-      <div className="flex items-center mb-4">
-        <input
-          type="text"
-          placeholder="Buscar en tabla"
-          value={filtering}
-          onChange={(e) => setFiltering(e.target.value)}
-          className="p-2 border border-gray-300 rounded-md shadow-sm"
-        />
-        <button
-          className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 ml-3"
-          onClick={() => navigate("/dashboard/agregarProducto")}
-        >
-          Agregar Producto
-        </button>
-      </div>
-
-      <EditarProductoModal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
-        productoForm={productoForm}
-        handleInputChange={handleInputChange}
-        saveChanges={saveChanges}
-        fetchData={fetchData} // <-- le pasas el fetchData
+return (
+  <div className="table-container">
+    <div className="table-controls">
+      <input
+        type="text"
+        placeholder="Buscar en tabla"
+        value={filtering}
+        onChange={(e) => setFiltering(e.target.value)}
+          className="search-input"
       />
-
-      <ImagenesProductoModal
-        isOpen={isImageModalOpen}
-        onRequestClose={() => setIsImageModalOpen(false)}
-        selectedProductImages={selectedProductImages}
-      />
-
-      <table className="min-w-full border border-gray-200 shadow-md rounded-lg overflow-hidden">
-        <thead className="bg-gray-800 text-white">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  className="p-3 text-left font-semibold"
-                  onClick={header.column.getToggleSortingHandler()}
-                >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                  {header.column.getIsSorted()
-                    ? header.column.getIsSorted() === "asc"
-                      ? " ⬆️"
-                      : " ⬇️"
-                    : ""}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row, idx) => (
-            <tr
-              key={row.id}
-              className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="p-3 border-t">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div className="flex justify-between items-center mt-4">
-        <button
-          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
-          onClick={() => table.setPageIndex(0)}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Inicio
-        </button>
-        <button
-          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Anterior
-        </button>
-        <span className="text-gray-700">
-          Página {pagination.pageIndex + 1} de {table.getPageCount()}
-        </span>
-        <button
-          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Siguiente
-        </button>
-        <button
-          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
-          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-          disabled={!table.getCanNextPage()}
-        >
-          Final
-        </button>
-      </div>
+      <button
+        className="add-user-btn"
+        onClick={() => navigate("/dashboard/agregarProducto")}
+      >
+        Agregar Producto
+      </button>
     </div>
-  );
+    <EditarProductoModal
+      isOpen={isModalOpen}
+      onRequestClose={() => setIsModalOpen(false)}
+      productoForm={productoForm}
+      handleInputChange={handleInputChange}
+      saveChanges={saveChanges}
+      fetchData={fetchData}
+    />
+
+    <ImagenesProductoModal
+      isOpen={isImageModalOpen}
+      onRequestClose={() => setIsImageModalOpen(false)}
+      selectedProductImages={selectedProductImages}
+    />
+
+    <table className="custom-table">
+      <thead>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <tr key={headerGroup.id}>
+            {headerGroup.headers.map((header) => (
+              <th
+                key={header.id}
+                onClick={header.column.getToggleSortingHandler()}
+              >
+                {flexRender(header.column.columnDef.header, header.getContext())}
+                {header.column.getIsSorted()
+                  ? header.column.getIsSorted() === "asc"
+                    ? " ⬆️"
+                    : " ⬇️"
+                  : ""}
+              </th>
+            ))}
+          </tr>
+        ))}
+      </thead>
+      <tbody>
+        {table.getRowModel().rows.map((row, idx) => (
+          <tr key={row.id}>
+            {row.getVisibleCells().map((cell) => (
+              <td key={cell.id}>
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+
+    <div className="pagination">
+      <button
+        onClick={() => table.setPageIndex(0)}
+        disabled={!table.getCanPreviousPage()}
+      >
+        Inicio
+      </button>
+      <button
+        onClick={() => table.previousPage()}
+        disabled={!table.getCanPreviousPage()}
+      >
+        Anterior
+      </button>
+      <span>
+        Página {pagination.pageIndex + 1} de {table.getPageCount()}
+      </span>
+      <button
+        onClick={() => table.nextPage()}
+        disabled={!table.getCanNextPage()}
+      >
+        Siguiente
+      </button>
+      <button
+        onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+        disabled={!table.getCanNextPage()}
+      >
+        Final
+      </button>
+    </div>
+  </div>
+);
 };
 
 export default ProductoTable;

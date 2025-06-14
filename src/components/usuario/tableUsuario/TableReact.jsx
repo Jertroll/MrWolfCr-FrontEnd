@@ -8,118 +8,99 @@ import {
 } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import { FaTrash, FaEdit } from "react-icons/fa";
-import { useNavigate } from "react-router-dom"; // Importa useNavigate
+import { useNavigate } from "react-router-dom";
 import ReactModal from "react-modal";
-import "./tableUsuario.css"; // css
+import "./tableUsuario.css";
 
 function TableReact() {
-  const navigate = useNavigate(); // Crea la función de navegación
-  const [data, setData] = useState([]); // Estado para almacenar los datos
-  const [filtering, setFiltering] = useState(""); // Estado para la búsqueda
-  const [sorting, setSorting] = useState([]); // Estado para la ordenación
-  const [editingUser, setEditingUser] = useState(null); // Estado para almacenar el usuario en edición
-  const [userForm, setUserForm] = useState({}); // Estado para almacenar los datos del formulario
+  const navigate = useNavigate();
+  const [data, setData] = useState([]);
+  const [filtering, setFiltering] = useState("");
+  const [sorting, setSorting] = useState([]);
+  const [editingUser, setEditingUser] = useState(null);
+  const [userForm, setUserForm] = useState({});
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Función para iniciar la edición de un usuario
-  const startEditing = (user) => {
-    setEditingUser(user); // Guarda el usuario que se está editando
-    setUserForm(user); // Carga los datos del usuario en el formulario
-    setIsModalOpen(true); // Abre el modal
-  };
-
-  const [isModalOpen, setIsModalOpen] = useState(false); //estado para controlar la visibilidad de modal
-
-  // Función para obtener datos del backend
+  // Cargar datos del backend
   const fetchData = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/v1/usuarios");
-      if (!response.ok) {
-        throw new Error("Error al obtener los datos");
-      }
+      if (!response.ok) throw new Error("Error al obtener los datos");
       const usuarios = await response.json();
       setData(usuarios);
     } catch (error) {
       console.error("Error al obtener los usuarios:", error);
-      alert(
-        "Hubo un error al obtener los usuarios. Por favor, intenta nuevamente."
-      );
+      alert("Hubo un error al obtener los usuarios. Por favor, intenta nuevamente.");
     }
   };
 
-  // Función para eliminar un usuario
-const deleteUser = async (cedula) => {
-  const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este usuario?");
-  if (!confirmDelete) return;
+  // Eliminar usuario con confirmación
+  const deleteUser = async (cedula) => {
+    if (!window.confirm("¿Estás seguro de que deseas eliminar este usuario?")) return;
 
-  try {
-    const response = await fetch(
-      `http://localhost:3000/api/v1/usuarios/${cedula}`,
-      { method: "DELETE" }
-    );
-    if (!response.ok) throw new Error("Error al eliminar el usuario");
+    try {
+      const response = await fetch(`http://localhost:3000/api/v1/usuarios/${cedula}`, { method: "DELETE" });
+      if (!response.ok) throw new Error("Error al eliminar el usuario");
 
-    setData((prevData) => {
-      const newData = prevData.filter((user) => user.cedula !== cedula);
-      const totalPages = Math.ceil(newData.length / pagination.pageSize);
-      if (pagination.pageIndex >= totalPages) {
-        setPagination((prev) => ({
-          ...prev,
-          pageIndex: totalPages - 1 >= 0 ? totalPages - 1 : 0,
-        }));
-      }
-      return newData;
-    });
+      setData((prevData) => {
+        const newData = prevData.filter((user) => user.cedula !== cedula);
+        const totalPages = Math.ceil(newData.length / pagination.pageSize);
+        if (pagination.pageIndex >= totalPages) {
+          setPagination((prev) => ({
+            ...prev,
+            pageIndex: totalPages - 1 >= 0 ? totalPages - 1 : 0,
+          }));
+        }
+        return newData;
+      });
+    } catch (error) {
+      console.error("Error al eliminar el usuario:", error);
+    }
+  };
 
-  } catch (error) {
-    console.error("Error al eliminar el usuario:", error);
-  }
-};
+  // Iniciar edición
+  const startEditing = (user) => {
+    setEditingUser(user);
+    setUserForm(user);
+    setIsModalOpen(true);
+  };
 
-
-  // Función para manejar el cambio en el formulario
+  // Cambios en el formulario
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setUserForm({ ...userForm, [name]: value });
+    setUserForm((prev) => ({ ...prev, [name]: value }));
   };
-  // Función para guardar los cambios del usuario
+
+  // Guardar cambios usuario
   const saveChanges = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/v1/usuarios/${userForm.cedula}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(userForm),
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Error al actualizar el usuario");
-      }
+      const response = await fetch(`http://localhost:3000/api/v1/usuarios/${userForm.cedula}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userForm),
+      });
+      if (!response.ok) throw new Error("Error al actualizar el usuario");
       setData((prevData) =>
-        prevData.map((user) =>
-          user.cedula === userForm.cedula ? userForm : user
-        )
+        prevData.map((user) => (user.cedula === userForm.cedula ? userForm : user))
       );
-      setIsModalOpen(false); // Cierra el modal
+      setIsModalOpen(false);
     } catch (error) {
       console.error("Error al actualizar el usuario:", error);
     }
   };
 
   useEffect(() => {
-    fetchData(); // Llama a la función al montar el componente
+    fetchData();
   }, []);
 
+  // Columnas para react-table
   const columns = [
     { header: "Cedula", accessorKey: "cedula" },
     { header: "Nombre de Usuario", accessorKey: "nombre_usuario" },
     { header: "Nombre Completo", accessorKey: "nombre_completo" },
     { header: "Email", accessorKey: "email" },
-    //{ header: "Contraseña", accessorKey: "contrasena" },
     { header: "Telefono", accessorKey: "telefono" },
     { header: "Direccion de Residencia", accessorKey: "direccion_envio" },
     { header: "Email de Facturacion", accessorKey: "email_facturacion" },
@@ -128,16 +109,18 @@ const deleteUser = async (cedula) => {
       header: "Acciones",
       accessorKey: "acciones",
       cell: ({ row }) => (
-        <div className="flex space-x-2">
+        <div className="actions-cell">
           <button
-            className="text-blue-500 hover:text-blue-700"
-            onClick={() => startEditing(row.original)} // Inicia la edición del usuario
+            aria-label="Editar usuario"
+            onClick={() => startEditing(row.original)}
+            className="edit-btn"
           >
             <FaEdit />
           </button>
           <button
-            className="text-red-500 hover:text-red-700"
-            onClick={() => deleteUser(row.original.cedula)} // Llama a deleteUser al hacer clic
+            aria-label="Eliminar usuario"
+            onClick={() => deleteUser(row.original.cedula)}
+            className="delete-btn"
           >
             <FaTrash />
           </button>
@@ -150,37 +133,35 @@ const deleteUser = async (cedula) => {
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(), // Habilitar paginación
+    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    state: {
-      sorting,
-      globalFilter: filtering,
-      pagination, // Limitar a 10 usuarios por página
-    },
+    state: { sorting, globalFilter: filtering, pagination },
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
-     autoResetPageIndex: false,
+    onPaginationChange: setPagination,
+    autoResetPageIndex: false,
   });
 
   return (
-    <div className="table-responsive-container">
-      <input
-        type="text"
-        className="mb-4 p-2 border border-gray-300 rounded-md shadow-sm"
-        placeholder="Buscar en tabla"
-        value={filtering}
-        onChange={(e) => setFiltering(e.target.value)}
-      />
-      <button
-        className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 ml-3"
-        onClick={() => navigate("/dashboard/agregarUsuario")} // Redirige al formulario
-      >
-        Agregar Usuarios
-      </button>
+    <div className="table-container">
+      <div className="table-controls">
+        <input
+          type="text"
+          placeholder="Buscar en tabla"
+          value={filtering}
+          onChange={(e) => setFiltering(e.target.value)}
+          className="search-input"
+        />
+        <button
+          className="add-user-btn"
+          onClick={() => navigate("/dashboard/agregarUsuario")}
+        >
+          Agregar Usuarios
+        </button>
+      </div>
 
-      {/* Formulario para editar usuario con Modal */}
-
+      {/* Modal edición usuario */}
       <ReactModal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
@@ -188,138 +169,85 @@ const deleteUser = async (cedula) => {
         className="modal"
         overlayClassName="overlay"
       >
-        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
-          <h2 className="text-2xl font-bold text-center mb-6">
-            Editor de Usuario
-          </h2>
-
+        <div className="modal-content">
+          <h2>Editor de Usuario</h2>
           <form onSubmit={saveChanges}>
-            <div className="grid grid-cols-2 gap-4">
-              {/* Columna 1 */}
+            <div className="form-grid">
               <div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">
-                    Nombre de Usuario
-                  </label>
-                  <input
-                    type="text"
-                    name="nombre_usuario"
-                    value={userForm.nombre_usuario}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">
-                    Nombre Completo
-                  </label>
-                  <input
-                    type="text"
-                    name="nombre_completo"
-                    value={userForm.nombre_completo}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">
-                    Correo Electrónico
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={userForm.email}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">Teléfono</label>
-                  <input
-                    type="tel"
-                    name="telefono"
-                    value={userForm.telefono}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
-                  />
-                </div>
+                <label>Nombre de Usuario</label>
+                <input
+                  type="text"
+                  name="nombre_usuario"
+                  value={userForm.nombre_usuario || ""}
+                  onChange={handleInputChange}
+                  required
+                />
+                <label>Nombre Completo</label>
+                <input
+                  type="text"
+                  name="nombre_completo"
+                  value={userForm.nombre_completo || ""}
+                  onChange={handleInputChange}
+                  required
+                />
+                <label>Correo Electrónico</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={userForm.email || ""}
+                  onChange={handleInputChange}
+                  required
+                />
+                <label>Teléfono</label>
+                <input
+                  type="tel"
+                  name="telefono"
+                  value={userForm.telefono || ""}
+                  onChange={handleInputChange}
+                  required
+                />
               </div>
-
-              {/* Columna 2 */}
               <div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">
-                    Dirección de Residencia
-                  </label>
-                  <input
-                    type="text"
-                    name="direccion_envio"
-                    value={userForm.direccion_envio}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">
-                    Correo de Facturación
-                  </label>
-                  <input
-                    type="email"
-                    name="email_facturacion"
-                    value={userForm.email_facturacion}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">
-                    Imagen de Perfil
-                  </label>
-                  <input
-                    type="text"
-                    name="imagen"
-                    value={userForm.imagen}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">
-                    Tipo de Rol
-                  </label>
-                  <select
-                    name="rol"
-                    value={userForm.rol}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
-                  >
-                    <option value="Cliente">Cliente</option>
-                    <option value="Administrador">Administrador</option>
-                  </select>
-                </div>
+                <label>Dirección de Residencia</label>
+                <input
+                  type="text"
+                  name="direccion_envio"
+                  value={userForm.direccion_envio || ""}
+                  onChange={handleInputChange}
+                  required
+                />
+                <label>Correo de Facturación</label>
+                <input
+                  type="email"
+                  name="email_facturacion"
+                  value={userForm.email_facturacion || ""}
+                  onChange={handleInputChange}
+                  required
+                />
+                <label>Imagen de Perfil</label>
+                <input
+                  type="text"
+                  name="imagen"
+                  value={userForm.imagen || ""}
+                  onChange={handleInputChange}
+                />
+                <label>Tipo de Rol</label>
+                <select
+                  name="rol"
+                  value={userForm.rol || "Cliente"}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="Cliente">Cliente</option>
+                  <option value="Administrador">Administrador</option>
+                </select>
               </div>
             </div>
-
-            {/* Botones de Acción */}
-            <div className="flex justify-center space-x-4 mt-6">
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-                className="bg-gray-300 text-black px-6 py-2 rounded-lg font-semibold hover:bg-gray-400"
-              >
+            <div className="modal-buttons">
+              <button type="button" onClick={() => setIsModalOpen(false)} className="cancel-btn">
                 Cancelar
               </button>
-              <button
-                type="submit"
-                className="bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600"
-              >
+              <button type="submit" className="save-btn">
                 Guardar
               </button>
             </div>
@@ -327,89 +255,56 @@ const deleteUser = async (cedula) => {
         </div>
       </ReactModal>
 
-      <div style={{ overflowX: 'auto' }}>
- <table className="min-w-full border border-gray-200 shadow-md rounded-lg overflow-hidden">
-        <thead className="bg-gray-800 text-white">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
-                  className="p-3 text-left font-semibold cursor-pointer"
-                >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                  {{
-                    asc: " ⬆️",
-                    desc: " ⬇️",
-                  }[header.column.getIsSorted() || null] || ""}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row, idx) => (
-            <tr
-              key={row.id}
-              className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="p-3 border-t">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
+      <div className="table-wrapper">
+        <table className="custom-table">
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    onClick={header.column.getToggleSortingHandler()}
+                    className="sortable-header"
+                    role="button"
+                    tabIndex={0}
+                  >
+                    {flexRender(header.column.columnDef.header, header.getContext())}
+                    {{
+                      asc: " ⬆️",
+                      desc: " ⬇️",
+                    }[header.column.getIsSorted() || null] || ""}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.map((row, idx) => (
+              <tr key={row.id} className={idx % 2 === 0 ? "row-even" : "row-odd"}>
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-     
+
       {/* Paginación */}
-      <div className="flex justify-between items-center mt-4">
-        {/* Botón para ir a la primera página */}
-        <button
-          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
-          onClick={() => table.setPageIndex(0)}
-          disabled={!table.getCanPreviousPage()}
-        >
+      <div className="pagination">
+        <button onClick={() => table.setPageIndex(0)} disabled={!table.getCanPreviousPage()}>
           Inicio
         </button>
-
-        {/* Botón para ir a la página anterior */}
-        <button
-          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
+        <button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
           Anterior
         </button>
-
-        {/* Indicador de página actual y total de páginas */}
-        <span className="text-gray-700">
-          Página {table.getState().pagination.pageIndex + 1} de{" "}
-          {table.getPageCount()}
+        <span>
+          Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
         </span>
-
-        {/* Botón para ir a la página siguiente */}
-        <button
-          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
+        <button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
           Siguiente
         </button>
-
-        {/* Botón para ir a la última página */}
-        <button
-          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
-          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-          disabled={!table.getCanNextPage()}
-        >
+        <button onClick={() => table.setPageIndex(table.getPageCount() - 1)} disabled={!table.getCanNextPage()}>
           Final
         </button>
       </div>

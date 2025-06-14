@@ -180,7 +180,7 @@ const CategoriaTable = () => {
       cell: ({ row }) => (
         <div className="flex space-x-2">
           <button
-            className="text-blue-500 hover:text-blue-700"
+            className="edit-btn"
             onClick={() => startEditing(row.original)}
           >
             <FaEdit />
@@ -215,213 +215,167 @@ const CategoriaTable = () => {
     autoResetPageIndex: false
   });
 
-  return (
-    <div className="p-4">
-      <div className="flex items-center mb-4">
-        {/* Campo de búsqueda */}
-        <input
-          type="text"
-          placeholder="Buscar en tabla"
-          value={filtering}
-          onChange={(e) => setFiltering(e.target.value)}
-          className="p-2 border border-gray-300 rounded-md shadow-sm"
-        />
+ return (
+  <div className="table-container">
+    <div className="table-controls">
+      <input
+        type="text"
+        placeholder="Buscar en tabla"
+        value={filtering}
+        onChange={(e) => setFiltering(e.target.value)}
+        className="search-input"
+      />
 
-        {/* Botón para agregar categoría */}
-        <button
-          className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 ml-3"
-          onClick={() => navigate("/dashboard/agregarCategoria")} // Ajusta la ruta según corresponda
-        >
-          Agregar Categoría
-        </button>
-      </div>
-
-      <ReactModal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
-        contentLabel="Editar Categoria"
-        className="modal"
-        overlayClassName="overlay"
+      <button
+        className="add-user-btn"
+        onClick={() => navigate("/dashboard/agregarCategoria")}
       >
-        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
-          <h2 className="text-2xl font-bold text-center mb-6">
-            Editor de Categoria
-          </h2>
-
-          <form onSubmit={saveChanges}>
-            <div className="gap-4">
-              {/* Columna 1 */}
-              <div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">
-                    Nombre de Categoria
-                  </label>
-                  <input
-                    type="text"
-                    name="nombre_categoria"
-                    value={categoriaForm.nombre_categoria}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">
-                    Descripción
-                  </label>
-                  <input
-                    type="text"
-                    name="descripcion_categoria"
-                    value={categoriaForm.descripcion_categoria}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-2 font-semibold">Imagen</label>
-                  {/* Vista previa de la imagen */}
-                  {categoriaForm.imagen && (
-                    <img
-                      src={categoriaForm.imagen}
-                      alt="Vista previa"
-                      className="w-40 h-40 object-cover rounded-lg mb-2"
-                    />
-                  )}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Botones de Acción */}
-            <div className="flex justify-center space-x-4 mt-6">
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-                className="bg-gray-300 text-black px-6 py-2 rounded-lg font-semibold hover:bg-gray-400"
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                className="bg-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-600"
-              >
-                Guardar
-              </button>
-            </div>
-          </form>
-        </div>
-      </ReactModal>
-
-      {/* Tabla */}
-      <table className="min-w-full border border-gray-200 shadow-md rounded-lg overflow-hidden">
-        <thead className="bg-gray-800 text-white">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  className="p-3 text-left font-semibold"
-                  onClick={header.column.getToggleSortingHandler()}
-                >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                  {header.column.getIsSorted()
-                    ? header.column.getIsSorted() === "asc"
-                      ? " ⬆️"
-                      : " ⬇️"
-                    : ""}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row, idx) => (
-            <tr
-              key={row.id}
-              className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="p-3 border-t">
-                  {cell.column.id === "imagen" ? (
-                    // Renderizar la imagen si existe
-                    row.original.imagen ? (
-                      <img
-                        src={row.original.imagen}
-                        alt="Imagen de categoría"
-                        className="w-20 h-20 object-cover rounded-full"
-                        onError={(e) => {
-                          e.target.src = "/assets/No imagen.jpg"; // Imagen por defecto
-                        }}
-                      />
-                    ) : (
-                      // Mostrar un mensaje si no hay imagen
-                      <div className="text-gray-500">Sin imagen</div>
-                    )
-                  ) : (
-                    // Renderizar el contenido normal de la celda
-                    flexRender(cell.column.columnDef.cell, cell.getContext())
-                  )}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {/* Paginación */}
-      <div className="flex justify-between items-center mt-4">
-        {/* Botón para ir a la primera página */}
-        <button
-          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
-          onClick={() => table.setPageIndex(0)}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Inicio
-        </button>
-
-        {/* Botón para ir a la página anterior */}
-        <button
-          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Anterior
-        </button>
-
-        {/* Indicador de página actual y total de páginas */}
-        <span className="text-gray-700">
-          Página {table.getState().pagination.pageIndex + 1} de{" "}
-          {table.getPageCount()}
-        </span>
-
-        {/* Botón para ir a la página siguiente */}
-        <button
-          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Siguiente
-        </button>
-
-        {/* Botón para ir a la última página */}
-        <button
-          className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
-          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-          disabled={!table.getCanNextPage()}
-        >
-          Final
-        </button>
-      </div>
+        Agregar Categoría
+      </button>
     </div>
-  );
+
+    <ReactModal
+      isOpen={isModalOpen}
+      onRequestClose={() => setIsModalOpen(false)}
+      contentLabel="Editar Categoria"
+      className="modal"
+      overlayClassName="overlay"
+    >
+      <div className="modal-content">
+        <h2>Editor de Categoria</h2>
+
+        <form onSubmit={saveChanges} className="form-grid">
+          <label htmlFor="nombre_categoria">Nombre de Categoria</label>
+          <input
+            id="nombre_categoria"
+            type="text"
+            name="nombre_categoria"
+            value={categoriaForm.nombre_categoria || ""}
+            onChange={handleInputChange}
+            required
+          />
+
+          <label htmlFor="descripcion_categoria">Descripción</label>
+          <input
+            id="descripcion_categoria"
+            type="text"
+            name="descripcion_categoria"
+            value={categoriaForm.descripcion_categoria || ""}
+            onChange={handleInputChange}
+            required
+          />
+
+          <label>Imagen</label>
+          {categoriaForm.imagen && (
+            <img
+              src={categoriaForm.imagen}
+              alt="Vista previa"
+              style={{ width: 160, height: 160, objectFit: "cover", borderRadius: 8, marginBottom: 8 }}
+            />
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+
+          <div className="modal-buttons">
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              className="cancel-btn"
+            >
+              Cancelar
+            </button>
+            <button type="submit" className="save-btn">
+              Guardar
+            </button>
+          </div>
+        </form>
+      </div>
+    </ReactModal>
+
+    <table className="custom-table">
+      <thead>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <tr key={headerGroup.id}>
+            {headerGroup.headers.map((header) => (
+              <th
+                key={header.id}
+                className="sortable-header"
+                onClick={header.column.getToggleSortingHandler()}
+              >
+                {flexRender(header.column.columnDef.header, header.getContext())}
+                {header.column.getIsSorted()
+                  ? header.column.getIsSorted() === "asc"
+                    ? " ⬆️"
+                    : " ⬇️"
+                  : ""}
+              </th>
+            ))}
+          </tr>
+        ))}
+      </thead>
+      <tbody>
+        {table.getRowModel().rows.map((row, idx) => (
+          <tr key={row.id} className={idx % 2 === 0 ? "row-even" : "row-odd"}>
+            {row.getVisibleCells().map((cell) => (
+              <td key={cell.id}>
+                {cell.column.id === "imagen" ? (
+                  row.original.imagen ? (
+                    <img
+                      src={row.original.imagen}
+                      alt="Imagen de categoría"
+                      style={{ width: 80, height: 80, objectFit: "cover"}}
+                      onError={(e) => {
+                        e.target.src = "/assets/No imagen.jpg";
+                      }}
+                    />
+                  ) : (
+                    <div style={{ color: "#6b7280", fontStyle: "italic" }}>Sin imagen</div>
+                  )
+                ) : (
+                  flexRender(cell.column.columnDef.cell, cell.getContext())
+                )}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+
+    <div className="pagination">
+      <button
+        onClick={() => table.setPageIndex(0)}
+        disabled={!table.getCanPreviousPage()}
+      >
+        Inicio
+      </button>
+      <button
+        onClick={() => table.previousPage()}
+        disabled={!table.getCanPreviousPage()}
+      >
+        Anterior
+      </button>
+
+      <span>
+        Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
+      </span>
+
+      <button
+        onClick={() => table.nextPage()}
+        disabled={!table.getCanNextPage()}
+      >
+        Siguiente
+      </button>
+      <button
+        onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+        disabled={!table.getCanNextPage()}
+      >
+        Final
+      </button>
+    </div>
+  </div>
+);
 };
 export default CategoriaTable;
