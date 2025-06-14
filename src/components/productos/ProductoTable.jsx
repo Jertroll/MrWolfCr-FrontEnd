@@ -105,52 +105,65 @@ const ProductoTable = () => {
     setProductoForm({ ...productoForm, [name]: value });
   };
 
-  const saveChanges = async (e, tallasIds, selectedFiles) => {
-    e.preventDefault();
+const saveChanges = async (e, tallasIds, selectedFiles) => {
+  e.preventDefault();
 
-    try {
-      const formData = new FormData();
+  try {
+    const formData = new FormData();
 
-      formData.append("codigo", productoForm.codigo);
-      formData.append("nombre", productoForm.nombre);
-      formData.append("precio", productoForm.precio);
-      formData.append("descripcion", productoForm.descripcion);
-      formData.append("estado", productoForm.estado);
-      formData.append("genero_dirigido", productoForm.genero_dirigido);
-      formData.append("id_categoria", productoForm.id_categoria);
-      formData.append("tallas", tallasIds.join(","));
+    formData.append("codigo", productoForm.codigo);
+    formData.append("nombre", productoForm.nombre);
+    formData.append("precio", productoForm.precio);
+    formData.append("descripcion", productoForm.descripcion);
+    formData.append("estado", productoForm.estado);
+    formData.append("genero_dirigido", productoForm.genero_dirigido);
+    formData.append("id_categoria", productoForm.id_categoria);
+    formData.append("tallas", tallasIds.join(","));
 
-      if (selectedFiles?.length > 0) {
-        selectedFiles.forEach((file) => {
-          formData.append("imagen", file);
-        });
-      }
-
-      const response = await fetch(
-        `http://localhost:3000/api/v1/productos/${productoForm.id}`,
-        {
-          method: "PUT",
-          body: formData,
-        }
-      );
-
-      if (!response.ok) throw new Error("Error al actualizar el producto");
-
-      const updatedProducto = await response.json();
-
-      setData((prevData) =>
-        prevData.map((producto) =>
-          producto.id === updatedProducto.producto.id
-            ? updatedProducto.producto
-            : producto
-        )
-      );
-
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error("Error al actualizar el producto:", error);
+    if (selectedFiles?.length > 0) {
+      selectedFiles.forEach((file) => {
+        formData.append("imagen", file);
+      });
     }
-  };
+
+    const response = await fetch(
+      `http://localhost:3000/api/v1/productos/${productoForm.id}`,
+      {
+        method: "PUT",
+        body: formData,
+      }
+    );
+
+    if (!response.ok) throw new Error("Error al actualizar el producto");
+
+    const updated = await response.json();
+    const updatedProducto = updated.producto;
+
+    // Aplicar las transformaciones como en fetchData
+    const categoria = categorias.find(
+      (cat) => Number(cat.num_categoria) === Number(updatedProducto.id_categoria)
+    );
+
+    const transformedProducto = {
+      ...updatedProducto,
+      nombre_categoria: categoria?.nombre_categoria ?? "Sin categoría",
+      tallasTexto: updatedProducto.tallas?.length
+        ? updatedProducto.tallas.map((t) => t.nombre).join(", ")
+        : "",
+    };
+
+    // Actualizar el producto en el estado sin recargar
+    setData((prevData) =>
+      prevData.map((producto) =>
+        producto.id === transformedProducto.id ? transformedProducto : producto
+      )
+    );
+
+    setIsModalOpen(false);
+  } catch (error) {
+    console.error("Error al actualizar el producto:", error);
+  }
+};
 
   const openImageModal = (imagenes) => {
     setSelectedProductImages(imagenes);
