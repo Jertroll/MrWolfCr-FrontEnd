@@ -80,10 +80,11 @@ span.text-red-500 {
   color: #f56565;
 }
 
-p {
+.form-container p {
   margin-top: 20px;
 }
 
-a {
+
+.form-container a {
   color: #e53e3e;
 }

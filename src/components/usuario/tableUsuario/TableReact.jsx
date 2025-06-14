@@ -19,6 +19,7 @@ function TableReact() {
   const [sorting, setSorting] = useState([]); // Estado para la ordenación
   const [editingUser, setEditingUser] = useState(null); // Estado para almacenar el usuario en edición
   const [userForm, setUserForm] = useState({}); // Estado para almacenar los datos del formulario
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
 
   // Función para iniciar la edición de un usuario
   const startEditing = (user) => {
@@ -47,27 +48,34 @@ function TableReact() {
   };
 
   // Función para eliminar un usuario
-  const deleteUser = async (cedula) => {
-    const confirmDelete = window.confirm(
-      "¿Estás seguro de que deseas eliminar este usuario?"
-    );
-    if (!confirmDelete) return;
+const deleteUser = async (cedula) => {
+  const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este usuario?");
+  if (!confirmDelete) return;
 
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/v1/usuarios/${cedula}`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Error al eliminar el usuario");
+  try {
+    const response = await fetch(
+      `http://localhost:3000/api/v1/usuarios/${cedula}`,
+      { method: "DELETE" }
+    );
+    if (!response.ok) throw new Error("Error al eliminar el usuario");
+
+    setData((prevData) => {
+      const newData = prevData.filter((user) => user.cedula !== cedula);
+      const totalPages = Math.ceil(newData.length / pagination.pageSize);
+      if (pagination.pageIndex >= totalPages) {
+        setPagination((prev) => ({
+          ...prev,
+          pageIndex: totalPages - 1 >= 0 ? totalPages - 1 : 0,
+        }));
       }
-      setData((prevData) => prevData.filter((user) => user.cedula !== cedula));
-    } catch (error) {
-      console.error("Error al eliminar el usuario:", error);
-    }
-  };
+      return newData;
+    });
+
+  } catch (error) {
+    console.error("Error al eliminar el usuario:", error);
+  }
+};
+
 
   // Función para manejar el cambio en el formulario
   const handleInputChange = (e) => {
@@ -148,10 +156,11 @@ function TableReact() {
     state: {
       sorting,
       globalFilter: filtering,
-      pagination: { pageIndex: 0, pageSize: 10 }, // Limitar a 10 usuarios por página
+      pagination, // Limitar a 10 usuarios por página
     },
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
+     autoResetPageIndex: false,
   });
 
   return (

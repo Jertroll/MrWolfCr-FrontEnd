@@ -50,27 +50,32 @@ const CategoriaTable = () => {
   // Función para eliminar una categoria
   const deleteCategoria = async (num_categoria) => {
     const confirmDelete = window.confirm(
-      "¿Estás seguro de que deseas eliminar este usuario?"
+      "¿Estás seguro de que deseas eliminar esta categoría?"
     );
     if (!confirmDelete) return;
+
     try {
       const response = await fetch(
         `http://localhost:3000/api/v1/categorias/${num_categoria}`,
-        {
-          method: "DELETE",
-        }
+        { method: "DELETE" }
       );
-      if (!response.ok) {
-        throw new Error("Error al eliminar la categoria");
-      }
-      // Actualiza el estado eliminando la categoria de la lista
-      setData((prevData) =>
-        prevData.filter(
+      if (!response.ok) throw new Error("Error al eliminar la categoría");
+
+      setData((prevData) => {
+        const newData = prevData.filter(
           (categoria) => categoria.num_categoria !== num_categoria
-        )
-      );
+        );
+        const totalPages = Math.ceil(newData.length / pagination.pageSize);
+        if (pagination.pageIndex >= totalPages) {
+          setPagination((prev) => ({
+            ...prev,
+            pageIndex: totalPages - 1 >= 0 ? totalPages - 1 : 0,
+          }));
+        }
+        return newData;
+      });
     } catch (error) {
-      console.error("Error al eliminar la categoria:", error);
+      console.error("Error al eliminar la categoría:", error);
     }
   };
 
@@ -81,17 +86,17 @@ const CategoriaTable = () => {
   };
 
   //Funcion para menjar la carga de una imagen en el formulario de actualizar
-const handleImageChange = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    // Guardamos el archivo directamente para enviarlo luego
-    setCategoriaForm({
-      ...categoriaForm,
-      imagenFile: file,  // Archivo para enviar al backend
-      imagen: URL.createObjectURL(file)  // URL para vista previa
-    });
-  }
-};
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Guardamos el archivo directamente para enviarlo luego
+      setCategoriaForm({
+        ...categoriaForm,
+        imagenFile: file, // Archivo para enviar al backend
+        imagen: URL.createObjectURL(file), // URL para vista previa
+      });
+    }
+  };
 
   // Función para guardar los cambios de la categoria
   const saveChanges = async (e) => {
@@ -201,11 +206,13 @@ const handleImageChange = (event) => {
     state: {
       sorting,
       globalFilter: filtering,
-      pagination: { pageIndex: 0, pageSize: 5 }, // Limitar a 5 categorías por página
+      pagination, // <-- tu estado externo de paginación
     },
+
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
-    onPaginationChange: setPagination, // Actualizar el estado de paginación
+    onPaginationChange: setPagination, 
+    autoResetPageIndex: false
   });
 
   return (

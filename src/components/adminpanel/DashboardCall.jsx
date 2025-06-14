@@ -24,7 +24,7 @@ function DashboardCall() {
         <Navbar />
 
         {/* Área de contenido con scroll */}
-        <div className="flex-1 overflow-y-auto p-4 bg-gray-100">
+        <div className="flex-1 overflow-y-auto p-4 bg-gray-100 ">
           <Routes>
             <Route path="/home" element={<InicioAdmin/>} />
             <Route path="/usuario" element={<TableReact />} />

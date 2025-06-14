@@ -16,106 +16,101 @@ import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
 
 const ProductoTable = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState([]); // Estado para almacenar los datos
-  const [filtering, setFiltering] = useState(""); // Estado para el filtrado
-  const [sorting, setSorting] = useState([]); // Estado para el ordenamiento
-  const [editingProducto, setEditingProducto] = useState(null); // Estado para el producto en edición
-  const [productoForm, setProductoForm] = useState({}); // Estado para el formulario de edición
-  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para el modal de edición
-  const [isImageModalOpen, setIsImageModalOpen] = useState(false); // Estado para el modal de imágenes
-  const [selectedProductImages, setSelectedProductImages] = useState([]); // Estado para las imágenes seleccionadas
+  const [data, setData] = useState([]);
+  const [filtering, setFiltering] = useState("");
+  const [sorting, setSorting] = useState([]);
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
+  const [editingProducto, setEditingProducto] = useState(null);
+  const [productoForm, setProductoForm] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [selectedProductImages, setSelectedProductImages] = useState([]);
   const [categorias, setCategorias] = useState([]);
 
-
-  // Función para obtener datos del backend
   const fetchData = async () => {
     try {
       const [productosRes, categoriasRes] = await Promise.all([
         fetch("http://localhost:3000/api/v1/productos"),
         fetch("http://localhost:3000/api/v1/categorias"),
       ]);
-      
+
       if (!productosRes.ok || !categoriasRes.ok) {
         throw new Error("Error al obtener datos");
       }
-  
+
       const productos = await productosRes.json();
       const categorias = await categoriasRes.json();
 
-  
       setCategorias(categorias);
-  
+
       const productosConCategoria = productos.map((producto) => {
         const categoria = categorias.find(
           (cat) => Number(cat.num_categoria) === Number(producto.id_categoria)
         );
-        if (!categoria) {
-          console.warn(
-            `No se encontró categoría para el producto ${producto.nombre} con id_categoria ${producto.id_categoria}`
-          );
-        }
         return {
           ...producto,
           nombre_categoria: categoria?.nombre_categoria ?? "Sin categoría",
-         
-          tallasTexto: producto.tallas && producto.tallas.length
+          tallasTexto: producto.tallas?.length
             ? producto.tallas.map((t) => t.nombre).join(", ")
             : "",
         };
       });
-      
-  
+
       setData(productosConCategoria);
-      //console.log("Productos con categoría:", productosConCategoria);
     } catch (error) {
       console.error("Error al obtener los datos:", error);
-      alert("Hubo un error al obtener los datos. Por favor, intenta nuevamente.");
+      alert("Hubo un error al obtener los datos.");
     }
   };
-  
-  
 
-  // Función para eliminar un producto
   const deleteProducto = async (id) => {
-    const confirmDelete = window.confirm(
-      "¿Estás seguro de que deseas eliminar este producto?"
-    );
+    const confirmDelete = window.confirm("¿Deseas eliminar este producto?");
     if (!confirmDelete) return;
+
     try {
       const response = await fetch(
         `http://localhost:3000/api/v1/productos/${id}`,
-        {
-          method: "DELETE",
-        }
+        { method: "DELETE" }
       );
       if (!response.ok) throw new Error("Error al eliminar el producto");
-      setData((prevData) => prevData.filter((producto) => producto.id !== id));
+
+      setData((prevData) => {
+        const newData = prevData.filter((producto) => producto.id !== id);
+
+        // Calcular el número total de páginas después de la eliminación
+        const totalPages = Math.ceil(newData.length / pagination.pageSize);
+
+        if (pagination.pageIndex >= totalPages) {
+          setPagination((prev) => ({
+            ...prev,
+            pageIndex: totalPages - 1 >= 0 ? totalPages - 1 : 0,
+          }));
+        }
+
+        return newData;
+      });
     } catch (error) {
       console.error("Error al eliminar el producto:", error);
     }
   };
 
-  // Función para iniciar la edición de un producto
   const startEditing = (producto) => {
     setEditingProducto(producto);
     setProductoForm(producto);
     setIsModalOpen(true);
   };
 
-  // Función para manejar cambios en el formulario de edición
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setProductoForm({ ...productoForm, [name]: value });
   };
 
-  // Función para guardar los cambios del formulario de edición
   const saveChanges = async (e, tallasIds, selectedFiles) => {
     e.preventDefault();
 
     try {
       const formData = new FormData();
 
-      // Agregar campos del formulario
       formData.append("codigo", productoForm.codigo);
       formData.append("nombre", productoForm.nombre);
       formData.append("precio", productoForm.precio);
@@ -123,73 +118,49 @@ const ProductoTable = () => {
       formData.append("estado", productoForm.estado);
       formData.append("genero_dirigido", productoForm.genero_dirigido);
       formData.append("id_categoria", productoForm.id_categoria);
-      formData.append("tallas", tallasIds.join(",")); // Enviar tallas como cadena separada por comas
+      formData.append("tallas", tallasIds.join(","));
 
-      // Agregar imágenes seleccionadas
-      if (selectedFiles && selectedFiles.length > 0) {
+      if (selectedFiles?.length > 0) {
         selectedFiles.forEach((file) => {
-          formData.append("imagen", file); // "imagen" debe coincidir con el nombre esperado en el backend
+          formData.append("imagen", file);
         });
       }
 
-      // Depuración: Verificar los datos enviados al backend
-      for (let [key, value] of formData.entries()) {
-        console.log(key, value);
-      }
-
-      // Enviar la solicitud PUT al backend
       const response = await fetch(
         `http://localhost:3000/api/v1/productos/${productoForm.id}`,
         {
           method: "PUT",
-          body: formData, // No es necesario agregar el encabezado "Content-Type"
+          body: formData,
         }
       );
 
       if (!response.ok) throw new Error("Error al actualizar el producto");
 
-      // Obtener el producto actualizado del backend
       const updatedProducto = await response.json();
 
-      // Verificar la respuesta del backend
-      console.log(
-        "Producto actualizado recibido en el frontend:",
-        updatedProducto
-      );
-
-      // Actualizar el estado local con los nuevos datos del producto
-      setData((prevData) => {
-        const newData = prevData.map((producto) =>
+      setData((prevData) =>
+        prevData.map((producto) =>
           producto.id === updatedProducto.producto.id
             ? updatedProducto.producto
             : producto
-        );
-        console.log("Estado actualizado:", newData); // Verificar el estado actualizado
-        return newData;
-      });
+        )
+      );
 
-      // Cerrar el modal después de guardar
       setIsModalOpen(false);
     } catch (error) {
       console.error("Error al actualizar el producto:", error);
     }
   };
-  // Función para abrir el modal de imágenes
+
   const openImageModal = (imagenes) => {
     setSelectedProductImages(imagenes);
     setIsImageModalOpen(true);
   };
 
-  // Obtener datos al montar el componente
   useEffect(() => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-
-  }, [data]);
-
-  // Columnas de la tabla
   const columns = [
     { header: "Id Producto", accessorKey: "id" },
     { header: "Código", accessorKey: "codigo" },
@@ -201,7 +172,7 @@ const ProductoTable = () => {
       accessorKey: "tallasTexto",
       cell: ({ row }) => (
         <div>
-          {row.original.tallas && row.original.tallas.length > 0
+          {row.original.tallas?.length
             ? row.original.tallas.map((talla) => talla.nombre).join(", ")
             : "Sin tallas"}
         </div>
@@ -213,25 +184,20 @@ const ProductoTable = () => {
       accessorKey: "imagen",
       cell: ({ row }) => (
         <div className="flex items-center space-x-2">
-          {row.original.imagenes &&
-            row.original.imagenes
-              .slice(0, 1)
-              .map((imagen, index) => (
-                <img
-                  key={index}
-                  src={`http://localhost:3000/ImgProductos/${imagen.nomImagen}`}
-                  alt={`Imagen ${index + 1}`}
-                  className="h-16 w-16 object-cover"
-                />
-              ))}
-          {row.original.imagenes && row.original.imagenes.length > 1 && (
+          {row.original.imagenes?.slice(0, 1).map((imagen, index) => (
+            <img
+              key={index}
+              src={`http://localhost:3000/ImgProductos/${imagen.nomImagen}`}
+              alt={`Imagen ${index + 1}`}
+              className="h-16 w-16 object-cover"
+            />
+          ))}
+          {row.original.imagenes?.length > 1 && (
             <button
               className="text-blue-500 hover:text-blue-700"
               onClick={() => openImageModal(row.original.imagenes)}
-              aria-label="Ver más imágenes"
             >
-              <ZoomOutMapIcon className="w-6 h-6" />{" "}
-              {/* Mostrar el ícono en lugar del botón */}
+              <ZoomOutMapIcon className="w-6 h-6" />
             </button>
           )}
         </div>
@@ -241,13 +207,8 @@ const ProductoTable = () => {
     {
       header: "Categoría",
       accessorKey: "nombre_categoria",
-      cell: ({ row }) => (
-        <div>
-          {row.original.nombre_categoria ?? "Sin categoría"}
-        </div>
-      ),
+      cell: ({ row }) => <div>{row.original.nombre_categoria}</div>,
     },
-    
     {
       header: "Acciones",
       accessorKey: "acciones",
@@ -270,7 +231,6 @@ const ProductoTable = () => {
     },
   ];
 
-  // Configuración de la tabla
   const table = useReactTable({
     data,
     columns,
@@ -278,20 +238,16 @@ const ProductoTable = () => {
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    state: { sorting, globalFilter: filtering },
+    state: { sorting, globalFilter: filtering, pagination },
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
-    initialState: {
-      pagination: {
-        pageSize: 5,
-      },
-    },
+    onPaginationChange: setPagination,
+    autoResetPageIndex: false,
   });
 
   return (
     <div className="p-4">
       <div className="flex items-center mb-4">
-        {/* Campo de búsqueda */}
         <input
           type="text"
           placeholder="Buscar en tabla"
@@ -299,8 +255,6 @@ const ProductoTable = () => {
           onChange={(e) => setFiltering(e.target.value)}
           className="p-2 border border-gray-300 rounded-md shadow-sm"
         />
-
-        {/* Botón para agregar producto */}
         <button
           className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 ml-3"
           onClick={() => navigate("/dashboard/agregarProducto")}
@@ -309,23 +263,21 @@ const ProductoTable = () => {
         </button>
       </div>
 
-      {/* Modal de edición */}
       <EditarProductoModal
         isOpen={isModalOpen}
         onRequestClose={() => setIsModalOpen(false)}
         productoForm={productoForm}
         handleInputChange={handleInputChange}
         saveChanges={saveChanges}
+        fetchData={fetchData} // <-- le pasas el fetchData
       />
 
-      {/* Modal de imágenes */}
       <ImagenesProductoModal
         isOpen={isImageModalOpen}
         onRequestClose={() => setIsImageModalOpen(false)}
         selectedProductImages={selectedProductImages}
       />
 
-      {/* Tabla */}
       <table className="min-w-full border border-gray-200 shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-800 text-white">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -366,9 +318,7 @@ const ProductoTable = () => {
         </tbody>
       </table>
 
-      {/* Paginación */}
       <div className="flex justify-between items-center mt-4">
-        {/* Botón para ir a la primera página */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.setPageIndex(0)}
@@ -376,8 +326,6 @@ const ProductoTable = () => {
         >
           Inicio
         </button>
-
-        {/* Botón para ir a la página anterior */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.previousPage()}
@@ -385,14 +333,9 @@ const ProductoTable = () => {
         >
           Anterior
         </button>
-
-        {/* Indicador de página actual y total de páginas */}
         <span className="text-gray-700">
-          Página {table.getState().pagination.pageIndex + 1} de{" "}
-          {table.getPageCount()}
+          Página {pagination.pageIndex + 1} de {table.getPageCount()}
         </span>
-
-        {/* Botón para ir a la página siguiente */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.nextPage()}
@@ -400,8 +343,6 @@ const ProductoTable = () => {
         >
           Siguiente
         </button>
-
-        {/* Botón para ir a la última página */}
         <button
           className="bg-green-500 text-white py-1 px-4 rounded hover:bg-green-600"
           onClick={() => table.setPageIndex(table.getPageCount() - 1)}
