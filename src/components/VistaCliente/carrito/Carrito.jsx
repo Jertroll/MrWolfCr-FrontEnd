@@ -205,6 +205,10 @@ const Carrito = () => {
              Seguir Comprando
           </button>
          </div>
+         {carrito.length > 0 && seleccionados.length === 0 && (
+  <p className="mensaje-seleccion">Selecciona los productos que deseas comprar.</p>
+)}
+
             {carrito.length === 0 ? (
                 <p>El carrito está vacío</p>
             ) : (
