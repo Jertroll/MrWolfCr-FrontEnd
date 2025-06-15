@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import ReactModal from "react-modal";
+import ConfirmarAccionModal from "../../confirmarAccion/ConfirmarAccionModal";
 import "./tableUsuario.css";
 
 function TableReact() {
@@ -21,6 +22,8 @@ function TableReact() {
   const [userForm, setUserForm] = useState({});
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false); // Controlar el modal de confirmación
+  const [selectedUserId, setSelectedUserId] = useState(null); // Guardar ID del usuario seleccionado para eliminar
 
   // Cargar datos del backend
   const fetchData = async () => {
@@ -35,16 +38,25 @@ function TableReact() {
     }
   };
 
+  // Función para abrir el modal de confirmación de eliminación
+  const confirmDeleteUser = (cedula) => {
+    setSelectedUserId(cedula); // Guardar el ID del usuario seleccionado
+    setOpenConfirmDialog(true); // Abrir el modal de confirmación
+  };
+
   // Eliminar usuario con confirmación
-  const deleteUser = async (cedula) => {
-    if (!window.confirm("¿Estás seguro de que deseas eliminar este usuario?")) return;
+  const deleteUser = async () => {
+    if (!selectedUserId) return;
 
     try {
-      const response = await fetch(`http://localhost:3000/api/v1/usuarios/${cedula}`, { method: "DELETE" });
+      const response = await fetch(
+        `http://localhost:3000/api/v1/usuarios/${selectedUserId}`,
+        { method: "DELETE" }
+      );
       if (!response.ok) throw new Error("Error al eliminar el usuario");
 
       setData((prevData) => {
-        const newData = prevData.filter((user) => user.cedula !== cedula);
+        const newData = prevData.filter((user) => user.cedula !== selectedUserId);
         const totalPages = Math.ceil(newData.length / pagination.pageSize);
         if (pagination.pageIndex >= totalPages) {
           setPagination((prev) => ({
@@ -54,6 +66,7 @@ function TableReact() {
         }
         return newData;
       });
+      setOpenConfirmDialog(false); // Cerrar el modal de confirmación después de eliminar
     } catch (error) {
       console.error("Error al eliminar el usuario:", error);
     }
@@ -76,14 +89,19 @@ function TableReact() {
   const saveChanges = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/api/v1/usuarios/${userForm.cedula}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userForm),
-      });
+      const response = await fetch(
+        `http://localhost:3000/api/v1/usuarios/${userForm.cedula}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userForm),
+        }
+      );
       if (!response.ok) throw new Error("Error al actualizar el usuario");
       setData((prevData) =>
-        prevData.map((user) => (user.cedula === userForm.cedula ? userForm : user))
+        prevData.map((user) =>
+          user.cedula === userForm.cedula ? userForm : user
+        )
       );
       setIsModalOpen(false);
     } catch (error) {
@@ -119,7 +137,7 @@ function TableReact() {
           </button>
           <button
             aria-label="Eliminar usuario"
-            onClick={() => deleteUser(row.original.cedula)}
+            onClick={() => confirmDeleteUser(row.original.cedula)} // Cambiar a la función que abre el modal
             className="delete-btn"
           >
             <FaTrash />
@@ -244,7 +262,11 @@ function TableReact() {
               </div>
             </div>
             <div className="modal-buttons">
-              <button type="button" onClick={() => setIsModalOpen(false)} className="cancel-btn">
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="cancel-btn"
+              >
                 Cancelar
               </button>
               <button type="submit" className="save-btn">
@@ -268,11 +290,14 @@ function TableReact() {
                     role="button"
                     tabIndex={0}
                   >
-                    {flexRender(header.column.columnDef.header, header.getContext())}
-                    {{
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                    {header.column.getIsSorted() && {
                       asc: " ⬆️",
                       desc: " ⬇️",
-                    }[header.column.getIsSorted() || null] || ""}
+                    }[header.column.getIsSorted()] || ""}
                   </th>
                 ))}
               </tr>
@@ -280,9 +305,14 @@ function TableReact() {
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row, idx) => (
-              <tr key={row.id} className={idx % 2 === 0 ? "row-even" : "row-odd"}>
+              <tr
+                key={row.id}
+                className={idx % 2 === 0 ? "row-even" : "row-odd"}
+              >
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</td>
+                  <td key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
                 ))}
               </tr>
             ))}
@@ -292,22 +322,42 @@ function TableReact() {
 
       {/* Paginación */}
       <div className="pagination">
-        <button onClick={() => table.setPageIndex(0)} disabled={!table.getCanPreviousPage()}>
+        <button
+          onClick={() => table.setPageIndex(0)}
+          disabled={!table.getCanPreviousPage()}
+        >
           Inicio
         </button>
-        <button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+        <button
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
           Anterior
         </button>
         <span>
-          Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
+          Página {table.getState().pagination.pageIndex + 1} de{" "}
+          {table.getPageCount()}
         </span>
-        <button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+        <button
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
           Siguiente
         </button>
-        <button onClick={() => table.setPageIndex(table.getPageCount() - 1)} disabled={!table.getCanNextPage()}>
+        <button
+          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+          disabled={!table.getCanNextPage()}
+        >
           Final
         </button>
       </div>
+      {/* Modal de confirmación */}
+      <ConfirmarAccionModal
+        open={openConfirmDialog}
+        onClose={() => setOpenConfirmDialog(false)}
+        onConfirm={deleteUser}
+        message="¿Estás seguro de que deseas eliminar este usuario?"
+      />
     </div>
   );
 }

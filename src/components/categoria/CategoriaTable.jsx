@@ -7,10 +7,10 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { FaTrash, FaEdit } from "react-icons/fa";
-import { useNavigate } from "react-router-dom"; // Importa
-import { useEffect } from "react";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import ReactModal from "react-modal";
+import ConfirmarAccionModal from "../confirmarAccion/ConfirmarAccionModal"; // Asegúrate de importar el modal
 import "./tableCategoria.css";
 
 const CategoriaTable = () => {
@@ -22,13 +22,17 @@ const CategoriaTable = () => {
   const [categoriaForm, setCategoriaForm] = useState({});
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
 
-  // Función para iniciar la edición de un categoria
+  // Estado del modal de confirmación
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false); 
+  const [selectedCategoriaId, setSelectedCategoriaId] = useState(null); // Guardar ID de la categoría seleccionada para eliminar
+
+  // Función para iniciar la edición de una categoría
   const startEditing = (categoria) => {
     setEditingCategoria(categoria);
     setCategoriaForm(categoria);
-    setIsModalOpen(true); // Abre el modal
+    setIsModalOpen(true); // Abre el modal de edición
   };
-  const [isModalOpen, setIsModalOpen] = useState(false); //estado para controlar la visibilidad de modal
+  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar la visibilidad del modal
 
   // Función para obtener datos del backend
   const fetchData = async () => {
@@ -47,23 +51,26 @@ const CategoriaTable = () => {
     }
   };
 
-  // Función para eliminar una categoria
-  const deleteCategoria = async (num_categoria) => {
-    const confirmDelete = window.confirm(
-      "¿Estás seguro de que deseas eliminar esta categoría?"
-    );
-    if (!confirmDelete) return;
+  // Función para abrir el modal de confirmación de eliminación
+  const confirmDeleteCategoria = (num_categoria) => {
+    setSelectedCategoriaId(num_categoria); // Guardar el ID de la categoría seleccionada
+    setOpenConfirmDialog(true); // Abrir el modal de confirmación
+  };
+
+  // Función para eliminar la categoría
+  const deleteCategoria = async () => {
+    if (!selectedCategoriaId) return;
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1/categorias/${num_categoria}`,
+        `http://localhost:3000/api/v1/categorias/${selectedCategoriaId}`,
         { method: "DELETE" }
       );
       if (!response.ok) throw new Error("Error al eliminar la categoría");
 
       setData((prevData) => {
         const newData = prevData.filter(
-          (categoria) => categoria.num_categoria !== num_categoria
+          (categoria) => categoria.num_categoria !== selectedCategoriaId
         );
         const totalPages = Math.ceil(newData.length / pagination.pageSize);
         if (pagination.pageIndex >= totalPages) {
@@ -74,6 +81,7 @@ const CategoriaTable = () => {
         }
         return newData;
       });
+      setOpenConfirmDialog(false); // Cerrar el modal de confirmación después de eliminar
     } catch (error) {
       console.error("Error al eliminar la categoría:", error);
     }
@@ -85,7 +93,7 @@ const CategoriaTable = () => {
     setCategoriaForm({ ...categoriaForm, [name]: value });
   };
 
-  //Funcion para menjar la carga de una imagen en el formulario de actualizar
+  // Función para manejar la carga de una imagen en el formulario de actualizar
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -98,7 +106,7 @@ const CategoriaTable = () => {
     }
   };
 
-  // Función para guardar los cambios de la categoria
+  // Función para guardar los cambios de la categoría
   const saveChanges = async (e) => {
     e.preventDefault();
 
@@ -165,7 +173,6 @@ const CategoriaTable = () => {
       cell: ({ row }) => (
         <img
           src={`http://localhost:3000/imagenes/${row.original.imagen}`}
-          // Usa la ruta completa devuelta por el backend
           alt="Imagen de categoría"
           className="h-16 w-16 object-cover"
           onError={(e) => {
@@ -187,7 +194,7 @@ const CategoriaTable = () => {
           </button>
           <button
             className="text-red-500 hover:text-red-700"
-            onClick={() => deleteCategoria(row.original.num_categoria)}
+            onClick={() => confirmDeleteCategoria(row.original.num_categoria)} // Cambiar a la función que abre el modal
           >
             <FaTrash />
           </button>
@@ -211,171 +218,193 @@ const CategoriaTable = () => {
 
     onSortingChange: setSorting,
     onGlobalFilterChange: setFiltering,
-    onPaginationChange: setPagination, 
-    autoResetPageIndex: false
+    onPaginationChange: setPagination,
+    autoResetPageIndex: false,
   });
 
- return (
-  <div className="table-container">
-    <div className="table-controls">
-      <input
-        type="text"
-        placeholder="Buscar en tabla"
-        value={filtering}
-        onChange={(e) => setFiltering(e.target.value)}
-        className="search-input"
-      />
-
-      <button
-        className="add-user-btn"
-        onClick={() => navigate("/dashboard/agregarCategoria")}
-      >
-        Agregar Categoría
-      </button>
-    </div>
-
-    <ReactModal
-      isOpen={isModalOpen}
-      onRequestClose={() => setIsModalOpen(false)}
-      contentLabel="Editar Categoria"
-      className="modal"
-      overlayClassName="overlay"
-    >
-      <div className="modal-content">
-        <h2>Editor de Categoria</h2>
-
-        <form onSubmit={saveChanges} className="form-grid">
-          <label htmlFor="nombre_categoria">Nombre de Categoria</label>
-          <input
-            id="nombre_categoria"
-            type="text"
-            name="nombre_categoria"
-            value={categoriaForm.nombre_categoria || ""}
-            onChange={handleInputChange}
-            required
-          />
-
-          <label htmlFor="descripcion_categoria">Descripción</label>
-          <input
-            id="descripcion_categoria"
-            type="text"
-            name="descripcion_categoria"
-            value={categoriaForm.descripcion_categoria || ""}
-            onChange={handleInputChange}
-            required
-          />
-
-          <label>Imagen</label>
-          {categoriaForm.imagen && (
-            <img
-              src={categoriaForm.imagen}
-              alt="Vista previa"
-              style={{ width: 160, height: 160, objectFit: "cover", borderRadius: 8, marginBottom: 8 }}
-            />
-          )}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-
-          <div className="modal-buttons">
-            <button
-              type="button"
-              onClick={() => setIsModalOpen(false)}
-              className="cancel-btn"
-            >
-              Cancelar
-            </button>
-            <button type="submit" className="save-btn">
-              Guardar
-            </button>
-          </div>
-        </form>
+  return (
+    <div className="table-container">
+      <div className="table-controls">
+        <input
+          type="text"
+          placeholder="Buscar en tabla"
+          value={filtering}
+          onChange={(e) => setFiltering(e.target.value)}
+          className="search-input"
+        />
+        <button
+          className="add-user-btn"
+          onClick={() => navigate("/dashboard/agregarCategoria")}
+        >
+          Agregar Categoría
+        </button>
       </div>
-    </ReactModal>
 
-    <table className="custom-table">
-      <thead>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <tr key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
-              <th
-                key={header.id}
-                className="sortable-header"
-                onClick={header.column.getToggleSortingHandler()}
+      {/* Modal edición categoria */}
+      <ReactModal
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        contentLabel="Editar Categoria"
+        className="modal"
+        overlayClassName="overlay"
+      >
+        <div className="modal-content">
+          <h2>Editor de Categoria</h2>
+
+          <form onSubmit={saveChanges} className="form-grid">
+            <label htmlFor="nombre_categoria">Nombre de Categoria</label>
+            <input
+              id="nombre_categoria"
+              type="text"
+              name="nombre_categoria"
+              value={categoriaForm.nombre_categoria || ""}
+              onChange={handleInputChange}
+              required
+            />
+
+            <label htmlFor="descripcion_categoria">Descripción</label>
+            <input
+              id="descripcion_categoria"
+              type="text"
+              name="descripcion_categoria"
+              value={categoriaForm.descripcion_categoria || ""}
+              onChange={handleInputChange}
+              required
+            />
+
+            <label>Imagen</label>
+            {categoriaForm.imagen && (
+              <img
+                src={categoriaForm.imagen}
+                alt="Vista previa"
+                style={{
+                  width: 160,
+                  height: 160,
+                  objectFit: "cover",
+                  borderRadius: 8,
+                  marginBottom: 8,
+                }}
+              />
+            )}
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+
+            <div className="modal-buttons">
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="cancel-btn"
               >
-                {flexRender(header.column.columnDef.header, header.getContext())}
-                {header.column.getIsSorted()
-                  ? header.column.getIsSorted() === "asc"
-                    ? " ⬆️"
-                    : " ⬇️"
-                  : ""}
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody>
-        {table.getRowModel().rows.map((row, idx) => (
-          <tr key={row.id} className={idx % 2 === 0 ? "row-even" : "row-odd"}>
-            {row.getVisibleCells().map((cell) => (
-              <td key={cell.id}>
-                {cell.column.id === "imagen" ? (
-                  row.original.imagen ? (
-                    <img
-                      src={row.original.imagen}
-                      alt="Imagen de categoría"
-                      style={{ width: 80, height: 80, objectFit: "cover"}}
-                      onError={(e) => {
-                        e.target.src = "/assets/No imagen.jpg";
-                      }}
-                    />
+                Cancelar
+              </button>
+              <button type="submit" className="save-btn">
+                Guardar
+              </button>
+            </div>
+          </form>
+        </div>
+      </ReactModal>
+
+      <table className="custom-table">
+        <thead>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <th
+                  key={header.id}
+                  className="sortable-header"
+                  onClick={header.column.getToggleSortingHandler()}
+                >
+                  {flexRender(header.column.columnDef.header, header.getContext())}
+                  {header.column.getIsSorted()
+                    ? header.column.getIsSorted() === "asc"
+                      ? " ⬆️"
+                      : " ⬇️"
+                    : ""}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.map((row, idx) => (
+            <tr
+              key={row.id}
+              className={idx % 2 === 0 ? "row-even" : "row-odd"}
+            >
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id}>
+                  {cell.column.id === "imagen" ? (
+                    row.original.imagen ? (
+                      <img
+                        src={row.original.imagen}
+                        alt="Imagen de categoría"
+                        style={{ width: 80, height: 80, objectFit: "cover" }}
+                        onError={(e) => {
+                          e.target.src = "/assets/No imagen.jpg";
+                        }}
+                      />
+                    ) : (
+                      <div style={{ color: "#6b7280", fontStyle: "italic" }}>
+                        Sin imagen
+                      </div>
+                    )
                   ) : (
-                    <div style={{ color: "#6b7280", fontStyle: "italic" }}>Sin imagen</div>
-                  )
-                ) : (
-                  flexRender(cell.column.columnDef.cell, cell.getContext())
-                )}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+                    flexRender(cell.column.columnDef.cell, cell.getContext())
+                  )}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-    <div className="pagination">
-      <button
-        onClick={() => table.setPageIndex(0)}
-        disabled={!table.getCanPreviousPage()}
-      >
-        Inicio
-      </button>
-      <button
-        onClick={() => table.previousPage()}
-        disabled={!table.getCanPreviousPage()}
-      >
-        Anterior
-      </button>
+      {/* Paginación */}
+      <div className="pagination">
+        <button
+          onClick={() => table.setPageIndex(0)}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Inicio
+        </button>
+        <button
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Anterior
+        </button>
 
-      <span>
-        Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
-      </span>
+        <span>
+          Página {table.getState().pagination.pageIndex + 1} de{" "}
+          {table.getPageCount()}
+        </span>
 
-      <button
-        onClick={() => table.nextPage()}
-        disabled={!table.getCanNextPage()}
-      >
-        Siguiente
-      </button>
-      <button
-        onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-        disabled={!table.getCanNextPage()}
-      >
-        Final
-      </button>
+        <button
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Siguiente
+        </button>
+        <button
+          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+          disabled={!table.getCanNextPage()}
+        >
+          Final
+        </button>
+      </div>
+
+      {/* Modal de confirmación */}
+      <ConfirmarAccionModal
+        open={openConfirmDialog}
+        onClose={() => setOpenConfirmDialog(false)}
+        onConfirm={deleteCategoria} // Confirmación de eliminación
+        message="¿Estás seguro de que deseas eliminar esta categoría?"
+      />
     </div>
-  </div>
-);
+  );
 };
+
 export default CategoriaTable;
