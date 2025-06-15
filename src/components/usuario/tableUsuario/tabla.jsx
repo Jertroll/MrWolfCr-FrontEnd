@@ -1,8 +1,9 @@
 import { DataGrid, esES } from "@mui/x-data-grid";
 import { Loading } from "../util/loading";
 import { NoFiles } from "../util/NoFiles";
-import { createTheme, } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 import { CustomToolbar } from "../util/CustomToolbar";
+import PropTypes from "prop-types";
 
 export const TableComponent = ({
   columns,
@@ -11,6 +12,7 @@ export const TableComponent = ({
   customButtons,
 }) => {
   const theme = createTheme(esES);
+
   if (isLoading)
     return (
       <div>
@@ -19,6 +21,7 @@ export const TableComponent = ({
     );
 
   const rows = rowsSet ? rowsSet.map((cls) => ({ ...cls, id: cls.id })) : [];
+
   return (
     <>
       <div style={{ height: 500, width: "100%" }}>
@@ -35,14 +38,14 @@ export const TableComponent = ({
             "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
               py: "22px",
             },
-            '.MuiTablePagination-displayedRows': {
-              'margin-top': '1em',
-              'margin-bottom': '1em'
+            ".MuiTablePagination-displayedRows": {
+              marginTop: "1em",
+              marginBottom: "1em",
             },
-            '.MuiTablePagination-displayedRows, .MuiTablePagination-selectLabel': {
-              'margin-top': '1em',
-              'margin-bottom': '1em'
-            }
+            ".MuiTablePagination-displayedRows, .MuiTablePagination-selectLabel": {
+              marginTop: "1em",
+              marginBottom: "1em",
+            },
           }}
           getEstimatedRowHeight={() => 100}
           getRowHeight={() => "auto"}
@@ -71,4 +74,11 @@ export const TableComponent = ({
       </div>
     </>
   );
+};
+
+TableComponent.propTypes = {
+  columns: PropTypes.array.isRequired,
+  rowsSet: PropTypes.array,
+  isLoading: PropTypes.bool,
+  customButtons: PropTypes.array,
 };
