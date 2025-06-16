@@ -1,0 +1,131 @@
+/* Variables de color */
+:root {
+  --brand-primary: #1a1c1f;
+  --brand-accent: #e63946;
+  --text-primary: #2b2d42;
+  --text-secondary: #8d99ae;
+  --bg-light: #f8f9fa;
+  --bg-white: #ffffff;
+}
+
+/* Contenedor principal */
+.ayuda-container {
+  width: 100%;
+  margin: 0;
+  padding: 0rem 0; /* Mantenemos padding vertical pero eliminamos el horizontal */
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background-color: var(--bg-white); /* Opcional: si quieres fondo blanco completo */
+}
+
+.content-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem; /* Padding lateral para móviles */
+}
+
+/* Mensaje de bienvenida */
+.welcome-message {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2.5rem;
+  background-color: var(--bg-white);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.logo-title-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.brand-logo {
+  width: 200px;
+  height: auto;
+  margin-bottom: 1.5rem;
+}
+
+.welcome-title {
+  color: var(--brand-primary);
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-family: 'Baskerville Display PT, serif';
+}
+
+.brand-name {
+  color: var(--brand-primary);
+  font-weight: 800;
+  font-family: 'Baskerville Display PT, serif';
+}
+
+.brand-symbol {
+  font-size: 1.2rem;
+  vertical-align: super;
+  color: var(--brand-accent);
+}
+
+.section-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-family: 'Baskerville Display PT, serif';
+}
+
+.welcome-text {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  line-height: 1.7;
+  max-width: 700px;
+  margin: 0 auto 2rem;
+  font-family: 'Baskerville Display PT, serif';
+}
+
+.contact-cta {
+  margin-top: 2rem;
+}
+
+.contact-button {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  background-color: var(--brand-primary);
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 2px solid var(--brand-primary);
+  font-family: 'Baskerville Display PT, serif';
+}
+
+.contact-button:hover {
+  background-color: transparent;
+  color: var(--brand-primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .welcome-message {
+    padding: 1.5rem;
+  }
+  
+  .welcome-title {
+    font-size: 1.6rem;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  
+  .brand-logo {
+    width: 90px;
+  }
+  
+  .welcome-text {
+    font-size: 1rem;
+  }
+}

@@ -1,0 +1,120 @@
+
+/* Contenedor principal */
+.productos-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+/* Contenedor del logo */
+.logo-container {
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo-imagen {
+    max-width: 250px; /* Ajusta según el tamaño del logo */
+    height: auto;
+}
+
+/* Contenedor de productos */
+.productos-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 productos por fila */
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+    max-width: 1200px; /* Ajusta según el diseño */
+}
+
+/* Tarjeta del producto */
+.producto-card {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    max-width: 260px; /* Ajusta según el tamaño del logo */
+    height: auto;
+}
+
+.producto-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Contenedor de la imagen */
+.producto-imagen {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.producto-imagen img {
+    width: 80%;
+    height: 80%;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 2px solid #ddd;
+}
+
+/* Nombre del producto */
+.producto-nombre {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 10px;
+    font-family: 'Baskerville Display PT, serif';
+}
+
+/* Precio del producto */
+.producto-precio {
+    font-size: 14px;
+    color: #222222;
+    font-weight: 500;
+    font-family: 'Baskerville Display PT, serif';
+}
+
+/* Responsivo para pantallas más pequeñas */
+@media (max-width: 1024px) {
+    .productos-container {
+        grid-template-columns: repeat(2, 1fr); /* 2 productos por fila en tablets */
+    }
+}
+
+@media (max-width: 600px) {
+    .productos-container {
+        grid-template-columns: repeat(1, 1fr); /* 1 producto por fila en móviles */
+    }
+}
+/* Contenedor de la barra de búsqueda */
+.search-bar-container {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: 'Baskerville Display PT, serif';
+  }
+  
+  /* Estilo para la barra de búsqueda */
+  .search-bar {
+    width: 80%;
+    max-width: 400px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #363636;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .search-bar:focus {
+    outline: none;
+    border-color: #080808;
+    box-shadow: 0 0 8px rgba(19, 19, 19, 0.25);
+  }
