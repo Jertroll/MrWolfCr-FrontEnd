@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"; // Importa useState y useEffect
 import ReactModal from "react-modal";
 import PropTypes from "prop-types";
 import Select from "react-select"; // Importa react-select para el selector de tallas
+import { BASE_URL } from "../../utils/auth";
 
 const EditarProductoModal = ({
   isOpen,
@@ -31,7 +32,7 @@ const EditarProductoModal = ({
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/v1/categorias");
+        const response = await fetch(`${BASE_URL}/api/v1/categorias`);
         const data = await response.json();
         const categoriasOptions = data.map((categoria) => ({
           value: categoria.num_categoria,

@@ -14,6 +14,7 @@ import ImagenesProductoModal from "./paginas modal/ImagenesProductoModal";
 import ConfirmarAccionModal from "../confirmarAccion/ConfirmarAccionModal"; // Asegúrate de importar el modal
 import "./tableProducto.css";
 import ZoomOutMapIcon from "@mui/icons-material/ZoomOutMap";
+import { BASE_URL } from "../utils/auth";
 
 const ProductoTable = () => {
   const navigate = useNavigate();
@@ -34,8 +35,8 @@ const ProductoTable = () => {
   const fetchData = async () => {
     try {
       const [productosRes, categoriasRes] = await Promise.all([
-        fetch("http://localhost:3000/api/v1/productos"),
-        fetch("http://localhost:3000/api/v1/categorias"),
+        fetch(`${BASE_URL}/api/v1/productos`),
+        fetch(`${BASE_URL}/api/v1/categorias`),
       ]);
 
       if (!productosRes.ok || !categoriasRes.ok) {
@@ -79,7 +80,7 @@ const ProductoTable = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1/productos/${selectedProductId}`,
+        `${BASE_URL}/api/v1/productos/${selectedProductId}`,
         { method: "DELETE" }
       );
       if (!response.ok) throw new Error("Error al eliminar el producto");
@@ -139,7 +140,7 @@ const ProductoTable = () => {
       }
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/productos/${productoForm.id}`,
+        `${BASE_URL}/api/v1/productos/${productoForm.id}`,
         {
           method: "PUT",
           body: formData,
@@ -212,7 +213,7 @@ const ProductoTable = () => {
           {row.original.imagenes?.slice(0, 1).map((imagen, index) => (
             <img
               key={index}
-              src={`http://localhost:3000/ImgProductos/${imagen.nomImagen}`}
+              src={`${BASE_URL}/ImgProductos/${imagen.nomImagen}`}
               alt={`Imagen ${index + 1}`}
               className="h-16 w-16 object-cover"
             />

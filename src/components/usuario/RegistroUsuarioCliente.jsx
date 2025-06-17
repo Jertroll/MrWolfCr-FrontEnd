@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { LiaEyeSlashSolid, LiaEyeSolid } from "react-icons/lia"; // Importamos los íconos para mostrar/ocultar la contraseña
 import "./RegistroCliente.css"; // Mantendremos el estilo existente y añadiremos las mejoras
+import { BASE_URL } from "../utils/auth";
 
 function RegistroUsuarioCliente() {
   const [formData, setFormData] = useState({
@@ -36,7 +37,7 @@ function RegistroUsuarioCliente() {
 
     try {
       const dataToSend = { ...formData, imagen: formData.imagen || "" };
-      const response = await fetch("http://localhost:3000/api/v1/usuarios", {
+      const response = await fetch(`${BASE_URL}/api/v1/usuarios`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dataToSend),

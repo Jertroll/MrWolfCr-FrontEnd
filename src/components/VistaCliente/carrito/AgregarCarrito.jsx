@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import { obtenerUsuarioDesdeToken } from "../../utils/auth";
+import { obtenerUsuarioDesdeToken, BASE_URL } from "../../utils/auth";
 import { useCarrito } from "../../VistaCliente/carrito/CarritoContext"; // Importar el contexto
 
 const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
@@ -57,7 +57,7 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
   if (!validarAntesDeAgregar()) return;
 
   try {
-    const response = await fetch("http://localhost:3000/api/v1/cart/add", {
+    const response = await fetch(`${BASE_URL}/api/v1/cart/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

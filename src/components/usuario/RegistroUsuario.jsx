@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../utils/auth";
 
 function RegistroUsuario() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ function RegistroUsuario() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:3000/api/v1/usuarios", {
+      const response = await fetch(`${BASE_URL}/api/v1/usuarios`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

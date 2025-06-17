@@ -1,5 +1,6 @@
 import ReactModal from "react-modal";
 import PropTypes from "prop-types";
+import { BASE_URL } from "../../utils/auth";
 
 const ImagenesProductoModal = ({
   isOpen,
@@ -23,7 +24,7 @@ const ImagenesProductoModal = ({
             selectedProductImages.map((imagen, index) => (
               <img
                 key={index}
-                src={`http://localhost:3000/ImgProductos/${imagen.nomImagen}`}
+                src={`${BASE_URL}/ImgProductos/${imagen.nomImagen}`}
                 alt={`Imagen ${index + 1}`}
                 className="h-32 w-32 object-cover"
               />
