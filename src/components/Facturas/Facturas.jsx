@@ -7,7 +7,7 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { FaTrash, FaEye, FaFilePdf } from "react-icons/fa";
-import "./Tablafactura.css";
+import './Tablafactura.css'; 
 
 const Facturas = () => {
   const [facturas, setFacturas] = useState([]);
