@@ -22,7 +22,7 @@ import {
 import { jwtDecode } from "jwt-decode";
 import { MdHelp } from "react-icons/md";
 import { useCarrito } from "../../VistaCliente/carrito/CarritoContext";
-import { BASE_URL } from "../utils/auth";
+import { BASE_URL } from "../../utils/auth";
 // Ajusta la ruta si es distinta
 
 // Menú de categorías
