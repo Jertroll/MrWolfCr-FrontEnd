@@ -43,7 +43,7 @@ const ProductosAleatorios = () => {
     <div className="productos-wrapper">
       <div className="logo-container">
         <img 
-          src="/assets/logoBlanco.jpg" 
+          src="/assets/logoBlancoTitulo.jpg" 
           alt="Logo de la tienda" 
           className="logo-imagen"
         />

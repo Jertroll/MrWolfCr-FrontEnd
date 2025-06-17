@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import logo from "../../assets/logoNegro.jpg";
+import logo from "/assets/logoNegro.jpg";
 import { LiaEyeSlashSolid, LiaEyeSolid } from "react-icons/lia";  // Importación de los íconos
 import "./Login.css";
 

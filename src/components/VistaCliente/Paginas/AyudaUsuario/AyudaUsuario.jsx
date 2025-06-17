@@ -7,7 +7,7 @@ function AyudaUsuario() {
       <section className="welcome-message">
         <div className="logo-title-container">
           <img 
-            src="assets/logoBlanco.jpg" 
+            src="/assets/logoBlancoTitulo.jpg" 
             alt="Logo Mr Wolf Cr" 
             className="brand-logo"
           />

@@ -7,7 +7,7 @@ const ImagenP = () => {
       {/* Imagen de fondo */}
       <div 
         className="absolute inset-0 w-full h-full bg-cover bg-center" 
-        style={{ backgroundImage: "url('/src/assets/polos.jpg')" }}
+        style={{ backgroundImage: "url('/assets/polos.jpg')" }}
       ></div>
 
       {/* Capa oscura para mejorar la legibilidad del texto */}
