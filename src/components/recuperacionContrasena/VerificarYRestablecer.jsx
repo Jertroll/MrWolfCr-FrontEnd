@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../utils/auth";
 
 const VerificarYRestablecer = () => {
   const location = useLocation();
@@ -23,7 +24,7 @@ const VerificarYRestablecer = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/v1/recuperar/restablecerContrasena", {
+      const res = await fetch(`${BASE_URL}/api/v1/recuperar/restablecerContrasena`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

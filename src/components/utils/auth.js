@@ -1,3 +1,5 @@
+export const BASE_URL = "https://backend-mrwolf-fyh3cgdpgucjaebs.eastus-01.azurewebsites.net";
+
 export const obtenerUsuarioDesdeToken = () => {
     const token = sessionStorage.getItem("token");
     if (!token) return null;

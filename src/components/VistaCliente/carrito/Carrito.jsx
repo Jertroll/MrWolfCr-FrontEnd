@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { useCarrito } from "../../VistaCliente/carrito/CarritoContext";
 import "./Carrito.css";
+import { BASE_URL } from "../../utils/auth";
 
 const Carrito = () => {
     const [carrito, setCarrito] = useState([]);
@@ -14,7 +15,7 @@ const Carrito = () => {
     const token = sessionStorage.getItem("token");
 
     useEffect(() => {
-        fetch("http://localhost:3000/api/v1/cart", {
+        fetch(`${BASE_URL}/api/v1/cart`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -31,7 +32,7 @@ const Carrito = () => {
     }, []);
 
     const eliminarProducto = (productId, tallaId) => {
-        fetch("http://localhost:3000/api/v1/cart/remove", {
+        fetch(`${BASE_URL}/api/v1/cart/remove`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -57,7 +58,7 @@ const Carrito = () => {
             return;
         }
 
-        fetch("http://localhost:3000/api/v1/cart/update", {
+        fetch(`${BASE_URL}/api/v1/cart/update`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -111,7 +112,7 @@ const Carrito = () => {
             }));
 
         try {
-            const response = await fetch("http://localhost:3000/api/v1/crear/Factura", {
+            const response = await fetch(`${BASE_URL}/api/v1/crear/Factura`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -126,7 +127,7 @@ const Carrito = () => {
             if (response.ok) {
                 setMensajeExito("¡Compra realizada con éxito!");
 
-                await fetch("http://localhost:3000/api/v1/cart/remove-multiple", {
+                await fetch(`${BASE_URL}/api/v1/cart/remove-multiple`, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json"
@@ -162,7 +163,7 @@ const Carrito = () => {
         }));
 
         try {
-            await fetch("http://localhost:3000/api/v1/cart/remove-multiple", {
+            await fetch(`${BASE_URL}/api/v1/cart/remove-multiple`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -243,7 +244,7 @@ const Carrito = () => {
                                     </td>
                                     <td className="producto-info">
                                         <img
-                                            src={p.imagen ? `http://localhost:3000/public/ImgProductos/${p.imagen}` : "/placeholder.jpg"}
+                                            src={p.imagen ? `${BASE_URL}/public/ImgProductos/${p.imagen}` : "/placeholder.jpg"}
                                             alt={p.nombre}
                                             className="producto-img"
                                         />

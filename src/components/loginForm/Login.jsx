@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import logo from "../../assets/logoNegro.jpg";
 import { LiaEyeSlashSolid, LiaEyeSolid } from "react-icons/lia";  // Importación de los íconos
 import "./Login.css";
+import { BASE_URL } from "../utils/auth";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -17,7 +18,7 @@ function Login() {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:3000/api/v1/login", {
+      const response = await fetch(`${BASE_URL}/api/v1/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, contrasena }),

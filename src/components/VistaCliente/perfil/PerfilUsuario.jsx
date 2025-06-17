@@ -12,6 +12,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import { BASE_URL } from "../../utils/auth";
 
 const PerfilUsuario = () => {
   const [usuario, setUsuario] = useState(null);
@@ -30,7 +31,7 @@ const PerfilUsuario = () => {
       }
 
       try {
-        const res = await fetch("http://localhost:3000/api/v1/perfil", {
+        const res = await fetch(`${BASE_URL}/api/v1/perfil`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

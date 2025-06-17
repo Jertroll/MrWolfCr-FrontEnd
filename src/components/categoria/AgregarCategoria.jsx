@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
+import { BASE_URL } from "../utils/auth";
+
 const AgregarCategoria = () => {
   // Estado inicial para el formulario
   const [formData, setFormData] = useState({
@@ -46,7 +48,7 @@ const AgregarCategoria = () => {
     formDataToSend.append("imagen", formData.imagen);
   
     try {
-      const response = await fetch("http://localhost:3000/api/v1/categorias", {
+      const response = await fetch(`${BASE_URL}/api/v1/categorias`, {
         method: "POST",
         body: formDataToSend, // Enviar FormData sin 'Content-Type'
       });

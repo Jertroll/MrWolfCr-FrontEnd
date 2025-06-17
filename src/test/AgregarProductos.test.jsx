@@ -3,6 +3,7 @@ import { MemoryRouter } from "react-router-dom";
 import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
 import AgregarProductos from "../components/productos/AgregarProductos";
 import "@testing-library/jest-dom";
+import { BASE_URL } from "../components/utils/auth";
 
 describe("AgregarProductos - Registrar Producto", () => {
   beforeEach(() => {
@@ -81,7 +82,7 @@ describe("AgregarProductos - Registrar Producto", () => {
     // 9. Verificar que se realizó la solicitud HTTP correctamente
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith(
-        "http://localhost:3000/api/v1/productos",
+        `${BASE_URL}/api/v1/productos`,
         {
           method: "POST",
           body: expect.any(FormData), // Verifica que se envió un FormData

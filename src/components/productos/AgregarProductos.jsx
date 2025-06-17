@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
+import { BASE_URL } from "../utils/auth";
 
 const AgregarProductos = () => {
   const [formData, setFormData] = useState({
@@ -24,7 +25,7 @@ const AgregarProductos = () => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/v1/categorias");
+        const response = await fetch(`${BASE_URL}/api/v1/categorias`);
         const data = await response.json(); //Parsear la respuesta JSON
         const categoriasOptions = data.map((categoria) => ({
           value: categoria.num_categoria,
@@ -38,7 +39,7 @@ const AgregarProductos = () => {
 
     const fetchTallas = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/v1/tallas");
+        const response = await fetch(`${BASE_URL}/api/v1/tallas`);
         const data = await response.json();
         const tallasMapped = data.map((talla) => ({
           value: talla.id.toString(),
@@ -103,7 +104,7 @@ const AgregarProductos = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/v1/productos", {
+      const response = await fetch(`${BASE_URL}/api/v1/productos`, {
         method: "POST",
         body: data,
       });

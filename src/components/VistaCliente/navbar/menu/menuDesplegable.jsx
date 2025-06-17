@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { MenuItem, Button, Box } from "@mui/material";
+import { BASE_URL } from "../../utils/auth";
 
 const MenuCategorias = () => {
   const [categorias, setCategorias] = useState([]);
@@ -9,7 +10,7 @@ const MenuCategorias = () => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/v1/categorias");
+        const response = await fetch(`${BASE_URL}/api/v1/categorias`);
         if (!response.ok) throw new Error("Error al obtener los datos");
         const data = await response.json();
         setCategorias(data);

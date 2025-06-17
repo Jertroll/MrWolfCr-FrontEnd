@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import ProductosAleatorios from "./proAleactorios/ProductosAleatorios";
 import AgregarCarrito from "../../carrito/AgregarCarrito";
 import { jwtDecode } from "jwt-decode";
+import { BASE_URL } from "../../../utils/auth";
 
 const DetalleProducto = () => {
   const { id } = useParams();
@@ -17,7 +18,7 @@ const DetalleProducto = () => {
   useEffect(() => {
     const fetchProducto = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/v1/productos/${id}`);
+        const response = await fetch(`${BASE_URL}/api/v1/productos/${id}`);
         if (!response.ok) throw new Error("Error al obtener el producto");
         const data = await response.json();
         setProducto(data);
@@ -36,7 +37,7 @@ const DetalleProducto = () => {
   useEffect(() => {
     const fetchResenas = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/v1/resenas/producto/${id}`);
+        const res = await fetch(`${BASE_URL}/api/v1/resenas/producto/${id}`);
         if (!res.ok) throw new Error("Error al obtener reseñas");
         const data = await res.json();
         setResenas(data);
@@ -69,7 +70,7 @@ const DetalleProducto = () => {
     if (!usuario || !usuario.token) return alert("Debes iniciar sesión para dejar una reseña");
   
     try {
-      const res = await fetch("http://localhost:3000/api/v1/resenas", {
+      const res = await fetch(`${BASE_URL}/api/v1/resenas`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,7 +104,7 @@ const DetalleProducto = () => {
   
   const eliminarResena = async (idResena) => {
   try {
-const res = await fetch(`http://localhost:3000/api/v1/resenas/${idResena}`, {
+const res = await fetch(`${BASE_URL}/api/v1/resenas/${idResena}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${usuario.token}`,
@@ -148,7 +149,7 @@ const renderEstrellasPromedio = (promedio) => {
           {producto.imagenes.map((img, index) => (
             <img
               key={index}
-              src={`http://localhost:3000/public/ImgProductos/${img.nomImagen}`}
+              src={`${BASE_URL}/public/ImgProductos/${img.nomImagen}`}
               alt={`Imagen ${index + 1}`}
               className={`w-full h-20 object-cover rounded-lg cursor-pointer border ${index === imagenIndex ? "border-black" : "border-gray-300"}`}
               onMouseEnter={() => cambiarImagen(index)}
@@ -165,7 +166,7 @@ const renderEstrellasPromedio = (promedio) => {
             &#9664;
           </button>
           <img
-            src={`http://localhost:3000/public/ImgProductos/${producto.imagenes[imagenIndex].nomImagen}`}
+            src={`${BASE_URL}/public/ImgProductos/${producto.imagenes[imagenIndex].nomImagen}`}
             alt="Imagen principal"
             className="w-full h-[500px] object-cover rounded-lg shadow-lg"
           />

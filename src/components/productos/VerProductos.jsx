@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../VistaCliente/Paginas/productos/proAleactorios/ProductosAleatorios.css"; // Asegúrate de incluir tu archivo CSS
+import { BASE_URL } from "../utils/auth";
 
 const ProductosAleatorios = () => {
   const [productos, setProductos] = useState([]); // Estado para almacenar los productos
@@ -9,7 +10,7 @@ const ProductosAleatorios = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/v1/productos");
+      const response = await fetch(`${BASE_URL}/api/v1/productos`);
       if (!response.ok) throw new Error("Error al obtener los datos");
       const data = await response.json();
       setProductos(data);
@@ -69,7 +70,7 @@ const ProductosAleatorios = () => {
           >
             <div className="producto-imagen">
               <img 
-                src={`http://localhost:3000/public/ImgProductos/${producto.imagenes[0]?.nomImagen}`}
+                src={`${BASE_URL}/public/ImgProductos/${producto.imagenes[0]?.nomImagen}`}
                 alt={producto.nombre} 
               />
             </div>

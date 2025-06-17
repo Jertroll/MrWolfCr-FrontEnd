@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../utils/auth";
 
 const ProductosPorCategoria =() => {
   const { id } = useParams();
@@ -10,7 +11,7 @@ const ProductosPorCategoria =() => {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/v1/productos/categoria/${id}`);// http://localhost:3000/api/v1/productos/categoria/1
+        const response = await fetch(`${BASE_URL}/api/v1/productos/categoria/${id}`);
         if (!response.ok) throw new Error("Error al obtener los productos");
         const data = await response.json();
         setProductos(data);
@@ -37,7 +38,7 @@ const ProductosPorCategoria =() => {
           onClick={() => verDetalleProducto(producto.id)}
         >
           <img 
-            src={`http://localhost:3000/public/ImgProductos/${producto.imagenes[0]?.nomImagen}`}
+            src={`${BASE_URL}/public/ImgProductos/${producto.imagenes[0]?.nomImagen}`}
             alt={producto.nombre} 
             className="w-full h-32 object-contain rounded-md"
           />
