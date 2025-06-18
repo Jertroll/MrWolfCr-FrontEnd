@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AlgunasCategorias.css";
+import { BASE_URL } from "../../utils/auth";
 
 const AlgunasCategorias = () => {
   const [categorias, setCategorias] = useState([]); // Estado para almacenar las categorías
