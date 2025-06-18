@@ -14,12 +14,16 @@ const Carrito = () => {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   // Guardar carrito en localStorage
   const guardarCarritoEnLocalStorage = (nuevoCarrito) => {
     localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
   };
 
   // Manejar selección de productos
+=======
+  // Función para manejar la selección de productos
+>>>>>>> parent of cad9724 (Cambios carrito)
   const manejarSeleccion = (productId, tallaId) => {
 =======
     const token = sessionStorage.getItem("token");
@@ -116,7 +120,11 @@ const Carrito = () => {
     });
   };
 
+<<<<<<< HEAD
 >>>>>>> parent of 695d5a2 (cambios carrito)
+=======
+  // Función para realizar la compra
+>>>>>>> parent of cad9724 (Cambios carrito)
   const comprarProductos = async () => {
     if (!token) {
       alert("No estás autenticado.");
@@ -235,7 +243,31 @@ const Carrito = () => {
 =======
   }, 0);
 
+<<<<<<< HEAD
 >>>>>>> parent of 695d5a2 (cambios carrito)
+=======
+  // Cargar carrito desde localStorage si no se ha cargado desde el servidor
+  useEffect(() => {
+    if (token) {
+      // Obtener carrito del servidor
+      setLoading(true);
+      // Lógica para obtener carrito desde el backend
+    } else {
+      // Si no hay token, cargar el carrito de localStorage
+      const storedCarrito = JSON.parse(localStorage.getItem("carrito")) || [];
+      setCarrito(storedCarrito);
+      setLoading(false);
+    }
+  }, [token]);
+
+  // Guardar carrito en localStorage cuando se modifique
+  useEffect(() => {
+    if (!token) {
+      localStorage.setItem("carrito", JSON.stringify(carrito));
+    }
+  }, [carrito, token]);
+
+>>>>>>> parent of cad9724 (Cambios carrito)
   if (loading) return <p>Cargando carrito...</p>;
   if (error) return <p>{error}</p>;
 =======
