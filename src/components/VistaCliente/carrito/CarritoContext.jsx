@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { BASE_URL } from "../../utils/auth";
 import PropTypes from "prop-types";
+import { BASE_URL } from "../../utils/auth";
 
 const CarritoContext = createContext();
 
@@ -9,147 +9,64 @@ export const CarritoProvider = ({ children }) => {
     const [cantidadCarrito, setCantidadCarrito] = useState(0);
     const [mostrarContadorTemporal, setMostrarContadorTemporal] = useState(false);
 
-    // Función para obtener el carrito del servidor
+    // Función para obtener el carrito desde la API o el almacenamiento local
     const obtenerCarrito = async () => {
-        try {
-            const token = sessionStorage.getItem("token");
-            const response = await fetch(`${BASE_URL}/api/v1/cart`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    ...(token && { Authorization: `Bearer ${token}` })
-                },
-                credentials: "include",
-                body: JSON.stringify({ cart: carrito })
-            });
-            const data = await response.json();
-            setCarrito(data.cart);
-            actualizarCantidadTotal(data.cart);
-        } catch (error) {
-            console.error("Error al obtener el carrito:", error);
-        }
+        const storedCarrito = JSON.parse(localStorage.getItem("carrito")) || [];
+        setCarrito(storedCarrito);
+        actualizarCantidadTotal(storedCarrito);
     };
 
     // Función para agregar al carrito
     const agregarAlCarrito = async (productId, tallaId, quantity) => {
-        try {
-            const token = sessionStorage.getItem("token");
-            const response = await fetch(`${BASE_URL}/api/v1/cart/add`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    ...(token && { Authorization: `Bearer ${token}` })
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                    productId,
-                    tallaId,
-                    quantity,
-                    cart: carrito
-                })
-            });
-            const data = await response.json();
-            setCarrito(data.cart);
-            actualizarCantidadTotal(data.cart);
-            mostrarContador();
-        } catch (error) {
-            console.error("Error al agregar al carrito:", error);
-            throw error;
+        const updatedCarrito = [...carrito];
+        const existingProductIndex = updatedCarrito.findIndex(p => p.productoId === productId && p.tallaId === tallaId);
+
+        if (existingProductIndex !== -1) {
+            updatedCarrito[existingProductIndex].quantity += quantity;
+        } else {
+            updatedCarrito.push({ productoId, tallaId, quantity });
         }
+
+        setCarrito(updatedCarrito);
+        localStorage.setItem("carrito", JSON.stringify(updatedCarrito));
+        actualizarCantidadTotal(updatedCarrito);
+        mostrarContador();
     };
 
     // Función para eliminar del carrito
     const eliminarDelCarrito = async (productId, tallaId) => {
-        try {
-            const token = sessionStorage.getItem("token");
-            const response = await fetch(`${BASE_URL}/api/v1/cart/remove`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    ...(token && { Authorization: `Bearer ${token}` })
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                    productId,
-                    tallaId,
-                    cart: carrito
-                })
-            });
-            const data = await response.json();
-            setCarrito(data.cart);
-            actualizarCantidadTotal(data.cart);
-        } catch (error) {
-            console.error("Error al eliminar del carrito:", error);
-            throw error;
-        }
+        const updatedCarrito = carrito.filter(item => item.productoId !== productId || item.tallaId !== tallaId);
+        setCarrito(updatedCarrito);
+        localStorage.setItem("carrito", JSON.stringify(updatedCarrito));
+        actualizarCantidadTotal(updatedCarrito);
     };
 
-    // Función para actualizar cantidad
+    // Función para actualizar la cantidad del producto
     const actualizarCantidad = async (productId, tallaId, quantity) => {
-        try {
-            const token = sessionStorage.getItem("token");
-            const response = await fetch(`${BASE_URL}/api/v1/cart/update`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    ...(token && { Authorization: `Bearer ${token}` })
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                    productId,
-                    tallaId,
-                    quantity,
-                    cart: carrito
-                })
-            });
-            const data = await response.json();
-            setCarrito(data.cart);
-            actualizarCantidadTotal(data.cart);
-        } catch (error) {
-            console.error("Error al actualizar cantidad:", error);
-            throw error;
-        }
+        const updatedCarrito = carrito.map(item => 
+            item.productoId === productId && item.tallaId === tallaId ? { ...item, quantity } : item
+        );
+        setCarrito(updatedCarrito);
+        localStorage.setItem("carrito", JSON.stringify(updatedCarrito));
+        actualizarCantidadTotal(updatedCarrito);
     };
 
     // Función para vaciar el carrito
     const vaciarCarrito = async () => {
-        try {
-            const token = sessionStorage.getItem("token");
-            const productosAEliminar = carrito.map(p => ({
-                id: p.id,
-                tallaId: p.tallaId
-            }));
-
-            const response = await fetch(`${BASE_URL}/api/v1/cart/remove-multiple`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    ...(token && { Authorization: `Bearer ${token}` })
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                    productos: productosAEliminar,
-                    cart: carrito
-                })
-            });
-            const data = await response.json();
-            setCarrito(data.cart);
-            actualizarCantidadTotal(data.cart);
-        } catch (error) {
-            console.error("Error al vaciar el carrito:", error);
-            throw error;
-        }
+        setCarrito([]);
+        localStorage.removeItem("carrito");
+        actualizarCantidadTotal([]);
     };
 
     // Función para obtener la cantidad de un producto específico
     const obtenerCantidadProducto = (productId, tallaId) => {
-        const producto = carrito.find(p => p.id === productId && p.tallaId === tallaId);
+        const producto = carrito.find(p => p.productoId === productId && p.tallaId === tallaId);
         return producto ? producto.quantity : 0;
     };
 
     // Función para actualizar la cantidad total
-    const actualizarCantidadTotal = (cart) => {
-        const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+    const actualizarCantidadTotal = (updatedCarrito) => {
+        const total = updatedCarrito.reduce((sum, item) => sum + item.quantity, 0);
         setCantidadCarrito(total);
     };
 
@@ -163,13 +80,7 @@ export const CarritoProvider = ({ children }) => {
 
     // Cargar el carrito al iniciar
     useEffect(() => {
-        const token = sessionStorage.getItem("token");
-        if (token) {
-            obtenerCarrito();
-        } else {
-            setCarrito([]);
-            setCantidadCarrito(0);
-        }
+        obtenerCarrito();
     }, []);
 
     return (

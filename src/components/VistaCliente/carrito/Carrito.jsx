@@ -18,6 +18,7 @@ const Carrito = () => {
     vaciarCarrito 
   } = useCarrito();
 
+  // Función para manejar la selección de productos
   const manejarSeleccion = (productId, tallaId) => {
     const key = `${productId}-${tallaId}`;
     setSeleccionados((prev) => {
@@ -30,6 +31,7 @@ const Carrito = () => {
     });
   };
 
+  // Función para realizar la compra
   const comprarProductos = async () => {
     if (!token) {
       alert("No estás autenticado.");
@@ -78,10 +80,32 @@ const Carrito = () => {
     }
   };
 
+  // Cálculo total a pagar
   const totalAPagar = carrito.reduce((total, p) => {
     const estaSeleccionado = seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId);
     return estaSeleccionado ? total + (p.precio * p.quantity) : total;
   }, 0);
+
+  // Cargar carrito desde localStorage si no se ha cargado desde el servidor
+  useEffect(() => {
+    if (token) {
+      // Obtener carrito del servidor
+      setLoading(true);
+      // Lógica para obtener carrito desde el backend
+    } else {
+      // Si no hay token, cargar el carrito de localStorage
+      const storedCarrito = JSON.parse(localStorage.getItem("carrito")) || [];
+      setCarrito(storedCarrito);
+      setLoading(false);
+    }
+  }, [token]);
+
+  // Guardar carrito en localStorage cuando se modifique
+  useEffect(() => {
+    if (!token) {
+      localStorage.setItem("carrito", JSON.stringify(carrito));
+    }
+  }, [carrito, token]);
 
   if (loading) return <p>Cargando carrito...</p>;
   if (error) return <p>{error}</p>;
