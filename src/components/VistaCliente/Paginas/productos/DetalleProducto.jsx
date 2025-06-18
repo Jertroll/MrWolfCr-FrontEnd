@@ -40,13 +40,15 @@ const DetalleProducto = () => {
         const res = await fetch(`${BASE_URL}/api/v1/resenas/producto/${id}`);
         if (!res.ok) throw new Error("Error al obtener reseñas");
         const data = await res.json();
-        setResenas(data);
+        setResenas(data); // ← si todo bien, se actualiza
       } catch (error) {
         console.error("Error al obtener reseñas:", error);
+        setResenas([]); // ← limpiar reseñas si hay error
       }
     };
     fetchResenas();
   }, [id]);
+  
 
   useEffect(() => {
     const token = sessionStorage.getItem("token");
