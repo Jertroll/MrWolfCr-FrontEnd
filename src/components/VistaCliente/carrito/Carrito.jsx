@@ -13,6 +13,7 @@ const Carrito = () => {
     const { eliminarDelCarrito } = useCarrito();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   // Guardar carrito en localStorage
   const guardarCarritoEnLocalStorage = (nuevoCarrito) => {
     localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
@@ -102,6 +103,20 @@ const Carrito = () => {
 
 <<<<<<< HEAD
   // Función para comprar productos
+=======
+  const manejarSeleccion = (productId, tallaId) => {
+    const key = `${productId}-${tallaId}`;
+    setSeleccionados((prev) => {
+      const existe = prev.find(p => `${p.productId}-${p.tallaId}` === key);
+      if (existe) {
+        return prev.filter(p => `${p.productId}-${p.tallaId}` !== key);
+      } else {
+        return [...prev, { productId, tallaId }];
+      }
+    });
+  };
+
+>>>>>>> parent of 695d5a2 (cambios carrito)
   const comprarProductos = async () => {
     if (!token) {
       alert("No estás autenticado.");
@@ -146,7 +161,10 @@ const Carrito = () => {
             const data = await response.json();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   // Cálculo total a pagar
+=======
+>>>>>>> parent of 695d5a2 (cambios carrito)
   const totalAPagar = carrito.reduce((total, p) => {
 =======
             if (response.ok) {
@@ -209,10 +227,15 @@ const Carrito = () => {
 >>>>>>> parent of 7a1dfb1 (cambios a carrito)
     const estaSeleccionado = seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId);
     return estaSeleccionado ? total + (p.precio * p.quantity) : total;
+<<<<<<< HEAD
  }, 0);
 
 <<<<<<< HEAD
   // Si el carrito está vacío o cargando
+=======
+  }, 0);
+
+>>>>>>> parent of 695d5a2 (cambios carrito)
   if (loading) return <p>Cargando carrito...</p>;
   if (error) return <p>{error}</p>;
 =======
