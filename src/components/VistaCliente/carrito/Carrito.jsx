@@ -22,6 +22,8 @@ const Carrito = () => {
                 ...(token && { Authorization: `Bearer ${token}` })
             },
             credentials: "include"
+
+
         })
             .then((res) => res.json())
             .then((data) => {
