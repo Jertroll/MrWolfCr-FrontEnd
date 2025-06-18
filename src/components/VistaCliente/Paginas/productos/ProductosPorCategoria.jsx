@@ -26,7 +26,6 @@ const ProductosPorCategoria =() => {
 
   const verDetalleProducto = (id) => {
     navigate(`/producto/${id}`);
-    window.location.reload(); // Fuerza la recarga de la página
   };
 
   return (
