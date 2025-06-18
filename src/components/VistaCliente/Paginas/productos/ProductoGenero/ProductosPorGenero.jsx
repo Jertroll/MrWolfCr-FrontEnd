@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./ProductosPorGenero.css"; 
+import { BASE_URL } from "../../../../utils/auth";
 
 const ProductosPorGenero = () => {
   const [productos, setProductos] = useState([]);
@@ -11,7 +12,7 @@ const ProductosPorGenero = () => {
   useEffect(() => {
     const fetchProductosPorGenero = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/v1/productos/genero/${genero}`);
+        const response = await fetch(`${BASE_URL}/api/v1/productos/genero/${genero}`);
         if (!response.ok) throw new Error("Error al obtener los productos");
         const data = await response.json();
         setProductos(data);
@@ -44,7 +45,7 @@ const ProductosPorGenero = () => {
       {/* Contenedor del logo */}
       <div className="logo-container">
         <img 
-          src="/assets/logoBlanco.jpg" 
+          src="/assets/logoBlancoTitulo.jpg" 
           alt="Logo de la tienda" 
           className="logo-imagen"
         />
@@ -63,7 +64,7 @@ const ProductosPorGenero = () => {
             >
               <div className="producto-imagen">
                 <img 
-                  src={`http://localhost:3000/public/ImgProductos/${producto.imagenes[0]?.nomImagen}`}
+                  src={`${BASE_URL}/public/ImgProductos/${producto.imagenes[0]?.nomImagen}`}
                   alt={producto.nombre} 
                 />
               </div>

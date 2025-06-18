@@ -4,6 +4,8 @@ import { FaArrowLeft,FaFilePdf,FaArrowDown } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import './FacturaDetalle.css'
 import moment from 'moment-timezone';
+import { BASE_URL } from "../utils/auth";
+
 const FacturaDetalle = () => {
     const { id } = useParams();
     const [factura, setFactura] = useState(null);
@@ -14,7 +16,7 @@ const FacturaDetalle = () => {
     const [userRole, setUserRole] = useState(null);
 
     useEffect(() => {
-        fetch(`http://localhost:3000/api/v1/factura/${id}`, {
+        fetch(`${BASE_URL}/api/v1/factura/${id}`, {
             method: "GET",
             headers: { 
                 "Content-Type": "application/json",
@@ -64,7 +66,7 @@ const FacturaDetalle = () => {
                     </button>
                 )}
             <a
-                href={`http://localhost:3000/api/v1/pdf/${id}`}
+                href={`${BASE_URL}/api/v1/pdf/${id}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-success descargar-pdf"

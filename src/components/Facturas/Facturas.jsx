@@ -7,7 +7,8 @@ import {
   flexRender,
 } from "@tanstack/react-table";
 import { FaTrash, FaEye, FaFilePdf } from "react-icons/fa";
-import "./Tablafactura.css";
+import { BASE_URL } from "../utils/auth";
+
 
 const Facturas = () => {
   const [facturas, setFacturas] = useState([]);
@@ -17,7 +18,7 @@ const Facturas = () => {
   const token = sessionStorage.getItem("token");
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/v1/admin", {
+    fetch(`${BASE_URL}/api/v1/admin`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -42,7 +43,7 @@ const Facturas = () => {
     async (id) => {
       if (window.confirm("¿Estás seguro de que deseas eliminar esta factura?")) {
         try {
-          const response = await fetch(`http://localhost:3000/api/v1/delete/${id}`, {
+          const response = await fetch(`${BASE_URL}/api/v1/delete/${id}`, {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json",
@@ -110,7 +111,7 @@ const Facturas = () => {
                 <FaEye />
               </Link>
               <a
-                href={`http://localhost:3000/api/v1/pdf/${factura.id}`}
+                href={`${BASE_URL}/api/v1/pdf/${factura.id}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="descargar-btn"

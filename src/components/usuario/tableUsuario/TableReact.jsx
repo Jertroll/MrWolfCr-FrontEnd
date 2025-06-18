@@ -11,6 +11,7 @@ import { FaTrash, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import ReactModal from "react-modal";
 import ConfirmarAccionModal from "../../confirmarAccion/ConfirmarAccionModal";
+import { BASE_URL } from "../../utils/auth";
 import "./tableUsuario.css";
 
 function TableReact() {
@@ -28,7 +29,7 @@ function TableReact() {
   // Cargar datos del backend
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/v1/usuarios");
+      const response = await fetch(`${BASE_URL}/api/v1/usuarios`);
       if (!response.ok) throw new Error("Error al obtener los datos");
       const usuarios = await response.json();
       setData(usuarios);
@@ -50,7 +51,7 @@ function TableReact() {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1/usuarios/${selectedUserId}`,
+        `${BASE_URL}/api/v1/usuarios/${selectedUserId}`,
         { method: "DELETE" }
       );
       if (!response.ok) throw new Error("Error al eliminar el usuario");
@@ -90,7 +91,7 @@ function TableReact() {
     e.preventDefault();
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1/usuarios/${userForm.cedula}`,
+        `${BASE_URL}/api/v1/usuarios/${userForm.cedula}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

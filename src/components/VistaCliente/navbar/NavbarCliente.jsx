@@ -22,6 +22,7 @@ import {
 import { jwtDecode } from "jwt-decode";
 import { MdHelp } from "react-icons/md";
 import { useCarrito } from "../../VistaCliente/carrito/CarritoContext";
+import { BASE_URL } from "../../utils/auth";
 // Ajusta la ruta si es distinta
 
 // Menú de categorías
@@ -37,7 +38,7 @@ const MenuCategorias = () => {
     const fetchCategorias = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/v1/categorias/productos"
+          `${BASE_URL}/api/v1/categorias/productos`
         );
         if (!response.ok) throw new Error("Error al obtener los datos");
         const data = await response.json();
@@ -198,7 +199,7 @@ function NavbarCliente() {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/v1/logout", {
+      const response = await fetch(`${BASE_URL}/api/v1/logout`, {
         method: "POST",
         credentials: "include",
       });

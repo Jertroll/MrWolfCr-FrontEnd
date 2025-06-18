@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { LiaEyeSlashSolid, LiaEyeSolid } from "react-icons/lia"; // Importamos los íconos para mostrar/ocultar la contraseña
 import "./RegistroCliente.css"; // Mantendremos el estilo existente y añadiremos las mejoras
+import { BASE_URL } from "../utils/auth";
+import { useNavigate } from "react-router-dom";
+
 
 function RegistroUsuarioCliente() {
   const [formData, setFormData] = useState({
@@ -20,6 +23,8 @@ function RegistroUsuarioCliente() {
   const [successMessage, setSuccessMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar la contraseña
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData({
@@ -36,7 +41,7 @@ function RegistroUsuarioCliente() {
 
     try {
       const dataToSend = { ...formData, imagen: formData.imagen || "" };
-      const response = await fetch("http://localhost:3000/api/v1/usuarios", {
+      const response = await fetch(`${BASE_URL}/api/v1/usuarios`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dataToSend),
@@ -71,7 +76,7 @@ function RegistroUsuarioCliente() {
   };
 
   return (
-    
+
     <div className="flex justify-center items-center min-h-screen bg-black">
       <div className="form-container">
         <h2 className="text-2xl font-bold text-center mb-6 text-white">Crear cuenta</h2>
@@ -199,10 +204,14 @@ function RegistroUsuarioCliente() {
 
           <p className="text-center text-white mt-4">
             ¿Ya tiene una cuenta?{" "}
-            <a href="/login" className="text-red-500">
+            <span
+              onClick={() => navigate("/login")}
+              className="text-red-500 cursor-pointer hover:underline"
+            >
               Inicie sesión aquí
-            </a>
+            </span>
           </p>
+
         </form>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../utils/auth";
 
 const EnviarCodigo = () => {
   const [email, setEmail] = useState("");
@@ -12,7 +13,7 @@ const EnviarCodigo = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/api/v1/recuperar/solicitarCodigo", {
+      const res = await fetch(`${BASE_URL}/api/v1/recuperar/solicitarCodigo`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaFilePdf,FaArrowDown } from "react-icons/fa";
 import moment from 'moment-timezone';
+import { BASE_URL } from "../utils/auth";
 
 const FacturasCliente = () => {
     const [facturas, setFacturas] = useState([]);
@@ -13,7 +14,7 @@ const FacturasCliente = () => {
     const token = sessionStorage.getItem("token");
 
     useEffect(() => {
-        fetch("http://localhost:3000/api/v1/facturas", {
+        fetch(`${BASE_URL}/api/v1/facturas`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -178,7 +179,7 @@ const FacturasCliente = () => {
                                                 Mas...
                                             </Link>
                                             <a
-                                                href={`http://localhost:3000/api/v1/pdf/${factura.id}`}
+                                                href={`${BASE_URL}/api/v1/pdf/${factura.id}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 style={styles.pdfLink}

@@ -8,10 +8,28 @@ const ConfirmarAccionModal = ({ open, onClose, onConfirm, message }) => {
         <DialogContentText>{message}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary">
+        <Button 
+          onClick={onClose} 
+          sx={{
+            backgroundColor: '#e53e3e',
+            color: '#000',
+            '&:hover': {
+              backgroundColor: 'darkred',
+            },
+          }}
+        >
           Cancelar
         </Button>
-        <Button onClick={onConfirm} color="secondary">
+        <Button 
+          onClick={onConfirm} 
+          sx={{
+            backgroundColor: '#b38b00',
+            color: '#000',
+            '&:hover': {
+              backgroundColor: '#8a6f00',
+            },
+          }}
+        >
           Confirmar
         </Button>
       </DialogActions>

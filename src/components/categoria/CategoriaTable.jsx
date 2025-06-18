@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import ConfirmarAccionModal from "../confirmarAccion/ConfirmarAccionModal"; // Asegúrate de importar el modal
 import "./tableCategoria.css";
+import { BASE_URL } from "../utils/auth";
 
 const CategoriaTable = () => {
   const [data, setData] = useState([]);
@@ -37,7 +38,7 @@ const CategoriaTable = () => {
   // Función para obtener datos del backend
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/v1/categorias");
+      const response = await fetch(`${BASE_URL}/api/v1/categorias`);
       if (!response.ok) {
         throw new Error("Error al obtener los datos");
       }
@@ -63,7 +64,7 @@ const CategoriaTable = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/v1/categorias/${selectedCategoriaId}`,
+        `${BASE_URL}/api/v1/categorias/${selectedCategoriaId}`,
         { method: "DELETE" }
       );
       if (!response.ok) throw new Error("Error al eliminar la categoría");
@@ -132,7 +133,7 @@ const CategoriaTable = () => {
       }
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/categorias/${categoriaForm.num_categoria}`,
+        `${BASE_URL}/api/v1/categorias/${categoriaForm.num_categoria}`,
         {
           method: "PUT",
           body: formData, // No agregamos headers, ya que `FormData` los maneja automáticamente.
@@ -172,7 +173,7 @@ const CategoriaTable = () => {
       accessorKey: "imagen",
       cell: ({ row }) => (
         <img
-          src={`http://localhost:3000/imagenes/${row.original.imagen}`}
+          src={`${BASE_URL}/imagenes/${row.original.imagen}`}
           alt="Imagen de categoría"
           className="h-16 w-16 object-cover"
           onError={(e) => {
@@ -340,7 +341,7 @@ const CategoriaTable = () => {
                   {cell.column.id === "imagen" ? (
                     row.original.imagen ? (
                       <img
-                        src={row.original.imagen}
+                        src={`${BASE_URL}/imagenes/${row.original.imagen}`}
                         alt="Imagen de categoría"
                         style={{ width: 80, height: 80, objectFit: "cover" }}
                         onError={(e) => {

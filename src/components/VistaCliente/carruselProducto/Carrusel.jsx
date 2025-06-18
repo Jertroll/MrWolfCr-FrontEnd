@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import "./Carrusel.css";
+import { BASE_URL } from "../../utils/auth";
 
 const Carrusel = () => {
   const [data, setData] = useState([]); // Estado para almacenar los productos
 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/v1/productos");
+      const response = await fetch(`${BASE_URL}/api/v1/productos`);
       if (!response.ok) throw new Error("Error al obtener los datos");
       const productos = await response.json();
       setData(productos);
@@ -27,7 +28,7 @@ const Carrusel = () => {
           producto.imagenes.map((imagen, index) => (
             <div key={`${producto.id}-${index}`} className="flex flex-col items-center">
               <img
-                src={`http://localhost:3000/public/ImgProductos/${imagen.nomImagen}`} 
+                src={`${BASE_URL}/public/ImgProductos/${imagen.nomImagen}`} 
                 alt={producto.nombre}
                 className="w-40 h-40 object-cover rounded-lg shadow-md"
               />

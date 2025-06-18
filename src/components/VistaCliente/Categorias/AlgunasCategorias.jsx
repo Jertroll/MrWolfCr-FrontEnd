@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AlgunasCategorias.css";
+import { BASE_URL } from "../../utils/auth";
 
 const AlgunasCategorias = () => {
   const [categorias, setCategorias] = useState([]); // Estado para almacenar las categorías
@@ -9,7 +10,7 @@ const AlgunasCategorias = () => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/v1/categorias/productos");
+        const response = await fetch(`${BASE_URL}/api/v1/categorias/productos`);
         if (!response.ok) throw new Error("Error al obtener los datos");
         const data = await response.json();
         setCategorias(data);
