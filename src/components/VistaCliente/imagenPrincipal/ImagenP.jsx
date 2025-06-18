@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-
+import { useNavigate } from "react-router-dom";
 const ImagenP = () => {
   return (
     <section className="relative w-full h-screen flex items-center justify-center text-white">
@@ -25,7 +25,7 @@ const ImagenP = () => {
         <motion.a 
           whileHover={{ scale: 1.1 }} 
           whileTap={{ scale: 0.9 }}
-          href="/Productos"
+          onClick={() => navigate("/productos")}
           className="border border-white px-6 py-3 rounded-full text-lg font-medium shadow-lg hover:bg-white hover:text-black transition">
           Ver todos los productos
         </motion.a>
