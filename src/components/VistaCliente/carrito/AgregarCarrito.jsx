@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import { obtenerUsuarioDesdeToken, BASE_URL } from "../../utils/auth";
-import { useCarrito } from "../../VistaCliente/carrito/CarritoContext"; // Importar el contexto
+import { obtenerUsuarioDesdeToken } from "../../utils/auth";
+import { useCarrito } from "./CarritoContext";
 
 const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
   const [cantidad, setCantidad] = useState(1);
@@ -10,7 +10,6 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mensajeModal, setMensajeModal] = useState("");
   const [mensajeTalla, setMensajeTalla] = useState("");
-  const [mensajeCantidad] = useState("");
   const { agregarAlCarrito, obtenerCantidadProducto } = useCarrito();
   const navigate = useNavigate();
 
@@ -23,66 +22,46 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
   const usuarioAutenticado = usuario !== null;
 
   const validarAntesDeAgregar = () => {
-  if (!usuarioAutenticado) {
-    setMensajeModal("Debes iniciar sesión para agregar productos al carrito.");
-    setMostrarModal(true);
-    return false;
-  }
-
-  if (!disponible) {
-    setMensajeModal("Este producto no está disponible en este momento.");
-    setMostrarModal(true);
-    return false;
-  }
-
-  if (!tallaSeleccionada) {
-    setMensajeTalla("Por favor selecciona una talla antes de agregar al carrito.");
-    return false;
-  } else {
-    setMensajeTalla("");
-  }
-
-  const cantidadProductoEnCarrito = obtenerCantidadProducto(producto.id, tallaSeleccionada);
-  if (cantidadProductoEnCarrito + cantidad > 5) {
-    setMensajeModal("No puedes agregar más de 5 unidades del mismo producto con la misma talla.");
-    setMostrarModal(true);
-    return false;
-  }
-
-  return true;
-};
-
-
- const handleAgregar = async () => {
-  if (!validarAntesDeAgregar()) return;
-
-  try {
-    const response = await fetch(`${BASE_URL}/api/v1/cart/add`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${usuario.token}`,
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        productId: producto.id,
-        tallaId: tallaSeleccionada.toString(),
-        quantity: cantidad,
-      }),
-    });
-
-    if (!response.ok) {
-      const data = await response.json();
-      throw new Error(data.message || "Error al agregar el producto");
+    if (!usuarioAutenticado) {
+      setMensajeModal("Debes iniciar sesión para agregar productos al carrito.");
+      setMostrarModal(true);
+      return false;
     }
 
-    agregarAlCarrito(producto.id, tallaSeleccionada, cantidad);
-  } catch (error) {
-    console.error("Error al agregar producto:", error);
-    setMensajeModal("No se pudo agregar el producto.");
-    setMostrarModal(true);
-  }
-};
+    if (!disponible) {
+      setMensajeModal("Este producto no está disponible en este momento.");
+      setMostrarModal(true);
+      return false;
+    }
+
+    if (!tallaSeleccionada) {
+      setMensajeTalla("Por favor selecciona una talla antes de agregar al carrito.");
+      return false;
+    } else {
+      setMensajeTalla("");
+    }
+
+    const cantidadProductoEnCarrito = obtenerCantidadProducto(producto.id, tallaSeleccionada);
+    if (cantidadProductoEnCarrito + cantidad > 5) {
+      setMensajeModal("No puedes agregar más de 5 unidades del mismo producto con la misma talla.");
+      setMostrarModal(true);
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleAgregar = async () => {
+    if (!validarAntesDeAgregar()) return;
+
+    try {
+      await agregarAlCarrito(producto.id, tallaSeleccionada, cantidad);
+    } catch (error) {
+      console.error("Error al agregar producto:", error);
+      setMensajeModal("No se pudo agregar el producto.");
+      setMostrarModal(true);
+    }
+  };
 
   return (
     <div className="mt-4">
@@ -90,18 +69,14 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
         {mensajeTalla && (
           <p className="text-red-500 text-sm mt-1">{mensajeTalla}</p>
         )}
-        {mensajeCantidad && (
-          <p className="text-red-500 text-sm mt-1">{mensajeCantidad}</p>
-        )}
       </div>
       <h3 className="text-md font-semibold">Cantidad:</h3>
       <input
         type="number"
         min="1"
+        max="5"
         value={cantidad}
-        onChange={(e) =>
-          setCantidad(Math.max(1, parseInt(e.target.value) || 1))
-        }
+        onChange={(e) => setCantidad(Math.min(5, Math.max(1, parseInt(e.target.value) || 1)))}
         className="border rounded-lg p-2 w-20 text-center"
       />
 
@@ -124,10 +99,7 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
               className="mt-4 bg-black text-white px-4 py-2 rounded-lg"
               onClick={() => {
                 setMostrarModal(false);
-                if (
-                  mensajeModal ===
-                  "Debes iniciar sesión para agregar productos al carrito."
-                ) {
+                if (mensajeModal === "Debes iniciar sesión para agregar productos al carrito.") {
                   navigate("/login");
                 }
               }}
