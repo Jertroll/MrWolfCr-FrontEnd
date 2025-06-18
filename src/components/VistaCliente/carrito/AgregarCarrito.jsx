@@ -23,66 +23,65 @@ const AgregarCarrito = ({ producto, tallaSeleccionada }) => {
   const usuarioAutenticado = usuario !== null;
 
   const validarAntesDeAgregar = () => {
-  if (!usuarioAutenticado) {
-    setMensajeModal("Debes iniciar sesión para agregar productos al carrito.");
-    setMostrarModal(true);
-    return false;
-  }
-
-  if (!disponible) {
-    setMensajeModal("Este producto no está disponible en este momento.");
-    setMostrarModal(true);
-    return false;
-  }
-
-  if (!tallaSeleccionada) {
-    setMensajeTalla("Por favor selecciona una talla antes de agregar al carrito.");
-    return false;
-  } else {
-    setMensajeTalla("");
-  }
-
-  const cantidadProductoEnCarrito = obtenerCantidadProducto(producto.id, tallaSeleccionada);
-  if (cantidadProductoEnCarrito + cantidad > 5) {
-    setMensajeModal("No puedes agregar más de 5 unidades del mismo producto con la misma talla.");
-    setMostrarModal(true);
-    return false;
-  }
-
-  return true;
-};
-
-
- const handleAgregar = async () => {
-  if (!validarAntesDeAgregar()) return;
-
-  try {
-    const response = await fetch(`${BASE_URL}/api/v1/cart/add`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${usuario.token}`,
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        productId: producto.id,
-        tallaId: tallaSeleccionada.toString(),
-        quantity: cantidad,
-      }),
-    });
-
-    if (!response.ok) {
-      const data = await response.json();
-      throw new Error(data.message || "Error al agregar el producto");
+    if (!usuarioAutenticado) {
+      setMensajeModal("Debes iniciar sesión para agregar productos al carrito.");
+      setMostrarModal(true);
+      return false;
     }
 
-    agregarAlCarrito(producto.id, tallaSeleccionada, cantidad);
-  } catch (error) {
-    console.error("Error al agregar producto:", error);
-    setMensajeModal("No se pudo agregar el producto.");
-    setMostrarModal(true);
-  }
-};
+    if (!disponible) {
+      setMensajeModal("Este producto no está disponible en este momento.");
+      setMostrarModal(true);
+      return false;
+    }
+
+    if (!tallaSeleccionada) {
+      setMensajeTalla("Por favor selecciona una talla antes de agregar al carrito.");
+      return false;
+    } else {
+      setMensajeTalla("");
+    }
+
+    const cantidadProductoEnCarrito = obtenerCantidadProducto(producto.id, tallaSeleccionada);
+    if (cantidadProductoEnCarrito + cantidad > 5) {
+      setMensajeModal("No puedes agregar más de 5 unidades del mismo producto con la misma talla.");
+      setMostrarModal(true);
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleAgregar = async () => {
+    if (!validarAntesDeAgregar()) return;
+
+    try {
+      const response = await fetch(`${BASE_URL}/api/v1/cart/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${usuario.token}`,
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          productId: producto.id,
+          tallaId: tallaSeleccionada.toString(),
+          quantity: cantidad,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || "Error al agregar el producto");
+      }
+
+      agregarAlCarrito(producto.id, tallaSeleccionada, cantidad);
+    } catch (error) {
+      console.error("Error al agregar producto:", error);
+      setMensajeModal("No se pudo agregar el producto.");
+      setMostrarModal(true);
+    }
+  };
 
   return (
     <div className="mt-4">

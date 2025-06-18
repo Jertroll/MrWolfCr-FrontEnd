@@ -12,20 +12,6 @@ const Carrito = () => {
     const [mensajeExito, setMensajeExito] = useState("");
     const { eliminarDelCarrito } = useCarrito();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-  // Guardar carrito en localStorage
-  const guardarCarritoEnLocalStorage = (nuevoCarrito) => {
-    localStorage.setItem("carrito", JSON.stringify(nuevoCarrito));
-  };
-
-  // Manejar selección de productos
-=======
-  // Función para manejar la selección de productos
->>>>>>> parent of cad9724 (Cambios carrito)
-  const manejarSeleccion = (productId, tallaId) => {
-=======
     const token = sessionStorage.getItem("token");
 
     useEffect(() => {
@@ -36,8 +22,6 @@ const Carrito = () => {
                 ...(token && { Authorization: `Bearer ${token}` })
             },
             credentials: "include"
-
-
         })
             .then((res) => res.json())
             .then((data) => {
@@ -93,45 +77,16 @@ const Carrito = () => {
     };
 
     const manejarSeleccion = (productId, tallaId) => {
->>>>>>> parent of 7a1dfb1 (cambios a carrito)
-    const key = `${productId}-${tallaId}`;
-    setSeleccionados((prev) => {
-        const existe = prev.find(p => `${p.productId}-${p.tallaId}` === key);
-        if (existe) {
-            return prev.filter(p => `${p.productId}-${p.tallaId}` !== key);
-        } else {
-            return [...prev, { productId, tallaId }];
-        }
-    });
+        const key = `${productId}-${tallaId}`;
+        setSeleccionados((prev) => {
+            const existe = prev.find(p => `${p.productId}-${p.tallaId}` === key);
+            if (existe) {
+                return prev.filter(p => `${p.productId}-${p.tallaId}` !== key);
+            } else {
+                return [...prev, { productId, tallaId }];
+            }
+        });
     };
-
-<<<<<<< HEAD
-  // Función para comprar productos
-=======
-  const manejarSeleccion = (productId, tallaId) => {
-    const key = `${productId}-${tallaId}`;
-    setSeleccionados((prev) => {
-      const existe = prev.find(p => `${p.productId}-${p.tallaId}` === key);
-      if (existe) {
-        return prev.filter(p => `${p.productId}-${p.tallaId}` !== key);
-      } else {
-        return [...prev, { productId, tallaId }];
-      }
-    });
-  };
-
-<<<<<<< HEAD
->>>>>>> parent of 695d5a2 (cambios carrito)
-=======
-  // Función para realizar la compra
->>>>>>> parent of cad9724 (Cambios carrito)
-  const comprarProductos = async () => {
-    if (!token) {
-      alert("No estás autenticado.");
-      return;
-    }
-=======
->>>>>>> parent of 7a1dfb1 (cambios a carrito)
 
     const comprarProductos = async () => {
         if (!token) {
@@ -168,13 +123,6 @@ const Carrito = () => {
 
             const data = await response.json();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  // Cálculo total a pagar
-=======
->>>>>>> parent of 695d5a2 (cambios carrito)
-  const totalAPagar = carrito.reduce((total, p) => {
-=======
             if (response.ok) {
                 setMensajeExito("¡Compra realizada con éxito!");
 
@@ -231,49 +179,13 @@ const Carrito = () => {
         }
     };
 
- const totalAPagar = carrito.reduce((total, p) => {
->>>>>>> parent of 7a1dfb1 (cambios a carrito)
-    const estaSeleccionado = seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId);
-    return estaSeleccionado ? total + (p.precio * p.quantity) : total;
-<<<<<<< HEAD
- }, 0);
+    const totalAPagar = carrito.reduce((total, p) => {
+        const estaSeleccionado = seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId);
+        return estaSeleccionado ? total + (p.precio * p.quantity) : total;
+    }, 0);
 
-<<<<<<< HEAD
-  // Si el carrito está vacío o cargando
-=======
-  }, 0);
-
-<<<<<<< HEAD
->>>>>>> parent of 695d5a2 (cambios carrito)
-=======
-  // Cargar carrito desde localStorage si no se ha cargado desde el servidor
-  useEffect(() => {
-    if (token) {
-      // Obtener carrito del servidor
-      setLoading(true);
-      // Lógica para obtener carrito desde el backend
-    } else {
-      // Si no hay token, cargar el carrito de localStorage
-      const storedCarrito = JSON.parse(localStorage.getItem("carrito")) || [];
-      setCarrito(storedCarrito);
-      setLoading(false);
-    }
-  }, [token]);
-
-  // Guardar carrito en localStorage cuando se modifique
-  useEffect(() => {
-    if (!token) {
-      localStorage.setItem("carrito", JSON.stringify(carrito));
-    }
-  }, [carrito, token]);
-
->>>>>>> parent of cad9724 (Cambios carrito)
-  if (loading) return <p>Cargando carrito...</p>;
-  if (error) return <p>{error}</p>;
-=======
     if (loading) return <p>Cargando carrito...</p>;
     if (error) return <p>{error}</p>;
->>>>>>> parent of 7a1dfb1 (cambios a carrito)
 
     return (
         <div className="carrito-container">
@@ -284,18 +196,18 @@ const Carrito = () => {
                     </div>
                 </div>
             )}
-           <div className="encabezado-carrito">
-           <h2 className="titulo-Carrito">Carrito de Compras</h2>
-          <button
-            className="seguir-comprando"
-            onClick={() => window.location.href = "/productos"}
-          >
-             Seguir Comprando
-          </button>
-         </div>
-         {carrito.length > 0 && seleccionados.length === 0 && (
-  <p className="mensaje-seleccion">Selecciona los productos que deseas comprar.</p>
-)}
+            <div className="encabezado-carrito">
+                <h2 className="titulo-Carrito">Carrito de Compras</h2>
+                <button
+                    className="seguir-comprando"
+                    onClick={() => window.location.href = "/productos"}
+                >
+                    Seguir Comprando
+                </button>
+            </div>
+            {carrito.length > 0 && seleccionados.length === 0 && (
+                <p className="mensaje-seleccion">Selecciona los productos que deseas comprar.</p>
+            )}
 
             {carrito.length === 0 ? (
                 <p>El carrito está vacío</p>
@@ -318,16 +230,16 @@ const Carrito = () => {
                                 <tr key={p.id}>
                                     <td>
                                         <div className="no-disponible">
-                                        <input
-                                       type="checkbox"
-                                       checked={seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId)}
-                                       disabled={p.estado === "No disponible"}
-                                       onChange={() => manejarSeleccion(p.id, p.tallaId)}
-                                       />
-                                       {p.estado === "No disponible" && (
-                                       <small className="mensaje-no-disponible">No disponible</small>
-                                        )}
-                                       </div>
+                                            <input
+                                                type="checkbox"
+                                                checked={seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId)}
+                                                disabled={p.estado === "No disponible"}
+                                                onChange={() => manejarSeleccion(p.id, p.tallaId)}
+                                            />
+                                            {p.estado === "No disponible" && (
+                                                <small className="mensaje-no-disponible">No disponible</small>
+                                            )}
+                                        </div>
                                     </td>
                                     <td className="producto-info">
                                         <img
@@ -338,7 +250,7 @@ const Carrito = () => {
                                         {p.nombre}
                                     </td>
                                     <td>₡ {p.precio.toLocaleString()}</td>
-                                     <td>{p.tallaNombre}</td>
+                                    <td>{p.tallaNombre}</td>
                                     <td className="cantidad">
                                         <input
                                             type="number"
@@ -348,8 +260,7 @@ const Carrito = () => {
                                             onChange={(e) => actualizarCantidad(p.id, p.tallaId, parseInt(e.target.value, 10))}
                                         />
                                     </td>
-                                     <td className="total">₡ {(p.precio * p.quantity).toLocaleString()}</td>
-
+                                    <td className="total">₡ {(p.precio * p.quantity).toLocaleString()}</td>
                                     <td>
                                         <button className="eliminar" onClick={() => eliminarProducto(p.id, p.tallaId)}>
                                             <FaTrash />
