@@ -25,7 +25,6 @@ const ProductosAleatorios = () => {
 
   const verDetalleProducto = (id) => {
     navigate(`/producto/${id}`);
-    window.location.reload();
   };
 
   return (

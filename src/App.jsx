@@ -47,6 +47,8 @@ function App() {
             <Route path="/productos/genero/:genero" element={<ProductosPorGenero />} />
             <Route path="/perfil" element={<PerfilUsuario />} />
             <Route path="/perfil/editar" element={<EditarPerfilUsuario />} />
+
+
           </Route>
 
           {/* Ruta de admin (sin layout) */}
