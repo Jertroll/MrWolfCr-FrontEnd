@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
 const ImagenP = () => {
+  const navigate = useNavigate();
   return (
     <section className="relative w-full h-screen flex items-center justify-center text-white">
       
