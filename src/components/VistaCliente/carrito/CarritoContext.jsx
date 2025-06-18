@@ -1,14 +1,19 @@
+<<<<<<< HEAD
 import { createContext, useContext, useState, useEffect } from "react";
+=======
+import { createContext, useState, useContext } from "react";
+>>>>>>> parent of 7a1dfb1 (cambios a carrito)
 import PropTypes from "prop-types";
 import { BASE_URL } from "../../utils/auth";
 
 const CarritoContext = createContext();
 
 export const CarritoProvider = ({ children }) => {
-    const [carrito, setCarrito] = useState([]);
     const [cantidadCarrito, setCantidadCarrito] = useState(0);
+    const [carrito, setCarrito] = useState([]);
     const [mostrarContadorTemporal, setMostrarContadorTemporal] = useState(false);
 
+<<<<<<< HEAD
     // Función para obtener el carrito desde la API o el almacenamiento local
     const obtenerCarrito = async () => {
         const storedCarrito = JSON.parse(localStorage.getItem("carrito")) || [];
@@ -72,28 +77,60 @@ export const CarritoProvider = ({ children }) => {
 
     // Función para mostrar el contador temporalmente
     const mostrarContador = () => {
-        setMostrarContadorTemporal(true);
-        setTimeout(() => {
-            setMostrarContadorTemporal(false);
-        }, 2000);
+=======
+    const agregarAlCarrito = (productoId, tallaId, cantidad) => {
+        setCarrito((prevCarrito) => {
+            const existeItem = prevCarrito.some(
+                (item) => item.productoId === productoId && item.tallaId === tallaId
+            );
+
+            if (!existeItem) {
+                setCantidadCarrito((prev) => prev + 1);
+                activarContadorTemporal();// mostrar el contador
+                return [...prevCarrito, { productoId, tallaId, cantidad }];
+            } else {
+                return prevCarrito.map((item) => {
+                    if (item.productoId === productoId && item.tallaId === tallaId) {
+                        return { ...item, cantidad: item.cantidad + cantidad };
+                    }
+                    return item;
+                });
+            }
+        });
     };
 
+    const activarContadorTemporal = () => {
+>>>>>>> parent of 7a1dfb1 (cambios a carrito)
+        setMostrarContadorTemporal(true);
+        setTimeout(() => setMostrarContadorTemporal(false), 5000); // 5 segundos
+    };
+
+<<<<<<< HEAD
     // Cargar el carrito al iniciar
     useEffect(() => {
         obtenerCarrito();
     }, []);
+=======
+    const eliminarDelCarrito = () => {
+        setCantidadCarrito((prev) => (prev > 0 ? prev - 1 : 0));
+    };
+
+    const obtenerCantidadProducto = (productoId, tallaId) => {
+        const item = carrito.find(
+            (item) => item.productoId === productoId && item.tallaId === tallaId
+        );
+        return item ? item.cantidad : 0;
+    };
+>>>>>>> parent of 7a1dfb1 (cambios a carrito)
 
     return (
         <CarritoContext.Provider
             value={{
-                carrito,
                 cantidadCarrito,
-                mostrarContadorTemporal,
                 agregarAlCarrito,
                 eliminarDelCarrito,
-                actualizarCantidad,
-                vaciarCarrito,
-                obtenerCantidadProducto
+                obtenerCantidadProducto,
+                mostrarContadorTemporal,
             }}
         >
             {children}
@@ -105,10 +142,4 @@ CarritoProvider.propTypes = {
     children: PropTypes.node.isRequired,
 };
 
-export const useCarrito = () => {
-    const context = useContext(CarritoContext);
-    if (!context) {
-        throw new Error("useCarrito debe ser usado dentro de un CarritoProvider");
-    }
-    return context;
-};
+export const useCarrito = () => useContext(CarritoContext);
