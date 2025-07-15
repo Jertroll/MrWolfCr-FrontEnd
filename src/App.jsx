@@ -21,6 +21,7 @@ import PerfilUsuario from "./components/VistaCliente/perfil/PerfilUsuario";
 import EnviarCodigo from "./components/recuperacionContrasena/EnviarCodigo";
 import VerificarYRestablecer from "./components/recuperacionContrasena/VerificarYRestablecer";
 import EditarPerfilUsuario from "./components/VistaCliente/perfil/EditarPerfilUsuario"
+import PagoResultado from "./components/confirmarPago/PagoResultado";
 function App() {
   return (
     <CarritoProvider>
@@ -47,6 +48,7 @@ function App() {
             <Route path="/productos/genero/:genero" element={<ProductosPorGenero />} />
             <Route path="/perfil" element={<PerfilUsuario />} />
             <Route path="/perfil/editar" element={<EditarPerfilUsuario />} />
+            <Route path="/pago-exitoso" element={<PagoResultado />} />
           </Route>
 
           {/* Ruta de admin (sin layout) */}

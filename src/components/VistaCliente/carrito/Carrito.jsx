@@ -76,15 +76,15 @@ const Carrito = () => {
     };
 
     const manejarSeleccion = (productId, tallaId) => {
-    const key = `${productId}-${tallaId}`;
-    setSeleccionados((prev) => {
-        const existe = prev.find(p => `${p.productId}-${p.tallaId}` === key);
-        if (existe) {
-            return prev.filter(p => `${p.productId}-${p.tallaId}` !== key);
-        } else {
-            return [...prev, { productId, tallaId }];
-        }
-    });
+        const key = `${productId}-${tallaId}`;
+        setSeleccionados((prev) => {
+            const existe = prev.find(p => `${p.productId}-${p.tallaId}` === key);
+            if (existe) {
+                return prev.filter(p => `${p.productId}-${p.tallaId}` !== key);
+            } else {
+                return [...prev, { productId, tallaId }];
+            }
+        });
     };
 
 
@@ -100,8 +100,8 @@ const Carrito = () => {
         }
 
         const productosSeleccionados = carrito
-            .filter(p => seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId)&&
-            p.estado !== "No disponible" )
+            .filter(p => seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId) &&
+                p.estado !== "No disponible")
             .map(p => ({
                 id: p.id,
                 nombre: p.nombre,
@@ -124,8 +124,7 @@ const Carrito = () => {
             const data = await response.json();
 
             if (response.ok) {
-                setMensajeExito("¡Compra realizada con éxito!");
-
+                // Limpieza del carrito local
                 await fetch("http://localhost:3000/api/v1/cart/remove-multiple", {
                     method: "DELETE",
                     headers: {
@@ -140,15 +139,22 @@ const Carrito = () => {
                     })
                 });
 
-                window.location.href = `/factura/${data.factura.id}`;
+                // Redirigir al link de pago de Tilopay
+                if (data.factura.checkout_url) {
+                    window.location.href = data.factura.checkout_url;
+                } else {
+                    alert("Error: No se generó el enlace de pago.");
+                }
             } else {
-                alert(data.message || "Error al procesar la compra");
+                alert(data.message || "Error al procesar la compra.");
             }
         } catch (err) {
             console.error("Error al comprar productos:", err);
             alert("Hubo un error al realizar la compra.");
         }
     };
+
+
 
     const vaciarCarrito = async () => {
         if (!token) {
@@ -179,10 +185,10 @@ const Carrito = () => {
         }
     };
 
- const totalAPagar = carrito.reduce((total, p) => {
-    const estaSeleccionado = seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId);
-    return estaSeleccionado ? total + (p.precio * p.quantity) : total;
- }, 0);
+    const totalAPagar = carrito.reduce((total, p) => {
+        const estaSeleccionado = seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId);
+        return estaSeleccionado ? total + (p.precio * p.quantity) : total;
+    }, 0);
 
     if (loading) return <p>Cargando carrito...</p>;
     if (error) return <p>{error}</p>;
@@ -196,18 +202,18 @@ const Carrito = () => {
                     </div>
                 </div>
             )}
-           <div className="encabezado-carrito">
-           <h2 className="titulo-Carrito">Carrito de Compras</h2>
-          <button
-            className="seguir-comprando"
-            onClick={() => window.location.href = "/productos"}
-          >
-             Seguir Comprando
-          </button>
-         </div>
-         {carrito.length > 0 && seleccionados.length === 0 && (
-  <p className="mensaje-seleccion">Selecciona los productos que deseas comprar.</p>
-)}
+            <div className="encabezado-carrito">
+                <h2 className="titulo-Carrito">Carrito de Compras</h2>
+                <button
+                    className="seguir-comprando"
+                    onClick={() => window.location.href = "/productos"}
+                >
+                    Seguir Comprando
+                </button>
+            </div>
+            {carrito.length > 0 && seleccionados.length === 0 && (
+                <p className="mensaje-seleccion">Selecciona los productos que deseas comprar.</p>
+            )}
 
             {carrito.length === 0 ? (
                 <p>El carrito está vacío</p>
@@ -230,16 +236,16 @@ const Carrito = () => {
                                 <tr key={p.id}>
                                     <td>
                                         <div className="no-disponible">
-                                        <input
-                                       type="checkbox"
-                                       checked={seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId)}
-                                       disabled={p.estado === "No disponible"}
-                                       onChange={() => manejarSeleccion(p.id, p.tallaId)}
-                                       />
-                                       {p.estado === "No disponible" && (
-                                       <small className="mensaje-no-disponible">No disponible</small>
-                                        )}
-                                       </div>
+                                            <input
+                                                type="checkbox"
+                                                checked={seleccionados.some(s => s.productId === p.id && s.tallaId === p.tallaId)}
+                                                disabled={p.estado === "No disponible"}
+                                                onChange={() => manejarSeleccion(p.id, p.tallaId)}
+                                            />
+                                            {p.estado === "No disponible" && (
+                                                <small className="mensaje-no-disponible">No disponible</small>
+                                            )}
+                                        </div>
                                     </td>
                                     <td className="producto-info">
                                         <img
@@ -250,7 +256,7 @@ const Carrito = () => {
                                         {p.nombre}
                                     </td>
                                     <td>₡ {p.precio.toLocaleString()}</td>
-                                     <td>{p.tallaNombre}</td>
+                                    <td>{p.tallaNombre}</td>
                                     <td className="cantidad">
                                         <input
                                             type="number"
@@ -260,7 +266,7 @@ const Carrito = () => {
                                             onChange={(e) => actualizarCantidad(p.id, p.tallaId, parseInt(e.target.value, 10))}
                                         />
                                     </td>
-                                     <td className="total">₡ {(p.precio * p.quantity).toLocaleString()}</td>
+                                    <td className="total">₡ {(p.precio * p.quantity).toLocaleString()}</td>
 
                                     <td>
                                         <button className="eliminar" onClick={() => eliminarProducto(p.id, p.tallaId)}>
